@@ -568,46 +568,11 @@ public static class ProcessActions
                     // create reg file
                     File.WriteAllText(Path.Combine(Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId), "accountId.reg"), $"Windows Registry Editor Version 5.00\r\n\r\n[HKEY_CURRENT_USER\\Software\\Epic Games\\Unreal Engine\\Identifiers]\r\n\"AccountId\"=\"{accountId}\"");
 
-                    // launch epic games to get new token
-                    await Task.Run(() => Process.Start(new ProcessStartInfo(EpicGamesHelper.EpicGamesPath) { WindowStyle = ProcessWindowStyle.Hidden }));
-
-                    // wait for token to get used
-                    while (true)
-                    {
-                        await Task.Delay(100);
-
-                        if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-                        {
-                            await UpdateInvalidEpicGamesToken();
-                            return;
-                        }
-
-                        if ((EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath)).TokenUseCount == 1)
-                            break;
-                    }
-
-                    // wait for new token
-                    while (true)
-                    {
-                        await Task.Delay(100);
-
-                        if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-                        {
-                            await UpdateInvalidEpicGamesToken();
-                            return;
-                        }
-
-                        if ((EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath)).TokenUseCount == 0)
-                            break;
-                    }
-
-                    // close epic games launcher
-                    EpicGamesHelper.CloseEpicGames();
-
+                    // update refresh token
+                    await EpicGamesHelper.UpdateEpicGamesToken(EpicGamesHelper.ActiveEpicGamesAccountPath);
+                   
                     // update the backed up config
                     File.Copy(file.FullName, Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId, "GameUserSettings.ini"), true);
-
-                    await Task.Delay(1000);
 
                     InstallPage.Info.Title = $"Succesfully logged in as {EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).DisplayName}...";
 
@@ -680,7 +645,7 @@ public static class ProcessActions
 
     public static async Task UpdateInvalidEpicGamesToken()
     {
-        InstallPage.Info.Title = "The login token is no longer valid. Please enter your password again...";
+        InstallPage.Info.Title = "The refresh token is no longer valid. Please enter your password again...";
 
         // close epic games launcher
         EpicGamesHelper.CloseEpicGames();

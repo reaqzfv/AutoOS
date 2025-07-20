@@ -252,6 +252,7 @@ public sealed partial class GamesPage : Page
             }
         }
 
+
         isInitializingEpicGamesAccounts = false;
     }
 
@@ -262,7 +263,7 @@ public sealed partial class GamesPage : Page
         // close epic games launcher
         EpicGamesHelper.CloseEpicGames();
 
-        // update config
+        // update config before switching
         if (File.Exists(EpicGamesHelper.ActiveEpicGamesAccountPath))
         {
             var (oldAccountId, _, _, _) = EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath);
@@ -279,39 +280,13 @@ public sealed partial class GamesPage : Page
         File.Copy(Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId, "GameUserSettings.ini"), EpicGamesHelper.ActiveEpicGamesAccountPath, true);
 
         // replace accountid
-        Process.Start("regedit.exe", $"/s \"{Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId, "accountId.reg")}\"");
+        Process.Start("regedit.exe", $@"/s ""{Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId, "accountId.reg")}""");
 
-        // launch epic games to get new token
-        await Task.Run(() => Process.Start(new ProcessStartInfo(EpicGamesHelper.EpicGamesPath) { WindowStyle = ProcessWindowStyle.Hidden }));
-
-        // wait for token to get used
-        while (true)
+        // update refresh token
+        if (await EpicGamesHelper.UpdateEpicGamesToken(EpicGamesHelper.ActiveEpicGamesAccountPath) == null)
         {
-            await Task.Delay(100);
-
-            if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-            {
-                UpdateInvalidEpicGamesToken();
-                return;
-            }
-
-            if ((EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath)).TokenUseCount == 1)
-                break;
-        }
-
-        // wait for new token
-        while (true)
-        {
-            await Task.Delay(100);
-
-            if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-            {
-                UpdateInvalidEpicGamesToken();
-                return;
-            }
-
-            if ((EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath)).TokenUseCount == 0)
-                break;
+            UpdateInvalidEpicGamesToken();
+            return;
         }
 
         // close epic games launcher
@@ -320,6 +295,8 @@ public sealed partial class GamesPage : Page
         // refresh combobox
         isInitializingEpicGamesAccounts = true;
         LoadEpicGamesAccounts();
+
+        // refresh library
         await EpicGamesHelper.LoadGames();
         LoadSortSettings();
     }
@@ -332,7 +309,7 @@ public sealed partial class GamesPage : Page
         // add infobar
         AccountInfo.Children.Add(new InfoBar
         {
-            Title = "The login token is no longer valid. Please enter your password again...",
+            Title = "The refresh token is no longer valid. Please enter your password again...",
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Error,
@@ -385,6 +362,8 @@ public sealed partial class GamesPage : Page
         // refresh combobox
         isInitializingEpicGamesAccounts = true;
         LoadEpicGamesAccounts();
+
+        // refresh library
         await EpicGamesHelper.LoadGames();
         LoadSortSettings();
 
@@ -446,12 +425,9 @@ public sealed partial class GamesPage : Page
             {
                 if (File.Exists(EpicGamesHelper.ActiveEpicGamesAccountPath))
                 {
-                    if (File.Exists(EpicGamesHelper.ActiveEpicGamesAccountPath))
+                    if (EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
                     {
-                        if (EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
 
@@ -481,6 +457,8 @@ public sealed partial class GamesPage : Page
             // refresh combobox
             isInitializingEpicGamesAccounts = true;
             LoadEpicGamesAccounts();
+
+            // refresh library
             await EpicGamesHelper.LoadGames();
             LoadSortSettings();
 
@@ -661,6 +639,8 @@ public sealed partial class GamesPage : Page
         // refresh combobox
         isInitializingSteamAccounts = true;
         LoadSteamAccounts();
+
+        // refresh library
         await SteamHelper.LoadGames();
         LoadSortSettings();
     }
@@ -742,6 +722,8 @@ public sealed partial class GamesPage : Page
             // refresh combobox
             isInitializingSteamAccounts = true;
             LoadSteamAccounts();
+
+            // refresh library
             await SteamHelper.LoadGames();
             LoadSortSettings();
 
