@@ -34,7 +34,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 > [!NOTE]
 > You must be logged into GitHub in order to be able to download the artifact
 
-**Step 1:** Download the latest Windows ISO from the latest action artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/15696031886). 
+**Step 1:** Download the latest Windows ISO from the latest action artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/16334281445). 
 
 **Step 2:** Extract the downloaded zip file.
 
@@ -105,12 +105,6 @@ Thank you for your research on [Configuring services and features](https://githu
 Thank you for your research on [Network Performance](https://github.com/djdallmann/GamingPCSetup/blob/master/CONTENT/RESEARCH/NETWORK/README.md).
 
 ---
-
-**nachoaldamav (Nacho Aldama):**  
-Thank you for creating [egdata-api](https://github.com/egdata-app/egdata-api) which is used by AutoOS to get metadata for Games by Epic Games.
-
----
-
 
 **m417z (Michael Maltsev):**  
 Thank you for creating [Windhawk](https://github.com/ramensoftware/windhawk) and for helping me to publish my mod [Auto Theme Switcher](https://windhawk.net/mods/auto-theme-switcher).
