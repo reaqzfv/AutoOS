@@ -19,7 +19,7 @@ public sealed partial class PersonalizationPage : Page
         InitializeComponent();
         GetItems();
         GetTheme();
-        GetSchedule();
+        //GetSchedule();
         GetContextMenuState();
         GetTaskbarAlignmentState();
         GetTrayIconsState();
@@ -69,43 +69,44 @@ public sealed partial class PersonalizationPage : Page
         if (isInitializingThemeState) return;
     }
 
-    private void GetSchedule()
-    {
-        if (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lightTime))
-        {
-            LightTime.Time = lightTime;
-        }
-        else
-        {
-            localSettings.Values["LightTime"] = "07:00";
-            LightTime.Time = TimeSpan.Parse("07:00");
-        }
+    //private void GetSchedule()
+    //{
+    //    if (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lightTime))
+    //    {
+    //        LightTime.Time = lightTime;
+    //    }
+    //    else
+    //    {
+    //        localSettings.Values["LightTime"] = "07:00";
+    //        LightTime.Time = TimeSpan.Parse("07:00");
+    //    }
 
-        if (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var darkTime))
-        {
-            DarkTime.Time = darkTime;
-        }
-        else
-        {
-            localSettings.Values["DarkTime"] = "19:00";
-            DarkTime.Time = TimeSpan.Parse("19:00");
-        }
+    //    if (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var darkTime))
+    //    {
+    //        DarkTime.Time = darkTime;
+    //    }
+    //    else
+    //    {
+    //        localSettings.Values["DarkTime"] = "19:00";
+    //        DarkTime.Time = TimeSpan.Parse("19:00");
+    //    }
 
-        isInitializingSchedule = false;
-    }
-    private void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
-    {
-        if (isInitializingSchedule) return;
+    //    isInitializingSchedule = false;
+    //}
 
-        localSettings.Values["LightTime"] = e.NewTime.ToString(@"hh\:mm");
-    }
+    //private void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    //{
+    //    if (isInitializingSchedule) return;
 
-    private void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
-    {
-        if (isInitializingSchedule) return;
+    //    localSettings.Values["LightTime"] = e.NewTime.ToString(@"hh\:mm");
+    //}
 
-        localSettings.Values["DarkTime"] = e.NewTime.ToString(@"hh\:mm");
-    }
+    //private void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    //{
+    //    if (isInitializingSchedule) return;
+
+    //    localSettings.Values["DarkTime"] = e.NewTime.ToString(@"hh\:mm");
+    //}
 
     private void GetContextMenuState()
     {        
