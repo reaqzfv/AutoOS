@@ -308,8 +308,8 @@ namespace AutoOS.Helpers
             string reencrypted = Encrypt(updatedJson + trailingData);
             reencrypted = rememberMeData.StartsWith("\"") && rememberMeData.EndsWith("\"") ? $"\"{reencrypted}\"" : reencrypted;
 
-            iniHelper.AddValue("Data", reencrypted, "RememberMe");
-            new InIHelper(Path.Combine(EpicGamesAccountDir, GetAccountData(ActiveEpicGamesAccountPath).AccountId, "GameUserSettings.ini")).AddValue("Data", reencrypted, "RememberMe");
+            iniHelper.AddValue("Data", $"\"{reencrypted}\"", "RememberMe");
+            new InIHelper(Path.Combine(EpicGamesAccountDir, GetAccountData(ActiveEpicGamesAccountPath).AccountId, "GameUserSettings.ini")).AddValue("Data", $"\"{reencrypted}\"", "RememberMe");
 
             return newAccessToken;
         }
