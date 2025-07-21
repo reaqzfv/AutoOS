@@ -36,7 +36,6 @@
                     VerticalAlignment="Top"
                     HorizontalScrollBarVisibility="Hidden"
                     HorizontalScrollMode="Auto"
-                    IsTabStop="True"
                     VerticalScrollBarVisibility="Hidden"
                     VerticalScrollMode="Disabled"
                     ZoomMode="Disabled">
@@ -69,7 +68,6 @@
                     VerticalAlignment="Top"
                     HorizontalScrollBarVisibility="Hidden"
                     HorizontalScrollMode="Auto"
-                    IsTabStop="True"
                     VerticalScrollBarVisibility="Hidden"
                     VerticalScrollMode="Disabled"
                     ZoomMode="Disabled">
@@ -107,7 +105,10 @@
                 FontSize="18"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
                 Text="{x:Bind RoundedRating, Mode=OneWay}" />
-            <RatingControl IsReadOnly="True" PlaceholderValue="{x:Bind Rating}" />
+            <RatingControl
+                IsReadOnly="True"
+                IsTabStop="False"
+                PlaceholderValue="{x:Bind Rating}" />
         </StackPanel>
         <TextBlock
             Grid.Row="1"
@@ -134,7 +135,10 @@
                         IsTabStop="False"
                         Text="{x:Bind InstallLocation}">
                         <dev:TextBox.Content>
-                            <Button Click="OpenInstallLocation_Click" Content="&#xE838;" />
+                            <Button
+                                Click="OpenInstallLocation_Click"
+                                Content="&#xE838;"
+                                IsTabStop="True" />
                         </dev:TextBox.Content>
                     </dev:TextBox>
                 </dev:SettingsCard>
