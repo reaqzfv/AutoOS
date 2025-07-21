@@ -1,5 +1,6 @@
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace AutoOS.Views.Settings.Games;
 
@@ -62,7 +63,7 @@ public sealed partial class GameSettings : Page
     public static readonly DependencyProperty RatingProperty =
         DependencyProperty.Register(nameof(Rating), typeof(double), typeof(HeaderCarouselItem), new PropertyMetadata(0.0));
 
-    public double RoundedRating => Math.Round(Rating, 1);
+    public string RoundedRating => Math.Round(Rating, 1).ToString("0.0", CultureInfo.InvariantCulture);
 
     public string PlayTime
     {

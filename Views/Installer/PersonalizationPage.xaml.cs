@@ -7,7 +7,7 @@ namespace AutoOS.Views.Installer;
 public sealed partial class PersonalizationPage : Page
 {
     private bool isInitializingThemeState = true;
-    private bool isInitializingSchedule = true;
+    //private bool isInitializingSchedule = true;
     private bool isInitializingContextMenuState = true;
     private bool isInitializingTrayIconsState = true;
     private bool isInitializingTaskbarAlignmentState = true;

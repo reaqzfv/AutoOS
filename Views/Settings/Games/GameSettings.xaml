@@ -100,15 +100,15 @@
             VerticalAlignment="Top"
             Orientation="Horizontal"
             Spacing="8">
+            <RatingControl
+                IsReadOnly="True"
+                IsTabStop="False"
+                PlaceholderValue="{x:Bind Rating}" />
             <TextBlock
                 VerticalAlignment="Center"
                 FontSize="18"
                 Style="{StaticResource BodyStrongTextBlockStyle}"
                 Text="{x:Bind RoundedRating, Mode=OneWay}" />
-            <RatingControl
-                IsReadOnly="True"
-                IsTabStop="False"
-                PlaceholderValue="{x:Bind Rating}" />
         </StackPanel>
         <TextBlock
             Grid.Row="1"
