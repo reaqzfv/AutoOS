@@ -530,15 +530,32 @@ public partial class HeaderCarouselItem : Button
         var contentDialog = new ContentDialog
         {
             Content = gameSettings,
+            PrimaryButtonText = UpdateIsAvailable ? "Update" : "Launch",
+            DefaultButton = ContentDialogButton.Primary,
+            IsPrimaryButtonEnabled = _launch.IsEnabled,
             CloseButtonText = "Close",
             XamlRoot = this.XamlRoot,
+
         };
 
         contentDialog.Resources["ContentDialogMinWidth"] = 600;
         contentDialog.Resources["ContentDialogMaxWidth"] = 850;
         contentDialog.Resources["ContentDialogMinHeight"] = 250;
         contentDialog.Resources["ContentDialogMaxHeight"] = 1500;
-        _ = await contentDialog.ShowAsync();
+
+        var result = await contentDialog.ShowAsync();
+
+        if (result == ContentDialogResult.Primary)
+        {
+            if (!UpdateIsAvailable)
+            {
+                Launch_Click(null, null);
+            }
+            else
+            {
+                Update_Click(null, null);
+            } 
+        }
     }
 
     private DispatcherTimer gameWatcherTimer;
@@ -551,9 +568,9 @@ public partial class HeaderCarouselItem : Button
         // define check rate
         gameWatcherTimer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(750)
+            Interval = TimeSpan.FromMilliseconds(500)
         };
-
+        
         // check services state
         servicesState = new ServiceController("Beep").Status == ServiceControllerStatus.Running;
 
