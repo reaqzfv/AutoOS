@@ -213,7 +213,8 @@ public partial class HeaderCarousel : ItemsControl
         if (selectedTile != null)
         {
             selectedTile.IsSelected = true;
-            backDropImage.ImageUrl = new Uri(selectedTile.BackgroundImageUrl);
+            if (selectedTile.BackgroundImageUrl != null)
+                backDropImage.ImageUrl = new Uri(selectedTile.BackgroundImageUrl);
 
             if (selectedTile.Foreground is LinearGradientBrush brush)
             {

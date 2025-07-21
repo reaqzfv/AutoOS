@@ -27,7 +27,7 @@
                 Padding="{ThemeResource ContentPagePadding}"
                 dev:PanelAttach.ChildrenTransitions="Default"
                 Spacing="16">
-                <StackPanel x:Name="Games_StackPanel" Height="433">
+                <StackPanel x:Name="Games_StackPanel" Height="440">
                     <StackPanel
                         Margin="0,0,0,12"
                         HorizontalAlignment="Left"
@@ -105,6 +105,7 @@
                     <dev:SwitchPresenter
                         x:Name="Games_SwitchPresenter"
                         HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                         TargetType="x:Boolean"
                         Value="True">
                         <dev:Case Value="True">
@@ -149,6 +150,7 @@
                                     <local:HeaderCarousel
                                         x:Name="games"
                                         BlurAmount="5"
+                                        ImageStretch="Fill"
                                         IsAutoScrollEnabled="False"
                                         IsBlurEnabled="True" />
                                 </Grid>

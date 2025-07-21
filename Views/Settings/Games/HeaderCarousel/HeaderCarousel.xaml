@@ -10,7 +10,7 @@
             <Setter.Value>
                 <ItemsPanelTemplate>
                     <StackPanel
-                        Padding="64,0,64,0"
+                        Padding="24,0,24,0"
                         Orientation="Horizontal"
                         Spacing="-16" />
                 </ItemsPanelTemplate>
@@ -23,7 +23,7 @@
                         <dev:OpacityMaskView VerticalAlignment="Top" OpacityMask="{ThemeResource OverlayRadialGradient}">
                             <dev:AnimatedImage
                                 x:Name="PART_BackDropImage"
-                                Height="400"
+                                Height="450"
                                 ImageUrl="ms-appx:///Assets/BackgroundBlur.png"
                                 Stretch="{TemplateBinding ImageStretch}"
                                 Visibility="Visible" />
@@ -32,6 +32,7 @@
                             x:Name="PART_ScrollViewer"
                             Grid.Row="1"
                             Margin="0,24,0,0"
+                            VerticalAlignment="Top"
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Disabled"
                             VerticalScrollMode="Disabled">
