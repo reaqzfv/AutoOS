@@ -12,7 +12,7 @@
                     <StackPanel
                         Padding="64,0,64,0"
                         Orientation="Horizontal"
-                        Spacing="-24" />
+                        Spacing="-16" />
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
