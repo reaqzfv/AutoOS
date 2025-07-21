@@ -95,13 +95,20 @@
                 </ScrollViewer>
             </StackPanel>
         </StackPanel>
-        <RatingControl
+        <StackPanel
             Grid.Row="1"
             Margin="0,-2,0,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            IsReadOnly="True"
-            PlaceholderValue="{x:Bind Rating}" />
+            Orientation="Horizontal"
+            Spacing="8">
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="18"
+                Style="{StaticResource BodyStrongTextBlockStyle}"
+                Text="{x:Bind RoundedRating, Mode=OneWay}" />
+            <RatingControl IsReadOnly="True" PlaceholderValue="{x:Bind Rating}" />
+        </StackPanel>
         <TextBlock
             Grid.Row="1"
             Margin="0,28,0,0"
