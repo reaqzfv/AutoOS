@@ -382,7 +382,7 @@ public sealed partial class GamesPage : Page
             Title = "Add Epic Games Account",
             Content = "Are you sure that you want to add an Epic Games account?",
             PrimaryButtonText = "Yes",
-            CloseButtonText = "Cancel",
+            CloseButtonText = "No",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot
         };
@@ -653,7 +653,7 @@ public sealed partial class GamesPage : Page
             Title = "Add Steam Account",
             Content = "Are you sure that you want to add a Steam account?",
             PrimaryButtonText = "Yes",
-            CloseButtonText = "Cancel",
+            CloseButtonText = "No",
             DefaultButton = ContentDialogButton.Close,
             XamlRoot = this.XamlRoot
         };
