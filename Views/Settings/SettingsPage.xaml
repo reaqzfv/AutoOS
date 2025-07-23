@@ -90,6 +90,7 @@
                                 </Flyout>
                             </Button.Flyout>
                         </Button>
+                        <!--<dev:DropdownColorPicker x:Name="MainDropdownColorPicker" ColorChanged="MainDropdownColorPicker_ColorChanged"/>-->
                         <dev:SettingsExpander.ItemsHeader>
                             <dev:SettingsCard>
                                 <dev:SettingsCard.Description>

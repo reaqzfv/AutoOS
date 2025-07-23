@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.UI;
 
 namespace AutoOS.Views.Settings;
 
@@ -100,8 +101,6 @@ public sealed partial class SettingsPage : Page
     {
         TintBox.Fill = new SolidColorBrush(args.NewColor);
         App.Current.ThemeService.SetBackdropTintColor(args.NewColor);
-
-
     }
 
     private void ColorPalette_ItemClick(object sender, ItemClickEventArgs e)
@@ -120,6 +119,30 @@ public sealed partial class SettingsPage : Page
             TintBox.Fill = new SolidColorBrush(color.Color);
         }
     }
+
+    //private void OnColorPaletteColorChanged(object sender, ColorPaletteColorChangedEventArgs e)
+    //{
+    //    SetTintColor(e.Color);
+
+    //    MainDropdownColorPicker.Color = e.Color;
+    //}
+
+    //private void MainDropdownColorPicker_ColorChanged(object sender, DropdownColorPickerColorChangedEventArgs e)
+    //{
+    //    SetTintColor(e.Color);
+    //}
+
+    //private void SetTintColor(Color color)
+    //{
+    //    if (color.ToString().Contains("#FF000000") || color.ToString().Contains("#000000"))
+    //    {
+    //        App.Current.ThemeService.ResetBackdropProperties();
+    //    }
+    //    else
+    //    {
+    //        App.Current.ThemeService.SetBackdropTintColor(color);
+    //    }
+    //}
 
     private void LoadSettings()
     {
