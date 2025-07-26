@@ -183,48 +183,42 @@ public static class ProcessActions
 
         DateTime lastLoggedTime = DateTime.MinValue;
 
-        var downloadTask = download.StartAsync();
-
         double receivedMB = 0.0;
         double totalMB = 0.0;
         double speedMB = 0.0;
         double percentage = 0.0;
 
-        while (!downloadTask.IsCompleted)
+        download.DownloadProgressChanged += (sender, e) =>
         {
-            download.DownloadProgressChanged += (sender, e) =>
+            if ((DateTime.Now - lastLoggedTime).TotalMilliseconds < 50)
+                return;
+
+            lastLoggedTime = DateTime.Now;
+
+            speedMB = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
+            receivedMB = e.ReceivedBytesSize / (1024.0 * 1024.0);
+            totalMB = e.TotalBytesToReceive / (1024.0 * 1024.0);
+            percentage = e.ProgressPercentage;
+
+            uiContext?.Post(_ =>
             {
-                if ((DateTime.Now - lastLoggedTime).TotalMilliseconds >= 50)
-                {
-                    lastLoggedTime = DateTime.Now;
+                InstallPage.Info.Title = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
+                InstallPage.ProgressRingControl.IsIndeterminate = false;
+                InstallPage.ProgressRingControl.Value = percentage;
+            }, null);
+        };
 
-                    speedMB = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
-                    receivedMB = e.ReceivedBytesSize / (1024.0 * 1024.0);
-                    totalMB = e.TotalBytesToReceive / (1024.0 * 1024.0);
-                    percentage = e.ProgressPercentage;
-
-                    uiContext?.Post(_ =>
-                    {
-                        InstallPage.Info.Title = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
-                        InstallPage.ProgressRingControl.IsIndeterminate = false;
-                        InstallPage.ProgressRingControl.Value = percentage;
-
-                    }, null);
-                }
-            };
-
-            download.DownloadFileCompleted += (sender, e) =>
+        download.DownloadFileCompleted += (sender, e) =>
+        {
+            uiContext?.Post(_ =>
             {
-                uiContext?.Post(_ =>
-                {
-                    InstallPage.Info.Title = $"{title} ({speedMB:F1} MB/s - {totalMB:F2} MB of {totalMB:F2} MB)";
-                    InstallPage.ProgressRingControl.Value = 100;
-                    InstallPage.ProgressRingControl.IsIndeterminate = true;
-                }, null);
-            };
+                InstallPage.Info.Title = $"{title} ({speedMB:F1} MB/s - {totalMB:F2} MB of {totalMB:F2} MB)";
+                InstallPage.ProgressRingControl.Value = 100;
+                InstallPage.ProgressRingControl.IsIndeterminate = true;
+            }, null);
+        };
 
-            await Task.Delay(800);
-        }
+        await download.StartAsync();
     }
 
     public static async Task RunExtract(string inputPath, string outputPath)

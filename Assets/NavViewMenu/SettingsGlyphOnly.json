@@ -30,7 +30,7 @@
           "Title": "Graphics Card",
           "Subtitle": "Graphics Card",
           "ImagePath": "ms-appx:///Assets/Fluent/Gpu.png",
-          "IconGlyph": "E964",
+          "IconGlyph": "F211",
           "HideItem": true
         },
         {

@@ -1,4 +1,6 @@
 ﻿using AutoOS.Helpers;
+using AutoOS.Views.Installer.Actions;
+using Downloader;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
@@ -55,13 +57,29 @@ public sealed partial class GraphicsPage : Page
     {
         if (NvidiaUpdateCheck.Content.ToString().Contains("Update to"))
         {
-            //UpdateCheck.CheckedContent = "Downloading the latest NVIDIA driver...";
+            NvidiaUpdateCheck.CheckedContent = NvidiaUpdateCheck.Content.ToString();
 
-            //var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
+            var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
 
-            //await Task.Delay(500);
+            await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
 
-            //UpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
+            NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
+
+            await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver"));
+
+            NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
+
+            await ProcessActions.RunNvidiaStrip();
+
+            NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
+
+            await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
+
+            await ProcessActions.Sleep(3000);
+
+            await ProcessActions.RefreshUI();
+
+            LoadGpus();
         }
         else
         {
@@ -70,6 +88,8 @@ public sealed partial class GraphicsPage : Page
             try
             {
                 var (currentVersion, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
+
+                currentVersion = "576.88";
 
                 // delay
                 await Task.Delay(800);
@@ -98,6 +118,57 @@ public sealed partial class GraphicsPage : Page
         }
     }
 
+    public async Task RunDownload(string url, string path, string file)
+    {
+        string title = "Downloading the NVIDIA driver...";
+
+        var uiContext = SynchronizationContext.Current;
+
+        var download = DownloadBuilder.New()
+            .WithUrl(url)
+            .WithDirectory(path)
+            .WithFileName(file)
+            .WithConfiguration(new DownloadConfiguration())
+            .Build();
+
+        double speedMB = 0.0;
+        double receivedMB = 0.0;
+        double totalMB = 0.0;
+        double percentage = 0.0;
+
+        DateTime lastLoggedTime = DateTime.MinValue;
+
+        download.DownloadProgressChanged += (sender, e) =>
+        {
+            if ((DateTime.Now - lastLoggedTime).TotalMilliseconds < 50) return;
+
+            lastLoggedTime = DateTime.Now;
+
+            speedMB = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
+            receivedMB = e.ReceivedBytesSize / (1024.0 * 1024.0);
+            totalMB = e.TotalBytesToReceive / (1024.0 * 1024.0);
+            percentage = e.ProgressPercentage;
+
+            uiContext?.Post(_ =>
+            {
+                NvidiaUpdateCheck.CheckedContent = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
+                NvidiaUpdateCheck.IsIndeterminate = false;
+                NvidiaUpdateCheck.Progress = percentage;
+            }, null);
+        };
+
+        download.DownloadFileCompleted += (sender, e) =>
+        {
+            uiContext?.Post(_ =>
+            {
+                NvidiaUpdateCheck.CheckedContent = $"{title} ({speedMB:F1} MB/s - {totalMB:F2} MB of {totalMB:F2} MB)";
+                NvidiaUpdateCheck.Progress = 100;
+                NvidiaUpdateCheck.IsIndeterminate = true;
+            }, null);
+        };
+
+        await download.StartAsync();
+    }
     private async void AmdUpdateCheck_Checked(object sender, RoutedEventArgs e)
     {
         if (AmdUpdateCheck.Content.ToString().Contains("Update to"))

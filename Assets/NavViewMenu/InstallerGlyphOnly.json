@@ -51,6 +51,7 @@
           "Title": "Graphics Card",
           "Subtitle": "Graphics Card",
           "ImagePath": "ms-appx:///Assets/Fluent/Gpu.png",
+          "IconGlyph": "F211",
           "HideItem": true
         },
         {
@@ -116,6 +117,7 @@
           "Title": "Install AutoOS",
           "Subtitle": "Install AutoOS",
           "ImagePath": "ms-appx:///Assets/Fluent/Install.png",
+          "IconGlyph": "E896",
           "HideItem": true
         }
       ]
