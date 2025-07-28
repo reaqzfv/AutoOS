@@ -1,9 +1,11 @@
 ﻿using AutoOS.Helpers;
 using AutoOS.Views.Installer.Actions;
+using AutoOS.Views.Installer.Stages;
 using Downloader;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
+using System.ServiceProcess;
 using Windows.Storage;
 
 namespace AutoOS.Views.Settings;
@@ -59,27 +61,34 @@ public sealed partial class GraphicsPage : Page
         {
             NvidiaUpdateCheck.CheckedContent = NvidiaUpdateCheck.Content.ToString();
 
-            var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
+            if (new ServiceController("Beep").Status == ServiceControllerStatus.Running)
+            {
+                var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
 
-            await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
+                await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
 
-            NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
+                NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
 
-            await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver"));
+                await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver"));
 
-            NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
+                NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
 
-            await ProcessActions.RunNvidiaStrip();
+                await ProcessActions.RunNvidiaStrip();
 
-            NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
+                NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
 
-            await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
+                await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
 
-            await ProcessActions.Sleep(3000);
+                await ProcessActions.Sleep(3000);
 
-            await ProcessActions.RefreshUI();
+                await ProcessActions.RefreshUI();
 
-            LoadGpus();
+                LoadGpus();
+            }
+            else
+            {
+                NvidiaUpdateCheck.CheckedContent = "Please enable Services & Drivers before updating...";
+            }
         }
         else
         {
@@ -88,8 +97,6 @@ public sealed partial class GraphicsPage : Page
             try
             {
                 var (currentVersion, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
-
-                currentVersion = "576.88";
 
                 // delay
                 await Task.Delay(800);
