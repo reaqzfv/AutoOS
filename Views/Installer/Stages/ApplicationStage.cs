@@ -66,6 +66,12 @@ public static class ApplicationStage
             // install av1 video extension
             ("Installing AV1 Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path ""$env:TEMP\AV1VideoExtension.appxbundle"""), () => true),
 
+            // download avc encoder video extension
+            ("Downloading AVC Encoder Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.AVCEncoderVideoExtension_8wekyb3d8bbwe", "appxbundle", "", "AVCEncoderVideoExtension.appxbundle", 0), () => true),
+
+            // install avc encoder video extension
+            ("Installing AVC Encoder Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path ""$env:TEMP\AVCEncoderVideoExtension.appxbundle"""), () => true),
+
             // download dolby vision extension
             ("Downloading Dolby Vision Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyVisionAccess_rz1tebttyb220", "msixbundle", "", "DolbyVisionExtension.msixbundle", 0), () => true),
 
