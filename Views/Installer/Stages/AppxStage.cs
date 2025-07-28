@@ -18,7 +18,6 @@ public static class AppxStage
             ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c for %a in (""SysWOW64"" ""System32"") do (if exist ""%windir%\%~a\OneDriveSetup.exe"" (""%windir%\%~a\OneDriveSetup.exe"" /uninstall)) && reg delete ""HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"" /f"), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\ProgramData\Microsoft OneDrive"""), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c rmdir /s /q ""%LOCALAPPDATA%\Microsoft\OneDrive"""), null),
-            //("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg delete ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"" /v ""OneDrive"" /f"), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunPowerShell(@"Get-ScheduledTask | Where-Object {$_.TaskName -like 'OneDrive Startup Task*'} | Unregister-ScheduledTask -Confirm:$false"), null),
 
             // clipchamp
@@ -188,7 +187,6 @@ public static class AppxStage
 
             // client web experience
             ("Uninstalling MicrosoftWindows.Client.WebExperience_cw5n1h2txyewy", async () => await ProcessActions.RemoveAppx("MicrosoftWindows.Client.WebExperience"), null),
-            //("MicrosoftWindows.Client.WebExperience", async () => await ProcessActions.RemoveAppxProvisioned("MicrosoftWindows.Client.WebExperience"), null),
 
             // remove all user deleted packages
             ("Removing all user deleted packages", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c rmdir /s /q ""C:\Program Files\WindowsApps\DeletedAllUserPackages"""), null),

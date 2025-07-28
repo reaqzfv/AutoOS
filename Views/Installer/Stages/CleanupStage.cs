@@ -36,6 +36,7 @@ public static class CleanupStage
             ("Cleaning temp directories", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /s /f /q %temp%\*.*"), null),
             ("Cleaning temp directories", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c rd /s /q %temp%"), null),
             ("Cleaning temp directories", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c md %temp%"), null),
+            ("Cleaning temp directories", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c del /f /q ""C:\DumpStack.log"""), null),
 
             // run disk cleanup
             ("Running disk cleanup", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VolumeCaches\Active Setup Temp Folders"" /v StateFlags0000 /t REG_DWORD /d 2 /f"), null),
