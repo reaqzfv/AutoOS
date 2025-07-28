@@ -44,7 +44,8 @@ function main() {
         "device information",
         "edp policy manager",
         "defender",
-        "marebackup"
+        "marebackup",
+        "monitoring"
     )
 
     $scheduledTasks = schtasks /query /fo list
