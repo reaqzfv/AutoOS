@@ -1,6 +1,5 @@
 ﻿using AutoOS.Views.Installer.Actions;
 using Microsoft.UI.Xaml.Media;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 
