@@ -51,12 +51,6 @@ public static class GamesStage
             ("Creating Fortnite QoS Policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\QoS\FortniteClient-Win64-Shipping.exe"" /v ""DSCP Value"" /t REG_SZ /d ""46"" /f"), () => Fortnite == true),
             ("Creating Fortnite QoS Policy", async () => await ProcessActions.RunPowerShell(@"New-NetQosPolicy -Name ""FortniteClient-Win64-Shipping.exe"" -AppPathNameMatchCondition ""FortniteClient-Win64-Shipping.exe"" -Precedence 127 -DSCPAction 46 -IPProtocol Both"), () => Fortnite == true),
         
-            // create presentation mode entries for fortnite
-            ("Creating presentation mode entries for Fortnite", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => { Process.Start(new ProcessStartInfo("cmd", $"/c \"{fortnitePath}\\FortniteGame\\Binaries\\Win64\\FortniteClient-Win64-Shipping.exe\"") { CreateNoWindow = true }); while (Process.GetProcessesByName("FortniteClient-Win64-Shipping").Length == 0) Thread.Sleep(100); Thread.Sleep(500); var p = Process.GetProcessesByName("FortniteClient-Win64-Shipping"); if (p.Length > 0) p[0].Kill(); })), () => Fortnite == true),
-
-            // set the presentation mode to hardware: legacy flip
-            //("Setting the presentation mode to Hardware: Legacy Flip", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => Registry.CurrentUser.OpenSubKey(@"System\GameConfigStore\Children", true)?.GetSubKeyNames().ToList().ForEach(async name => { using var sub = Registry.CurrentUser.OpenSubKey($@"System\GameConfigStore\Children\{name}", true); if (sub?.GetValueNames().Any(v => sub.GetValue(v) is string s && s.Contains("Fortnite")) == true) { var p = Process.Start(new ProcessStartInfo { FileName = "cmd.exe", Arguments = $@"/c reg add ""HKCU\System\GameConfigStore\Children\{name}"" /v Flags /t REG_DWORD /d 0x211 /f", CreateNoWindow = true }); if (p != null) await p.WaitForExitAsync(); return; } }))), () => Fortnite == true),
-
             // disable fullscreen optimizations for fortnite
             ("Disabling fullscreen optimizations for Fortnite", async () => await ProcessActions.RunNsudo("CurrentUser", $@"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"" /v ""{fortnitePath}\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe"" /t REG_SZ /d ""~ DISABLEDXMAXIMIZEDWINDOWEDMODE HIGHDPIAWARE"" /f"), () => Fortnite == true),
         };
