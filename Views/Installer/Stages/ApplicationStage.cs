@@ -210,7 +210,7 @@ public static class ApplicationStage
             ("Disabling Spotify startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Spotify"" /t REG_BINARY /d ""01"" /f"), () => Spotify == true),
 
             // download dolby access
-            ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess_rz1tebttyb220", "msixbundle", "", "DolbyAccess.Msixbundle", 1), () => AppleMusic == true),
+            ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess_rz1tebttyb220", "msixbundle", "", "DolbyAccess.Msixbundle", 0), () => AppleMusic == true),
 
             // install dolby access
             ("Installing Dolby Access", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path ""$env:TEMP\DolbyAccess.Msixbundle"""), () => AppleMusic == true),
