@@ -101,5 +101,10 @@ namespace AutoOS.Views
         {
             return NavView;
         }
+
+        public TitleBar GetTitleBar()
+        {
+            return AppTitleBar;
+        }
     }
 }

@@ -1,5 +1,5 @@
-using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
@@ -332,6 +332,17 @@ namespace AutoOS.Helpers
 
                 loginClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
 
+                string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
+                string ratingKey = region switch
+                {
+                    "AU" => "ACB",
+                    "BR" => "ClassInd",
+                    "KR" => "GRAC",
+                    "DE" => "USK",
+                    "US" or "CA" => "ESRB",
+                    _ => "PEGI"
+                };
+
                 // get library data
                 var libraryData = new List<JsonNode>();
                 string nextCursor = null;
@@ -397,6 +408,28 @@ namespace AutoOS.Helpers
                         var itemOfferData = JsonNode.Parse(await httpClient.GetStringAsync($"https://api.egdata.app/items/{itemJson["MainGameCatalogItemId"]?.GetValue<string>()}/offer", token).ConfigureAwait(false));
                         var offerId = itemOfferData?["id"]?.GetValue<string>();
 
+                        if (itemJson["MainGameCatalogItemId"]?.GetValue<string>() == "4fe75bbc5a674f4f9b356b5c90567da5")
+                        {
+                            offerId = "09176f4ff7564bbbb499bbe20bd6348f";
+                        }
+
+                        // get offer id
+                        //var itemOfferTask = loginClient.PostAsync("https://graphql.unrealengine.com/ue/graphql", new StringContent(JsonSerializer.Serialize(new { query = itemOfferQuery, variables = new { allowCountries = "US", country = "US", locale = "en-US", count = 1, withPrice = true, withPromotions = true, sortBy = "releaseDate", sortDir = "DESC", @namespace = itemJson["MainGameCatalogNamespace"]?.GetValue<string>(), category = "games/edition/base" } }), Encoding.UTF8, "application/json"), token);
+                        
+                        //var itemOfferData = JsonNode.Parse(await (await itemOfferTask.ConfigureAwait(false)).Content.ReadAsStringAsync(token).ConfigureAwait(false));
+
+                        //string offerId;
+
+                        //if (itemOfferData?["data"]?["Catalog"]?["searchStore"]?["elements"] is JsonArray { Count: > 0 })
+                        //{
+                        //    offerId = itemOfferData?["data"]?["Catalog"]?["searchStore"]?["elements"]?[0]?["id"]?.GetValue<string>();
+                        //}
+                        //else
+                        //{
+                        //    itemOfferData = JsonNode.Parse(await httpClient.GetStringAsync($"https://api.egdata.app/items/{itemJson["MainGameCatalogItemId"]?.GetValue<string>()}/offer", token).ConfigureAwait(false));
+                        //    offerId = itemOfferData?["id"]?.GetValue<string>();
+                        //}
+
                         // get metadata
                         //var itemTask = httpClient.GetStringAsync($"https://api.egdata.app/items/{itemJson["MainGameCatalogItemId"]?.GetValue<string>()}", token);
                         //var offerTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}", token);
@@ -405,8 +438,10 @@ namespace AutoOS.Helpers
                         var ratingTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}/polls", token);
                         var genresTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}/genres", token);
                         var featuresTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}/features", token);
+                        var ageRatingTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}/age-rating", token);
+                        var mediaTask = httpClient.GetStringAsync($"https://api.egdata.app/offers/{offerId}/media", token);
 
-                        await Task.WhenAll(manifestTask, offerTask, ratingTask, genresTask, featuresTask).ConfigureAwait(false);
+                        await Task.WhenAll(manifestTask, offerTask, ratingTask, genresTask, featuresTask, ageRatingTask, mediaTask).ConfigureAwait(false);
 
                         //var itemData = JsonNode.Parse(await itemTask.ConfigureAwait(false));
                         //var offerData = JsonNode.Parse(await offerTask.ConfigureAwait(false));
@@ -415,6 +450,8 @@ namespace AutoOS.Helpers
                         var ratingData = JsonNode.Parse(await ratingTask.ConfigureAwait(false));
                         var genresData = JsonNode.Parse(await genresTask.ConfigureAwait(false));
                         var featuresData = JsonNode.Parse(await featuresTask.ConfigureAwait(false));
+                        var ageRatingData = JsonNode.Parse(await ageRatingTask.ConfigureAwait(false));
+                        var mediaData = JsonNode.Parse(await mediaTask.ConfigureAwait(false));
 
                         // get images
                         //var itemModified = DateTime.TryParse(itemData["lastModifiedDate"]?.GetValue<string>(), out var itemDate) ? itemDate : DateTime.MinValue;
@@ -488,8 +525,23 @@ namespace AutoOS.Helpers
                                                       .Where(f => !string.IsNullOrWhiteSpace(f)).ToList() ?? [],
                                 Rating = ratingData["averageRating"]?.GetValue<double?>() ?? 0.0,
                                 PlayTime = playTime,
+                                AgeRatingUrl = ageRatingData[ratingKey]?["ratingImage"]?.ToString(),
+                                AgeRatingTitle = ageRatingData[ratingKey]?["title"]?.ToString(),
+                                AgeRatingDescription = ageRatingData[ratingKey]?["descriptor"]?.ToString(),
                                 //Description = offerData["description"]?.GetValue<string>(),
                                 Description = description,
+                                Screenshots = [.. mediaData["images"]
+                                                .AsArray()
+                                                .Select(img => img["src"]?.ToString())
+                                                .Where(src => !string.IsNullOrWhiteSpace(src))],
+                                //Videos = [.. mediaData["videos"]
+                                //            .AsArray()
+                                //            .SelectMany(video => video["outputs"].AsArray())
+                                //            .Where(output =>
+                                //                output["contentType"]?.ToString() == "video/webm" &&
+                                //                output["key"]?.ToString() == "low" &&
+                                //                !string.IsNullOrWhiteSpace(output["url"]?.ToString()))
+                                //            .Select(output => MediaSource.CreateFromUri(new Uri(output["url"].ToString())))],
                                 Width = 240,
                                 Height = 320,
                             });
@@ -497,10 +549,6 @@ namespace AutoOS.Helpers
                     }
                     catch (Exception ex)
                     {
-                        GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
-                        {
-                            GamesPage.Instance.EgDataStatus.Fill = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorCritical"]);
-                        });
                         Debug.WriteLine(ex);
                     }
                 });

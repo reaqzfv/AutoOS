@@ -12,6 +12,7 @@ public sealed partial class GameGallery : UserControl
     public GameGallery()
     {
         InitializeComponent();
+        UpdateScrollButtonsVisibility();
     }
 
     private void scroller_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
@@ -55,5 +56,11 @@ public sealed partial class GameGallery : UserControl
     private void UpdateScrollButtonsVisibility()
     {
         ScrollForwardBtn.Visibility = scroller.ScrollableWidth > 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    public void ResetScrollPosition()
+    {
+        scroller.ChangeView(0, null, null);
+        UpdateScrollButtonsVisibility();
     }
 }

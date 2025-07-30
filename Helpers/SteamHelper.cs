@@ -1,5 +1,6 @@
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 using System.Xml.Linq;
 using ValveKeyValue;
@@ -87,6 +88,60 @@ namespace AutoOS.Helpers
             foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>().Where(item => item.Launcher == "Steam").ToList())
                 GamesPage.Instance.Games.Items.Remove(item);
 
+            string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
+
+            string ratingKey = region switch
+            {
+                "AU" => "ACB",
+                "BR" => "DEJUS",
+                "KR" => "GRAC",
+                "DE" => "USK",
+                "US" or "CA" => "ESRB",
+                _ => "PEGI"
+            };
+
+            string ratingBaseUrl = ratingKey switch
+            {
+                "ACB" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/ACB/",
+                "DEJUS" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/DEJUS/",
+                "GRAC" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/GRAC/",
+                "USK" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/USK/",
+                "ESRB" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/ESRB/",
+                "PEGI" => "https://store.fastly.steamstatic.com/public/shared/images/game_ratings/PEGI/",
+                _ => ""
+            };
+
+            Dictionary<string, string> ratingTitles = ratingKey switch
+            {
+                "PEGI" => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    {"3", "PEGI 3"},
+                    {"7", "PEGI 7"},
+                    {"12", "PEGI 12"},
+                    {"16", "PEGI 16"},
+                    {"18", "PEGI 18"},
+                },
+                            "USK" => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    {"0", "USK 0"},
+                    {"6", "USK 6"},
+                    {"12", "USK 12"},
+                    {"16", "USK 16"},
+                    {"18", "USK 18"},
+                },
+                            "ESRB" => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+                {
+                    {"ec", "Early Childhood"},
+                    {"e", "Everyone"},
+                    {"e10", "Everyone 10+" },
+                    {"e10+", "Everyone 10+"},
+                    {"t", "Teen"},
+                    {"m", "Mature 17+"},
+                    {"ao", "Adults Only 18+"},
+                },
+                _ => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            };
+
             // read libraryfolders.vdf
             var libraryFolderData = KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Deserialize(File.OpenRead(SteamLibraryPath));
 
@@ -116,7 +171,7 @@ namespace AutoOS.Helpers
                             .Deserialize(File.OpenRead(Path.Combine(steamAppsDir, $"appmanifest_{gameId}.acf")));
 
                         // get metadata
-                        var gameData = JsonDocument.Parse(await httpClient.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={gameId}", _)).RootElement.GetProperty(gameId);
+                        var gameData = JsonDocument.Parse(await httpClient.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={gameId}&l=english", _)).RootElement.GetProperty(gameId);
 
                         // get playtime data
                         var playTimeData = XDocument.Parse(await httpClient.GetStringAsync($"https://steamcommunity.com/profiles/{GetSteam64ID()}/games?tab=all&xml=1", _));
@@ -136,6 +191,23 @@ namespace AutoOS.Helpers
                         var reviewData = JsonDocument.Parse(await httpClient.GetStringAsync($"https://store.steampowered.com/appreviews/{gameId}?json=1", _)).RootElement.GetProperty("query_summary");
                         int totalPositive = reviewData.GetProperty("total_positive").GetInt32();
                         int totalNegative = reviewData.GetProperty("total_negative").GetInt32();
+
+                        // get age rating
+                        string? rating = null;
+                        string? descriptors = null;
+
+                        if (gameData.GetProperty("data").GetProperty("ratings").TryGetProperty(ratingKey.ToLowerInvariant(), out JsonElement ratingData))
+                        {
+                            if (ratingData.TryGetProperty("rating", out JsonElement ratingElement) && ratingElement.ValueKind == JsonValueKind.String)
+                            {
+                                rating = ratingElement.GetString();
+                            }
+
+                            if (ratingData.TryGetProperty("descriptors", out JsonElement descElement) && descElement.ValueKind == JsonValueKind.String)
+                            {
+                                descriptors = descElement.GetString();
+                            }
+                        }
 
                         GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                         {
@@ -159,7 +231,14 @@ namespace AutoOS.Helpers
                                             ? Math.Round(5.0 * totalPositive / (totalPositive + totalNegative), 1)
                                             : 0.0,
                                 PlayTime = playTime,
+                                AgeRatingUrl = !string.IsNullOrEmpty(rating) ? $"{ratingBaseUrl}{rating.ToLowerInvariant()}.png" : null,
+                                AgeRatingTitle = !string.IsNullOrEmpty(rating) ? (ratingTitles.TryGetValue(rating.ToLowerInvariant(), out var title) ? title : rating) : null,
+                                AgeRatingDescription = !string.IsNullOrEmpty(descriptors) ? descriptors : null,
                                 Description = gameData.GetProperty("data").GetProperty("short_description").GetString(),
+                                Screenshots = [.. gameData.GetProperty("data").GetProperty("screenshots")
+                                                .EnumerateArray()
+                                                .Select(s => s.GetProperty("path_thumbnail").GetString())
+                                                .Where(s => !string.IsNullOrWhiteSpace(s))],
                                 InstallLocation = Path.Combine(steamAppsDir, "common", appManifestData["installdir"]?.ToString()),
                                 GameID = gameId,
                                 Width = 240,

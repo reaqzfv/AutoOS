@@ -9,8 +9,9 @@
         <ScrollViewer
             x:Name="scroller"
             HorizontalScrollBarVisibility="Hidden"
-            HorizontalScrollMode="Enabled"
+            HorizontalScrollMode="Disabled"
             SizeChanged="scroller_SizeChanged"
+            VerticalScrollBarVisibility="Disabled"
             VerticalScrollMode="Disabled"
             ViewChanging="scroller_ViewChanging">
             <Grid x:Name="ContentGrid">
