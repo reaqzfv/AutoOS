@@ -84,10 +84,16 @@ public sealed partial class GraphicsPage : Page
                 await ProcessActions.RefreshUI();
 
                 LoadGpus();
+
+                NvidiaUpdateCheck.IsChecked = false;
             }
             else
             {
                 NvidiaUpdateCheck.CheckedContent = "Please enable Services & Drivers before updating...";
+
+                await Task.Delay(2000);
+
+                NvidiaUpdateCheck.IsChecked = false;
             }
         }
         else
