@@ -1,18 +1,18 @@
 ﻿using System.Globalization;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Windows.Storage;
 
 namespace AutoOS.Helpers
 {
-    public static class CustomGameHelper
+    public static partial class CustomGameHelper
     {
         private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static readonly HttpClient httpClient = new();
 
         public static async Task LoadGames()
         {
+            // if paths defined
             if (localSettings.Values["RyujinxLocation"] is string exePath && localSettings.Values["RyujinxDataLocation"] is string dataPath && File.Exists(exePath) && Directory.Exists(dataPath))
             {
                 // download switch game catalog
@@ -20,16 +20,10 @@ namespace AutoOS.Helpers
 
                 if (!File.Exists(filePath))
                 {
-                    try
-                    {
-                        var content = await httpClient.GetStringAsync("https://raw.githubusercontent.com/blawar/titledb/refs/heads/master/US.en.json");
-                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                        await File.WriteAllTextAsync(filePath, content);
-                    }
-                    catch
-                    {
-                        
-                    }
+                    // to do: set switchpresenter text to downloading switch game catalog
+                    var content = await httpClient.GetStringAsync("https://raw.githubusercontent.com/blawar/titledb/refs/heads/master/US.en.json");
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                    await File.WriteAllTextAsync(filePath, content);
                 }
 
                 // remove previous games
@@ -37,56 +31,61 @@ namespace AutoOS.Helpers
                     GamesPage.Instance.Games.Items.Remove(item);
 
                 // get game dirs
-                var portableConfig = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(await File.ReadAllTextAsync(Path.Combine(localSettings.Values["RyujinxDataLocation"]?.ToString(), "Config.json")));
+                using var stream = File.OpenRead(Path.Combine(localSettings.Values["RyujinxDataLocation"]?.ToString(), "Config.json"));
+                var config = await JsonSerializer.DeserializeAsync<Dictionary<string, JsonElement>>(stream);
 
                 var gameDirs = new List<string>();
-                if (portableConfig != null && portableConfig.TryGetValue("game_dirs", out var gameDirsElement) && gameDirsElement.ValueKind == JsonValueKind.Array)
-                    foreach (var dir in gameDirsElement.EnumerateArray())
+                if (config != null && config.TryGetValue("game_dirs", out var dirs) && dirs.ValueKind == JsonValueKind.Array)
+                    foreach (var dir in dirs.EnumerateArray())
                         gameDirs.Add(dir.GetString() ?? "");
 
                 // read json database
-                var jsonObject = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(await File.ReadAllTextAsync(Path.Combine(PathHelper.GetAppDataFolderPath(), "Ryujinx", "US.en.json")));
+                using var fs = File.OpenRead(Path.Combine(PathHelper.GetAppDataFolderPath(), "Ryujinx", "US.en.json"));
+                using var doc = await JsonDocument.ParseAsync(fs);
 
-                var jsonById = new Dictionary<string, JsonElement>();
-                foreach (var kvp in jsonObject)
+                var jsonById = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var kvp in doc.RootElement.EnumerateObject())
                 {
                     if (kvp.Value.TryGetProperty("id", out var idElem))
                     {
-                        var key = idElem.GetString()?.ToLower();
-                        if (!string.IsNullOrEmpty(key) && !jsonById.ContainsKey(key))
+                        var key = idElem.GetString()?.ToLowerInvariant();
+                        if (!string.IsNullOrEmpty(key))
                         {
-                            jsonById.Add(key, kvp.Value);
+                            jsonById.TryAdd(key, kvp.Value);
                         }
                     }
                 }
 
                 // get all roms in game dirs
                 var candidatesPerDir = new Dictionary<string, List<string>>();
+                var validExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".nsp", ".xci" };
+
                 foreach (var gameDir in gameDirs)
                 {
                     if (!Directory.Exists(gameDir)) continue;
 
-                    candidatesPerDir[gameDir] = [.. Directory.EnumerateFiles(gameDir).Where(f => f.EndsWith(".nsp", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".xci", StringComparison.OrdinalIgnoreCase))];
+                    var matches = Directory.EnumerateFiles(gameDir)
+                                           .Where(f => validExtensions.Contains(Path.GetExtension(f)));
+
+                    candidatesPerDir[gameDir] = [.. matches];
                 }
 
-                await Parallel.ForEachAsync(Directory.GetDirectories(Path.Combine(localSettings.Values["RyujinxDataLocation"]?.ToString(), "games")), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 }, async (folder, _) =>
+                await Parallel.ForEachAsync(Directory.GetDirectories(Path.Combine(localSettings.Values["RyujinxDataLocation"]?.ToString(), "games")), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 }, (Func<string, CancellationToken, ValueTask>)(async (folder, _) =>
                 {
                     // check if game name exists in database
-                    if (!jsonById.TryGetValue(Path.GetFileName(folder).Trim().ToLower(), out var entry))
+                    if (!jsonById.TryGetValue(Path.GetFileName(folder).Trim().ToLowerInvariant(), out var entry))
                         return;
 
                     // get name from database
                     string name = entry.TryGetProperty("name", out var nameElement) ? nameElement.GetString() : null;
 
                     // clean name for searching
-                    string cleanName = Regex.Replace(name, @"[^\u0000-\u007F'’]+", "");
-                    cleanName = cleanName.Replace('’', '\'');
-
-                    var result = await SearchCovers(cleanName);
-                    if (result == null) return;
+                    if (string.IsNullOrWhiteSpace(name)) return;
+                    string cleanName = CleanNameRegex().Replace(name.Replace('’', '\''), "");
 
                     // make name simple to find install location
-                    string simpleCleanName = Regex.Replace(cleanName.ToLower(), @"[^a-z0-9]", "");
+                    string simpleCleanName = SimpleCleanNameRegex().Replace(cleanName.ToLowerInvariant(), "");
 
                     // find install location
                     string bestInstallLocation = null;
@@ -94,28 +93,39 @@ namespace AutoOS.Helpers
                     foreach (var gameDir in candidatesPerDir.Keys)
                     {
                         var candidates = candidatesPerDir[gameDir];
-                        bestInstallLocation = candidates.FirstOrDefault(candidate =>
+                        bestInstallLocation = candidates.FirstOrDefault((Func<string, bool>)(candidate =>
                         {
-                            string simpleFileName = Regex.Replace(Path.GetFileNameWithoutExtension(candidate).ToLower(), @"[^a-z0-9]", "");
-                            return simpleFileName.StartsWith(simpleCleanName);
-                        });
+                            var simpleFileName = SimpleCleanNameRegex().Replace(Path.GetFileNameWithoutExtension(candidate).ToLowerInvariant(), "");
+                            return simpleFileName.StartsWith(simpleCleanName, StringComparison.Ordinal);
+                        }));
                         if (bestInstallLocation != null)
                             break;
                     }
 
-                    if (bestInstallLocation == null) return;
+                    if (bestInstallLocation == null)
+                        return;
+
+                    // search on igdb
+                    var result = await SearchCovers(cleanName);
+                    if (result == null) return;
 
                     // get metadata for playtime
                     string metadataPath = Path.Combine(folder, "gui", "metadata.json");
                     if (!File.Exists(metadataPath)) return;
 
-                    var metadataObj = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(File.ReadAllText(metadataPath));
-                    string playTime = metadataObj.TryGetValue("timespan_played", out var timespanElement) &&
-                        TimeSpan.TryParse(timespanElement.GetString(), out TimeSpan ts)
-                            ? ((int)ts.TotalHours > 0 ? $"{(int)ts.TotalHours}h {ts.Minutes}m" : $"{ts.Minutes}m")
-                            : null;
+                    var metadataText = await File.ReadAllTextAsync(metadataPath);
+                    var metadataObj = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(metadataText);
 
-                    var data = JsonDocument.Parse(await httpClient.GetStringAsync(result["game_url"], _)).RootElement;
+                    string playTime = null;
+                    if (metadataObj != null &&
+                        metadataObj.TryGetValue("timespan_played", out var timespanElement) &&
+                        TimeSpan.TryParse(timespanElement.GetString(), out TimeSpan ts))
+                    {
+                        playTime = (int)ts.TotalHours > 0 ? $"{(int)ts.TotalHours}h {ts.Minutes}m" : $"{ts.Minutes}m";
+                    }
+
+                    using var doc = JsonDocument.Parse(await httpClient.GetStringAsync(result["game_url"], _));
+                    var data = doc.RootElement.Clone();
 
                     GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                     {
@@ -138,7 +148,7 @@ namespace AutoOS.Helpers
                             AgeRatingTitle = result["age_rating_title"],
                             AgeRatingDescription = entry.GetProperty("ratingContent")[0].GetString(),
                             Description = data.GetProperty("summary").GetString(),
-                            Screenshots = entry.GetProperty("screenshots").EnumerateArray().Select(x => x.GetString()).ToList(),
+                            Screenshots = [.. entry.GetProperty("screenshots").EnumerateArray().Select(x => x.GetString())],
                             //Videos = [.. data.GetProperty("videos")
                             //                .EnumerateArray()
                             //                .Select(g => g.TryGetProperty("url", out var url) && Uri.TryCreate(url.GetString(), UriKind.Absolute, out var uri)
@@ -149,61 +159,91 @@ namespace AutoOS.Helpers
                             Height = 320,
                         });
                     });
-                });
+
+                    doc.Dispose();
+                }));
             }
         }
 
         private static async Task<Dictionary<string, string>> SearchCovers(string name)
         {
-            string Clean(string input) => Regex.Replace(input.ToLower(), @"\s+", ".");
+            string Clean(string input) => Regex.Replace(input.ToLowerInvariant(), @"\s+", ".");
             string GetSearchBucket(string input)
             {
-                string cleaned = Regex.Replace(input.ToLower().Substring(0, Math.Min(2, input.Length)), @"[^a-z\d]", "");
+                string cleaned = Regex.Replace(input.Length >= 2 ? input[..2] : input.ToLowerInvariant(), @"[^a-z\d]", "");
                 return string.IsNullOrEmpty(cleaned) ? "@" : cleaned;
             }
 
             try
             {
                 var bucketJson = await httpClient.GetStringAsync($"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/buckets/{GetSearchBucket(Clean(name))}.json");
-                var maps = JsonNode.Parse(bucketJson)?.AsObject();
+
+                var bucketRoot = JsonDocument.Parse(bucketJson).RootElement;
 
                 var matchingIds = new List<string>();
+                string cleanName = Clean(name);
 
-                foreach (var kvp in maps)
+                if (bucketRoot.ValueKind == JsonValueKind.Object)
                 {
-                    var item = kvp.Value?.AsObject();
-                    if (item == null) continue;
+                    foreach (var property in bucketRoot.EnumerateObject())
+                    {
+                        if (property.Value.ValueKind != JsonValueKind.Object)
+                            continue;
 
-                    string itemName = item["name"]?.ToString() ?? "";
-                    if (Clean(itemName) == Clean(name))
-                        matchingIds.Add(kvp.Key);
+                        if (!property.Value.TryGetProperty("name", out var nameProp))
+                            continue;
+
+                        string itemName = nameProp.GetString() ?? "";
+
+                        if (Clean(itemName) == cleanName)
+                            matchingIds.Add(property.Name);
+                    }
                 }
 
-                JsonObject maxGame = null;
+                JsonElement? maxGame = null;
                 int maxFields = 0;
 
                 foreach (var id in matchingIds)
                 {
-                    try
+                    using var response = await httpClient.GetAsync($"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{id}.json");
+
+                    if (!response.IsSuccessStatusCode)
+                        continue;
+
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    var root = JsonDocument.Parse(json).RootElement;
+
+                    if (root.ValueKind != JsonValueKind.Object)
+                        continue;
+
+                    int count = 0;
+                    foreach (var prop in root.EnumerateObject())
                     {
-                        var json = await httpClient.GetStringAsync($"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{id}.json");
-                        var game = JsonNode.Parse(json)?.AsObject();
-                        if (game == null) continue;
+                        var val = prop.Value;
+                        if (val.ValueKind == JsonValueKind.Object)
+                            continue;
 
-                        int count = game.Where(kv => kv.Value != null && kv.Value is not JsonObject && !string.IsNullOrWhiteSpace(kv.Value.ToString())).Count();
+                        if (val.ValueKind == JsonValueKind.Null)
+                            continue;
 
-                        if (count > maxFields)
-                        {
-                            maxGame = game;
-                            maxFields = count;
-                        }
+                        if (val.ValueKind == JsonValueKind.String && string.IsNullOrWhiteSpace(val.GetString()))
+                            continue;
+
+                        count++;
                     }
-                    catch { }
+
+                    if (count > maxFields)
+                    {
+                        maxFields = count;
+                        maxGame = root.Clone();
+                    }
                 }
 
-                if (maxGame != null && maxGame["cover"] is JsonObject cover && cover["url"] != null)
+
+                if (maxGame.HasValue && maxGame.Value.TryGetProperty("cover", out var cover) && cover.ValueKind == JsonValueKind.Object && cover.TryGetProperty("url", out var url) && url.ValueKind == JsonValueKind.String)
                 {
-                    string thumb = cover["url"]?.ToString() ?? "";
+                    string thumb = url.GetString() ?? "";
                     int dot = thumb.LastIndexOf('.');
                     int slash = thumb.LastIndexOf('/');
 
@@ -211,12 +251,21 @@ namespace AutoOS.Helpers
                     {
                         string slug = thumb.Substring(slash + 1, dot - slash - 1);
 
-                        var developers = maxGame["involved_companies"]
-                            ?.AsArray()
-                            .Where(company => company["developer"]?.GetValue<bool>() == true)
-                            .Select(company => company["company"]?["name"]?.ToString())
-                            .Where(name => !string.IsNullOrWhiteSpace(name))
-                            .ToList();
+                        var developers = new List<string>();
+
+                        if (maxGame.HasValue && maxGame.Value.TryGetProperty("involved_companies", out var companies))
+                        {
+                            foreach (var company in companies.EnumerateArray())
+                            {
+                                if (company.GetProperty("developer").GetBoolean() &&
+                                    company.GetProperty("company").TryGetProperty("name", out var nameProp))
+                                {
+                                    var devName = nameProp.GetString();
+                                    if (!string.IsNullOrWhiteSpace(devName))
+                                        developers.Add(devName);
+                                }
+                            }
+                        }
 
                         string developerNames = developers != null && developers.Any() ? string.Join(", ", developers) : "Unknown";
 
@@ -262,10 +311,21 @@ namespace AutoOS.Helpers
                             _ => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                         };
 
-                        var ratingEntry = maxGame["age_ratings"]?.AsArray()
-                            .FirstOrDefault(r => r?["organization"]?["name"]?.ToString().Equals(ratingKey, StringComparison.OrdinalIgnoreCase) == true);
+                        JsonElement? ratingEntry = null;
 
-                        string ratingCode = ratingEntry?["rating_category"]?["rating"]?.ToString();
+                        if (maxGame.HasValue && maxGame.Value.TryGetProperty("age_ratings", out var ageRatings))
+                        {
+                            foreach (var rating in ageRatings.EnumerateArray())
+                            {
+                                if (string.Equals(rating.GetProperty("organization").GetProperty("name").GetString(), ratingKey, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    ratingEntry = rating;
+                                    break;
+                                }
+                            }
+                        }
+
+                        string ratingCode = ratingEntry?.GetProperty("rating_category").GetProperty("rating").GetString();
 
                         if (ratingCode is null)
                             return new Dictionary<string, string>
@@ -280,10 +340,17 @@ namespace AutoOS.Helpers
 
                         string ratingUrl = $"{baseUrl}{ratingKeyForUrl.ToLowerInvariant()}.png";
 
+                        string gameUrl = maxGame is JsonElement { ValueKind: JsonValueKind.Object } game &&
+                                     game.TryGetProperty("id", out var id) &&
+                                     id.ValueKind == JsonValueKind.Number &&
+                                     id.TryGetInt32(out var gameId)
+                        ? $"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{gameId}.json"
+                        : "";
+
                         return new Dictionary<string, string>
                         {
-                            { "name", maxGame["name"]?.ToString() },
-                            { "game_url", $"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{maxGame["id"]}.json" },
+                            { "name", maxGame.Value.GetProperty("name").GetString() },
+                            { "game_url", gameUrl },
                             { "cover_url", $"https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{slug}.jpg" },
                             { "developers", developerNames },
                             { "age_rating_url", ratingUrl },
@@ -296,5 +363,11 @@ namespace AutoOS.Helpers
 
             return null;
         }
+
+        [GeneratedRegex(@"[^\u0000-\u007F'’]+", RegexOptions.Compiled)]
+        private static partial Regex CleanNameRegex();
+
+        [GeneratedRegex(@"[^a-z0-9]", RegexOptions.Compiled)]
+        private static partial Regex SimpleCleanNameRegex();
     }
 }

@@ -24,7 +24,8 @@ public partial class HeaderCarousel : ItemsControl
     private ScrollViewer scrollViewer;
     private AnimatedImage backDropImage;
 
-    private SwitchPresenter Games_SwitchPresenter;
+    private SwitchPresenter SwitchPresenter;
+    private TextBlock SwitchPresenter_TextBlock;
 
     private StackPanel NoGames_StackPanel;
 
@@ -138,7 +139,8 @@ public partial class HeaderCarousel : ItemsControl
         Growl.Register("Steam", SteamGrowl);
         LoadSteamAccounts();
 
-        Games_SwitchPresenter = GetTemplateChild("Games_SwitchPresenter") as SwitchPresenter;
+        SwitchPresenter = GetTemplateChild("SwitchPresenter") as SwitchPresenter;
+        SwitchPresenter_TextBlock = GetTemplateChild("SwitchPresenter_TextBlock") as TextBlock;
         NoGames_StackPanel = GetTemplateChild("NoGames_StackPanel") as StackPanel;
         MetadataGrid = GetTemplateChild("MetadataGrid") as Grid;
         Metadata_ScrollViewer = GetTemplateChild("Metadata_ScrollViewer") as ScrollViewer;
@@ -204,7 +206,7 @@ public partial class HeaderCarousel : ItemsControl
         NoGames_StackPanel.Visibility = Items.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
 
         // show games
-        Games_SwitchPresenter.Value = false;
+        SwitchPresenter.Value = false;
 
         await Task.Delay(700);
 

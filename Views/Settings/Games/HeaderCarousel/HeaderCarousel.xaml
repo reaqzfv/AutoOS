@@ -332,7 +332,7 @@
                             </Button>
                         </StackPanel>
                         <dev:SwitchPresenter
-                            x:Name="Games_SwitchPresenter"
+                            x:Name="SwitchPresenter"
                             TargetType="x:Boolean"
                             Value="True">
                             <dev:Case Value="True">
@@ -343,6 +343,7 @@
                                     Spacing="8">
                                     <ProgressRing IsActive="True" />
                                     <TextBlock
+                                        x:Name="SwitchPresenter_TextBlock"
                                         HorizontalAlignment="Center"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"

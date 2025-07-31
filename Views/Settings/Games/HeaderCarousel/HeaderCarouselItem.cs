@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Hosting;
 using System.Numerics;
 
