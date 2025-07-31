@@ -47,7 +47,6 @@ public static class SchedulingStage
             // reserve cpus
             ("Reserving CPUs", async () => await ProcessActions.Sleep(1000), () => Reserve == true),
             ("Reserving CPUs", async () => await ProcessActions.ReserveCpus(), () => Reserve == true)
-
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

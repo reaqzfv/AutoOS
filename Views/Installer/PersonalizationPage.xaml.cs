@@ -7,7 +7,7 @@ namespace AutoOS.Views.Installer;
 public sealed partial class PersonalizationPage : Page
 {
     private bool isInitializingThemeState = true;
-    //private bool isInitializingSchedule = true;
+    private bool isInitializingSchedule = true;
     private bool isInitializingContextMenuState = true;
     private bool isInitializingTrayIconsState = true;
     private bool isInitializingTaskbarAlignmentState = true;
@@ -19,7 +19,7 @@ public sealed partial class PersonalizationPage : Page
         InitializeComponent();
         GetItems();
         GetTheme();
-        //GetSchedule();
+        GetSchedule();
         GetContextMenuState();
         GetTaskbarAlignmentState();
         GetTrayIconsState();
@@ -69,44 +69,71 @@ public sealed partial class PersonalizationPage : Page
         if (isInitializingThemeState) return;
     }
 
-    //private void GetSchedule()
-    //{
-    //    if (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lightTime))
-    //    {
-    //        LightTime.Time = lightTime;
-    //    }
-    //    else
-    //    {
-    //        localSettings.Values["LightTime"] = "07:00";
-    //        LightTime.Time = TimeSpan.Parse("07:00");
-    //    }
+    private void GetSchedule()
+    {
+        // load mode
+        ScheduleMode.SelectedIndex = (localSettings.Values["ScheduleMode"] as string ?? "Sunset to sunrise") switch
+        {
+            "Always Light" => 0,
+            "Always Dark" => 1,
+            "Sunset to sunrise" => 2,
+            "Custom hours" => 3,
+            _ => 2
+        };
 
-    //    if (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var darkTime))
-    //    {
-    //        DarkTime.Time = darkTime;
-    //    }
-    //    else
-    //    {
-    //        localSettings.Values["DarkTime"] = "19:00";
-    //        DarkTime.Time = TimeSpan.Parse("19:00");
-    //    }
+        // load custom hours
+        if (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lightTime))
+        {
+            LightTime.Time = lightTime;
+        }
+        else
+        {
+            localSettings.Values["LightTime"] = "07:00";
+            LightTime.Time = TimeSpan.Parse("07:00");
+        }
 
-    //    isInitializingSchedule = false;
-    //}
+        if (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var darkTime))
+        {
+            DarkTime.Time = darkTime;
+        }
+        else
+        {
+            localSettings.Values["DarkTime"] = "19:00";
+            DarkTime.Time = TimeSpan.Parse("19:00");
+        }
 
-    //private void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
-    //{
-    //    if (isInitializingSchedule) return;
+        UpdateTimeCardsVisibility();
 
-    //    localSettings.Values["LightTime"] = e.NewTime.ToString(@"hh\:mm");
-    //}
+        isInitializingSchedule = false;
+    }
 
-    //private void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
-    //{
-    //    if (isInitializingSchedule) return;
+    private void ScheduleMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (isInitializingSchedule) return;
 
-    //    localSettings.Values["DarkTime"] = e.NewTime.ToString(@"hh\:mm");
-    //}
+        localSettings.Values["ScheduleMode"] = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
+        UpdateTimeCardsVisibility();
+    }
+
+    private void UpdateTimeCardsVisibility()
+    {
+        LightTimeCard.Visibility = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
+        DarkTimeCard.Visibility = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    {
+        if (isInitializingSchedule) return;
+
+        localSettings.Values["LightTime"] = e.NewTime.ToString(@"hh\:mm");
+    }
+
+    private void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    {
+        if (isInitializingSchedule) return;
+
+        localSettings.Values["DarkTime"] = e.NewTime.ToString(@"hh\:mm");
+    }
 
     private void GetContextMenuState()
     {        

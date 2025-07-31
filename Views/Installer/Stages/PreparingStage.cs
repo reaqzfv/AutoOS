@@ -68,6 +68,7 @@ public static class PreparingStage
     public static bool? Bitwarden;
     public static bool? OnePassword;
 
+    public static string ScheduleMode;
     public static string LightTime;
     public static string DarkTime;
 
@@ -170,6 +171,7 @@ public static class PreparingStage
             Bitwarden = (localSettings.Values["Extensions"]?.ToString().Contains("Bitwarden") ?? false);
             OnePassword = (localSettings.Values["Extensions"]?.ToString().Contains("1Password") ?? false);
 
+            ScheduleMode = localSettings.Values["ScheduleMode"]?.ToString();
             LightTime = localSettings.Values["LightTime"]?.ToString();
             DarkTime = localSettings.Values["DarkTime"]?.ToString();
 
