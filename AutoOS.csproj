@@ -59,6 +59,8 @@
     <None Include="Assets\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
+    <Content Include="settings.xamlstyler">
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />

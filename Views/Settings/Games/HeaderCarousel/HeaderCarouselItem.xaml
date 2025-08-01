@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:dev="using:DevWinUI"
-    xmlns:local="using:AutoOS.Views.Settings.Games.HeaderCarousel">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dev="using:DevWinUI"
+                    xmlns:local="using:AutoOS.Views.Settings.Games.HeaderCarousel">
 
-    <Style BasedOn="{StaticResource DefaultCarouselItemStyle}" TargetType="local:HeaderCarouselItem" />
+    <Style BasedOn="{StaticResource DefaultCarouselItemStyle}"
+           TargetType="local:HeaderCarouselItem" />
 
-    <Style x:Key="DefaultCarouselItemStyle" TargetType="local:HeaderCarouselItem">
+    <Style x:Key="DefaultCarouselItemStyle"
+           TargetType="local:HeaderCarouselItem">
         <Setter Property="Width" Value="360" />
         <Setter Property="UseSystemFocusVisuals" Value="True" />
         <Setter Property="UseLayoutRounding" Value="True" />
@@ -19,28 +20,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:HeaderCarouselItem">
                     <Grid>
-                        <Grid
-                            x:Name="PART_ShadowHost"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}" />
-                        <Grid
-                            x:Name="PART_BorderHost"
-                            Padding="0"
-                            AutomationProperties.Name="{TemplateBinding Title}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                            <Grid.Lights>
-                                <dev:HoverLight />
-                                <dev:AmbLight />
-                            </Grid.Lights>
-                            <dev:ImageEx
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                AutomationProperties.AccessibilityView="Raw"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                IsCacheEnabled="True"
-                                Source="{Binding ImageUrl, RelativeSource={RelativeSource TemplatedParent}}"
-                                Stretch="{TemplateBinding Stretch}" />
-                        </Grid>
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="SelectedStates">
                                 <VisualState x:Name="NotSelected" />
@@ -52,6 +31,25 @@
                                 </VisualState>
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
+                        <Grid x:Name="PART_ShadowHost"
+                              Background="{TemplateBinding Background}"
+                              CornerRadius="{TemplateBinding CornerRadius}" />
+                        <Grid x:Name="PART_BorderHost"
+                              Padding="0"
+                              AutomationProperties.Name="{TemplateBinding Title}"
+                              CornerRadius="{TemplateBinding CornerRadius}">
+                            <Grid.Lights>
+                                <dev:HoverLight />
+                                <dev:AmbLight />
+                            </Grid.Lights>
+                            <dev:ImageEx HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Stretch"
+                                         AutomationProperties.AccessibilityView="Raw"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         IsCacheEnabled="True"
+                                         Source="{Binding ImageUrl, RelativeSource={RelativeSource TemplatedParent}}"
+                                         Stretch="{TemplateBinding Stretch}" />
+                        </Grid>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
