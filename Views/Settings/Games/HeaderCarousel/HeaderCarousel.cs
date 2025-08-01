@@ -256,6 +256,8 @@ public partial class HeaderCarousel : ItemsControl
     private void HeaderCarousel_Unloaded(object sender, RoutedEventArgs e)
     {
         UnsubscribeToEvents();
+
+        ElementSoundPlayer.State = ElementSoundPlayerState.Off;
     }
 
     private void HeaderCarousel_Loaded(object sender, RoutedEventArgs e)
