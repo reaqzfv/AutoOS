@@ -390,15 +390,16 @@
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Vertical">
-                                <!--  Title, Developers  -->
+                                <!--  Title  -->
                                 <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{TemplateBinding Title}" />
+                                <!--  Developers  -->
                                 <TextBlock
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Style="{StaticResource CaptionTextBlockStyle}"
                                     Text="{TemplateBinding Developers}" />
                                 <!--  Play, Update, Stop Processes, Launch Explorer Buttons  -->
                                 <StackPanel
-                                    Margin="0,8,0,0"
+                                    Margin="0,12,0,0"
                                     Orientation="Horizontal"
                                     Spacing="8">
                                     <Button
@@ -454,11 +455,7 @@
                                     </Button>
                                 </StackPanel>
                                 <!--  Divider  -->
-                                <Rectangle
-                                    Height="1"
-                                    Margin="0,8"
-                                    Fill="{ThemeResource ControlStrokeColorDefault}" />
-                                <!--<dev:Divider Margin="0,8,0,8" />-->
+                                <dev:Divider Margin="0,8,0,8" />
                             </StackPanel>
                             <!--  Ratings  -->
                             <StackPanel
@@ -479,7 +476,7 @@
                             </StackPanel>
                             <!--  Playtime  -->
                             <TextBlock
-                                Margin="0,28,0,0"
+                                Margin="0,27,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -487,7 +484,7 @@
                                 Text="{TemplateBinding PlayTime}" />
                             <!--  Age Ratings  -->
                             <StackPanel
-                                Margin="0,28,0,0"
+                                Margin="0,38,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal"
