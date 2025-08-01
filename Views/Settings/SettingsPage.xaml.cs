@@ -97,52 +97,29 @@ public sealed partial class SettingsPage : Page
         Clipboard.SetContent(package);
     }
 
-    private void ColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+    private void OnColorPaletteColorChanged(object sender, ColorPaletteColorChangedEventArgs e)
     {
-        TintBox.Fill = new SolidColorBrush(args.NewColor);
-        App.Current.ThemeService.SetBackdropTintColor(args.NewColor);
+        SetTintColor(e.Color);
+
+        MainDropdownColorPicker.Color = e.Color;
     }
 
-    private void ColorPalette_ItemClick(object sender, ItemClickEventArgs e)
+    private void MainDropdownColorPicker_ColorChanged(object sender, DropdownColorPickerColorChangedEventArgs e)
     {
-        var color = e.ClickedItem as ColorPaletteItem;
-        if (color != null)
+        SetTintColor(e.Color);
+    }
+
+    private void SetTintColor(Color color)
+    {
+        if (color.ToString().Contains("#FF000000") || color.ToString().Contains("#000000"))
         {
-            if (color.Hex.Contains("#000000"))
-            {
-                App.Current.ThemeService.ResetBackdropProperties();
-            }
-            else
-            {
-                App.Current.ThemeService.SetBackdropTintColor(color.Color);
-            }
-            TintBox.Fill = new SolidColorBrush(color.Color);
+            App.Current.ThemeService.ResetBackdropProperties();
+        }
+        else
+        {
+            App.Current.ThemeService.SetBackdropTintColor(color);
         }
     }
-
-    //private void OnColorPaletteColorChanged(object sender, ColorPaletteColorChangedEventArgs e)
-    //{
-    //    SetTintColor(e.Color);
-
-    //    MainDropdownColorPicker.Color = e.Color;
-    //}
-
-    //private void MainDropdownColorPicker_ColorChanged(object sender, DropdownColorPickerColorChangedEventArgs e)
-    //{
-    //    SetTintColor(e.Color);
-    //}
-
-    //private void SetTintColor(Color color)
-    //{
-    //    if (color.ToString().Contains("#FF000000") || color.ToString().Contains("#000000"))
-    //    {
-    //        App.Current.ThemeService.ResetBackdropProperties();
-    //    }
-    //    else
-    //    {
-    //        App.Current.ThemeService.SetBackdropTintColor(color);
-    //    }
-    //}
 
     private void LoadSettings()
     {
