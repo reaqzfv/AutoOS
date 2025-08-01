@@ -1,4 +1,7 @@
 ﻿using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Input;
+using System.Runtime.InteropServices;
+using WinRT.Interop;
 
 namespace AutoOS.Views
 {
@@ -106,5 +109,18 @@ namespace AutoOS.Views
         {
             return AppTitleBar;
         }
+
+        private void AppIcon_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var hwnd = WindowNative.GetWindowHandle(App.MainWindow);
+
+            const int WM_SYSCOMMAND = 0x0112;
+            const int SC_MOUSEMENU = 0xF090;
+
+            PostMessage(hwnd, WM_SYSCOMMAND, new IntPtr(SC_MOUSEMENU), IntPtr.Zero);
+        }
+
+        [DllImport("user32.dll")]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
     }
 }

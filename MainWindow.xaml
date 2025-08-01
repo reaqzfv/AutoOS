@@ -16,10 +16,17 @@
         <TitleBar
             x:Name="AppTitleBar"
             Title="AutoOS"
-            IconSource="{dev:BitmapIconSource Source=ms-appx:///Assets/AppIcon.png}"
             IsBackButtonVisible="False"
             IsPaneToggleButtonVisible="True"
-            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}" />
+            Subtitle="{x:Bind dev:ProcessInfoHelper.VersionWithPrefix}">
+            <TitleBar.LeftHeader>
+                <ImageIcon
+                    Width="16"
+                    Margin="2,0,14,0"
+                    PointerPressed="AppIcon_PointerPressed"
+                    Source="/Assets/AppIcon.png" />
+            </TitleBar.LeftHeader>
+        </TitleBar>
         <NavigationView
             x:Name="NavView"
             Grid.Row="1"
