@@ -290,8 +290,8 @@ public partial class HeaderCarousel : ItemsControl
             //tile.LostFocus -= Tile_LostFocus;
             //tile.LostFocus += Tile_LostFocus;
 
-            tile.Click -= Tile_Click;
-            tile.Click += Tile_Click;
+            //tile.Click -= Tile_Click;
+            //tile.Click += Tile_Click;
         }
     }
 
@@ -309,7 +309,7 @@ public partial class HeaderCarousel : ItemsControl
             //tile.PointerExited -= Tile_PointerExited;
             tile.GotFocus -= Tile_GotFocus;
             //tile.LostFocus -= Tile_LostFocus;
-            tile.Click -= Tile_Click;
+            //tile.Click -= Tile_Click;
         }
     }
 
