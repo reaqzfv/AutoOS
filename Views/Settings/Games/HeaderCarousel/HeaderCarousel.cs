@@ -580,7 +580,7 @@ public partial class HeaderCarousel : ItemsControl
             //deselectionTimer?.Start();
         }
 
-        await Task.Delay(1000);
+        await Task.Delay(500);
 
         SubscribeToEvents();
     }
@@ -723,19 +723,21 @@ public partial class HeaderCarousel : ItemsControl
         WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
         AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
 
-
-
         var navView = MainWindow.Instance.GetNavView();
         var titleBar = MainWindow.Instance.GetTitleBar();
 
         if (!isFullscreen)
         {
+            UnsubscribeToEvents();
+
             navView.IsPaneVisible = false;
             titleBar.Visibility = Visibility.Collapsed;
             appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
             FullscreenText.Text = "Exit Full Screen";
             FullscreenIcon.Glyph = "\uE92C";
             isFullscreen = true;
+
+            SubscribeToEvents();
         }
         else
         {
