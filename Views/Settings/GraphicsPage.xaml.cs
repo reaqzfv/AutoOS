@@ -1,6 +1,5 @@
 ﻿using AutoOS.Helpers;
 using AutoOS.Views.Installer.Actions;
-using AutoOS.Views.Installer.Stages;
 using Downloader;
 using Microsoft.Win32;
 using System.Diagnostics;
@@ -83,7 +82,7 @@ public sealed partial class GraphicsPage : Page
 
                 await ProcessActions.RefreshUI();
 
-                LoadGpus();
+                Nvidia_SettingsGroup.Description = "Current Version: " + (await Task.Run(() => Process.Start(new ProcessStartInfo("nvidia-smi", "--query-gpu=driver_version --format=csv,noheader") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEndAsync()))?.Trim();
 
                 NvidiaUpdateCheck.IsChecked = false;
             }
