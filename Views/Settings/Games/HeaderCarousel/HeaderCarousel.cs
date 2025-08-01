@@ -32,9 +32,9 @@ public partial class HeaderCarousel : ItemsControl
     private Grid MetadataGrid;
     private ScrollViewer Metadata_ScrollViewer;
 
-    private StackPanel Screenshots_StackPanel;
+    private ScrollViewer Screenshots_ScrollViewer;
     //private GameGallery Screenshots_Gallery;
-    //private StackPanel Videos_StackPanel;
+    //private ScrollViewer Videos_ScrollViewer;
 
     private Button Play;
     private Button Update;
@@ -154,9 +154,9 @@ public partial class HeaderCarousel : ItemsControl
         LaunchExplorer = GetTemplateChild("LaunchExplorer") as Button;
         LaunchExplorer.Click += LaunchExplorer_Click;
 
-        Screenshots_StackPanel = GetTemplateChild("Screenshots_StackPanel") as StackPanel;
+        Screenshots_ScrollViewer = GetTemplateChild("Screenshots_ScrollViewer") as ScrollViewer;
         //Screenshots_Gallery = GetTemplateChild("Screenshots_Gallery") as GameGallery;
-        //Videos_StackPanel = GetTemplateChild("Videos_StackPanel") as StackPanel;
+        //Videos_ScrollViewer = GetTemplateChild("Videos_ScrollViewer") as ScrollViewer;
 
         OpenInstallLocation = GetTemplateChild("OpenInstallLocation") as Button;
         OpenInstallLocation.Click += OpenInstallLocation_Click;
@@ -447,17 +447,17 @@ public partial class HeaderCarousel : ItemsControl
             DataLocation = selectedTile?.DataLocation;
             GameLocation = selectedTile?.GameLocation;
 
-            PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
+            //PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
 
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
                 await Task.Delay(100);
                 Screenshots = selectedTile?.Screenshots;
-                Screenshots_StackPanel.Visibility = (Screenshots?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+                Screenshots_ScrollViewer.Visibility = (Screenshots?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
                 //Screenshots_Gallery.ResetScrollPosition();
 
                 //Videos = selectedTile?.Videos;
-                //Videos_StackPanel.Visibility = (Videos?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+                //Videos_ScrollViewer.Visibility = (Videos?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
 
                 if (selectedTile?.Title == "Fortnite")
                 {

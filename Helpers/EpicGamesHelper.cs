@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Windows.Media.Core;
 
 namespace AutoOS.Helpers
 {
@@ -527,7 +528,7 @@ namespace AutoOS.Helpers
                                 PlayTime = playTime,
                                 AgeRatingUrl = ageRatingData[ratingKey]?["ratingImage"]?.ToString(),
                                 AgeRatingTitle = ageRatingData[ratingKey]?["title"]?.ToString(),
-                                AgeRatingDescription = ageRatingData[ratingKey]?["descriptor"]?.ToString(),
+                                AgeRatingDescription = ageRatingData[ratingKey]?["descriptor"]?.ToString()?.Replace(",", ", "),
                                 //Description = offerData["description"]?.GetValue<string>(),
                                 Description = description,
                                 Screenshots = [.. mediaData["images"]
