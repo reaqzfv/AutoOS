@@ -140,8 +140,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal"
-                                    Spacing="12"
-                                    Visibility="Visible">
+                                    Spacing="12">
                             <!--  Epic Games  -->
                             <Button x:Name="EpicAccount"
                                     Padding="12,8"
@@ -638,8 +637,7 @@
                                     </ScrollViewer>
                                     <!--  Install Location  -->
                                     <StackPanel Margin="0,0,0,16"
-                                                Orientation="Vertical"
-                                                Visibility="Visible">
+                                                Orientation="Vertical">
                                         <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
                                                    Text="Install Location:" />
                                         <TextBlock Margin="0,2,0,12"

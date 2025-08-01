@@ -449,7 +449,7 @@ public partial class HeaderCarousel : ItemsControl
             DataLocation = selectedTile?.DataLocation;
             GameLocation = selectedTile?.GameLocation;
 
-            //PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
+            PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
 
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
