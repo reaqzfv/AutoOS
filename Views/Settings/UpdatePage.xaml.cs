@@ -102,4 +102,13 @@ public sealed partial class UpdatePage : Page
         // remove infobar
         WindowsUpdateInfo.Children.Clear();
     }
+
+    private void ReadMoreButton_Click(object sender, RoutedEventArgs e)
+    {
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = "https://github.com/Duckleeng/TweakCollection/tree/main/Research#windows-11-24h2-autoboost-behavior",
+            UseShellExecute = true
+        });
+    }
 }

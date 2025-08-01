@@ -28,11 +28,14 @@
                 dev:PanelAttach.ChildrenTransitions="Default"
                 Spacing="8">
                 <dev:SettingsGroup
-                    Description="Enabling Windows Updates is not recommended as it tends to be buggy (24H2) and rarely adds major features or security patches."
+                    Description="Enabling Windows Updates is currently not recommended as 24H2 and later feature questionable changes that can hurt gaming performance."
                     Header="Windows Updates"
                     HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Update2.png}">
                     <dev:SettingsGroup.Content>
-                        <ToggleSwitch x:Name="WindowsUpdate" Toggled="Update_Toggled" />
+                        <StackPanel Spacing="12">
+                            <Button Click="ReadMoreButton_Click" Content="Read more" />
+                            <ToggleSwitch x:Name="WindowsUpdate" Toggled="Update_Toggled" />
+                        </StackPanel>
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items />
                 </dev:SettingsGroup>
