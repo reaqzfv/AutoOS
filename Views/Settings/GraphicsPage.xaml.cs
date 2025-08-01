@@ -64,6 +64,8 @@ public sealed partial class GraphicsPage : Page
             {
                 var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
 
+                NvidiaUpdateCheck.CheckedContent = "Downloading the NVIDIA driver...";
+
                 await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
 
                 NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
@@ -79,8 +81,6 @@ public sealed partial class GraphicsPage : Page
                 await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
 
                 await ProcessActions.Sleep(3000);
-
-                await ProcessActions.RefreshUI();
 
                 Nvidia_SettingsGroup.Description = "Current Version: " + (await Task.Run(() => Process.Start(new ProcessStartInfo("nvidia-smi", "--query-gpu=driver_version --format=csv,noheader") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEndAsync()))?.Trim();
 
@@ -132,8 +132,6 @@ public sealed partial class GraphicsPage : Page
 
     public async Task RunDownload(string url, string path, string file)
     {
-        string title = "Downloading the NVIDIA driver...";
-
         var uiContext = SynchronizationContext.Current;
 
         var download = DownloadBuilder.New()
@@ -163,7 +161,6 @@ public sealed partial class GraphicsPage : Page
 
             uiContext?.Post(_ =>
             {
-                NvidiaUpdateCheck.CheckedContent = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
                 NvidiaUpdateCheck.IsIndeterminate = false;
                 NvidiaUpdateCheck.Progress = percentage;
             }, null);
@@ -173,7 +170,6 @@ public sealed partial class GraphicsPage : Page
         {
             uiContext?.Post(_ =>
             {
-                NvidiaUpdateCheck.CheckedContent = $"{title} ({speedMB:F1} MB/s - {totalMB:F2} MB of {totalMB:F2} MB)";
                 NvidiaUpdateCheck.Progress = 100;
                 NvidiaUpdateCheck.IsIndeterminate = true;
             }, null);
