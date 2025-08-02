@@ -24,6 +24,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Toggle between service states with configured functionality
 - Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Automatically import Epic Games and Steam titles from old install
+- Stop processes when running your Game to automatically stop all unnecessary services and executables
 
 ## 💻 System Requirements
 
