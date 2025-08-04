@@ -1,5 +1,5 @@
 ﻿{
-  "$schema": "https://raw.githubusercontent.com/Ghost1372/DevWinUI/refs/heads/main/AppData.Schema.json",
+  "$schema": "https://raw.githubusercontent.com/Ghost1372/DevWinUI/refs/heads/main/tools/AppData.Schema.json",
   "Groups": [
     {
       "UniqueId": "AutoOS",
@@ -19,7 +19,7 @@
         {
           "UniqueId": "AutoOS.Views.Settings.DisplayPage",
           "Title": "Display",
-          "Subtitle": "Manage your CRU profiles",
+          "Subtitle": "Display",
           "ImagePath": "ms-appx:///Assets/Fluent/Display.png",
           "HideItem": true
         },
@@ -70,6 +70,13 @@
           "Title": "Tracking & Logging",
           "Subtitle": "Tracking & Logging",
           "ImagePath": "ms-appx:///Assets/Fluent/Logging.png",
+          "HideItem": true
+        },
+        {
+          "UniqueId": "AutoOS.Views.Settings.BiosSettingPage",
+          "Title": "BIOS Settings",
+          "Subtitle": "BIOS Settings",
+          "ImagePath": "ms-appx:///Assets/Fluent/Bios.png",
           "HideItem": true
         },
         {
