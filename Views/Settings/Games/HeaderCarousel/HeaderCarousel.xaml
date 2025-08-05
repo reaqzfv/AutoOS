@@ -4,16 +4,6 @@
                     xmlns:dev="using:DevWinUI"
                     xmlns:local="using:AutoOS.Views.Settings.Games.HeaderCarousel"
                     xmlns:views="using:AutoOS.Views.Settings.Games">
-    <ResourceDictionary.ThemeDictionaries>
-        <ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="OverlayBrush"
-                             Color="#66FFFFFF" />
-        </ResourceDictionary>
-        <ResourceDictionary x:Key="Dark">
-            <SolidColorBrush x:Key="OverlayBrush"
-                             Color="#66000000" />
-        </ResourceDictionary>
-    </ResourceDictionary.ThemeDictionaries>
     <Style TargetType="local:HeaderCarousel">
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -45,11 +35,12 @@
                                                    Height="Auto"
                                                    ImageUrl="ms-appx:///Assets/BackgroundBlur.png"
                                                    Stretch="{TemplateBinding ImageStretch}" />
-                                <Rectangle Fill="{ThemeResource OverlayBrush}" />
+                                <Rectangle Fill="#66000000" />
                             </Grid>
                         </dev:OpacityMaskView>
                         <!--  Title  -->
-                        <TextBlock Margin="36,24,0,0"
+                        <TextBlock x:Name="PageTitle"
+                                   Margin="36,24,0,0"
                                    Style="{StaticResource TitleTextBlockStyle}"
                                    Text="Games" />
                         <!--  Search Box  -->
@@ -364,11 +355,13 @@
                             </Grid.RowDefinitions>
                             <StackPanel Orientation="Vertical">
                                 <!--  Title  -->
-                                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"
+                                <TextBlock RequestedTheme="Dark"
+                                           Style="{StaticResource SubtitleTextBlockStyle}"
                                            Text="{TemplateBinding Title}" />
                                 <!--  Developers  -->
                                 <TextBlock Margin="0,2"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                           RequestedTheme="Dark"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Text="{TemplateBinding Developers}" />
                                 <!--  Play, Update, Stop Processes, Launch Explorer Buttons  -->
@@ -446,8 +439,10 @@
                                 <RatingControl Margin="0,-2,0,0"
                                                IsReadOnly="True"
                                                IsTabStop="False"
-                                               PlaceholderValue="{TemplateBinding Rating}" />
+                                               PlaceholderValue="{TemplateBinding Rating}"
+                                               RequestedTheme="Dark" />
                                 <TextBlock VerticalAlignment="Top"
+                                           RequestedTheme="Dark"
                                            Style="{StaticResource SubtitleTextBlockStyle}"
                                            Text="{TemplateBinding RoundedRating}" />
                             </StackPanel>
@@ -456,6 +451,7 @@
                                        HorizontalAlignment="Right"
                                        VerticalAlignment="Top"
                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       RequestedTheme="Dark"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Text="{TemplateBinding PlayTime}" />
                             <!--  Age Ratings  -->
@@ -469,10 +465,12 @@
                                              Source="{TemplateBinding AgeRatingUrl}"
                                              Stretch="Uniform" />
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+                                    <TextBlock RequestedTheme="Dark"
+                                               Style="{StaticResource BodyStrongTextBlockStyle}"
                                                Text="{TemplateBinding AgeRatingTitle}" />
                                     <TextBlock FontSize="10"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               RequestedTheme="Dark"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Text="{TemplateBinding AgeRatingDescription}" />
                                 </StackPanel>

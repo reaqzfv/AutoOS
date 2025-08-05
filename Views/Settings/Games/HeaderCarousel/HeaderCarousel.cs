@@ -24,6 +24,7 @@ public partial class HeaderCarousel : ItemsControl
     private ScrollViewer scrollViewer;
     private AnimatedImage backDropImage;
 
+    private TextBlock PageTitle;
     private SwitchPresenter SwitchPresenter;
     private TextBlock SwitchPresenter_TextBlock;
 
@@ -96,6 +97,8 @@ public partial class HeaderCarousel : ItemsControl
 
         scrollViewer = GetTemplateChild(PART_ScrollViewer) as ScrollViewer;
         backDropImage = GetTemplateChild(PART_BackDropImage) as AnimatedImage;
+
+        PageTitle = GetTemplateChild("PageTitle") as TextBlock;
 
         SearchBox = GetTemplateChild("SearchBox") as AutoSuggestBox;
         SearchBox.TextChanged += SearchBox_TextChanged;
@@ -229,6 +232,7 @@ public partial class HeaderCarousel : ItemsControl
                 Point point = transform.TransformPoint(new Point(0, 0));
                 scrollViewer.ChangeView(point.X - (scrollViewer.ActualWidth / 2) + (selectedTile.ActualSize.X / 2), null, null);
                 SetTileVisuals();
+                PageTitle.RequestedTheme = ElementTheme.Dark;
                 //deselectionTimer?.Start();
             }
         }

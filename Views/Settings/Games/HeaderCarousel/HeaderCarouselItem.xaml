@@ -25,7 +25,11 @@
                                 <VisualState x:Name="NotSelected" />
                                 <VisualState x:Name="Selected">
                                     <VisualState.Setters>
-                                        <Setter Target="PART_BorderHost.BorderBrush" Value="{ThemeResource ControlStrongStrokeColorDefaultBrush}" />
+                                        <Setter Target="PART_BorderHost.BorderBrush">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="#8BFFFFFF" />
+                                            </Setter.Value>
+                                        </Setter>
                                         <Setter Target="PART_BorderHost.BorderThickness" Value="1" />
                                     </VisualState.Setters>
                                 </VisualState>
