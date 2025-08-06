@@ -23,12 +23,29 @@ public sealed partial class BiosSettingPage : Page
 
     private async Task LoadAsync()
     {
+        // copy scewin to localstate because of permissions
+        Directory.CreateDirectory(Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN"));
+        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN");
+        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN");
+
+        foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+        {
+            string subDirPath = directory.Replace(sourcePath, destinationPath);
+            Directory.CreateDirectory(subDirPath);
+        }
+
+        foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+        {
+            string destFilePath = file.Replace(sourcePath, destinationPath);
+            File.Copy(file, destFilePath, true);
+        }
+
         // export nvram
         using var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN", "SCEWIN_64.exe"),
+                FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
                 Arguments = @$"/o /s ""{nvram}""",
                 UseShellExecute = false,
                 CreateNoWindow = true,
