@@ -1403,6 +1403,7 @@ public partial class HeaderCarousel : ItemsControl
     {
         if (Launcher == "Epic Games")
         {
+            EpicGamesHelper.CloseEpicGames();
             Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{CatalogNamespace}%3A{CatalogItemId}%3A{AppName}?action=launch&silent=true") { UseShellExecute = true });
         }
         else if (Launcher == "Steam")
