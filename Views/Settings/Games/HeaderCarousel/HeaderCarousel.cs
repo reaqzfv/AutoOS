@@ -44,9 +44,12 @@ public partial class HeaderCarousel : ItemsControl
 
     private bool isInitializingEpicGamesAccounts = true;
     private bool isInitializingSteamAccounts = true;
+    private Button EpicGamesButton;
     private ComboBox EpicGamesAccounts;
     private Button AddEpicGamesAccount;
     private Button RemoveEpicGamesAccount;
+   
+    private Button SteamButton;
     private ComboBox SteamAccounts;
     private Button AddSteamAccount;
     private Button RemoveSteamAccount;
@@ -122,6 +125,7 @@ public partial class HeaderCarousel : ItemsControl
         FullscreenIcon = GetTemplateChild("FullscreenIcon") as FontIcon;
         Fullscreen.Click += Fullscreen_Click;
 
+        EpicGamesButton = GetTemplateChild("EpicGamesButton") as Button;
         EpicGamesAccounts = GetTemplateChild("EpicGamesAccounts") as ComboBox;
         EpicGamesAccounts.SelectionChanged += EpicGamesAccounts_SelectionChanged;
         AddEpicGamesAccount = GetTemplateChild("AddEpicGamesAccount") as Button;
@@ -132,6 +136,7 @@ public partial class HeaderCarousel : ItemsControl
         Growl.Register("Epic", EpicGrowl);
         LoadEpicGamesAccounts();
 
+        SteamButton = GetTemplateChild("SteamButton") as Button;
         SteamAccounts = GetTemplateChild("SteamAccounts") as ComboBox;
         SteamAccounts.SelectionChanged += SteamAccounts_SelectionChanged;
         AddSteamAccount = GetTemplateChild("AddSteamAccount") as Button;
@@ -192,12 +197,16 @@ public partial class HeaderCarousel : ItemsControl
         // load games
         var tasks = new List<Task>();
 
-        if ((EpicGamesAccounts.SelectedItem as ComboBoxItem).Content.ToString() != "Not logged in")
+        if (EpicGamesAccounts.SelectedItem is ComboBoxItem && ((ComboBoxItem)EpicGamesAccounts.SelectedItem).Content?.ToString() != "Not logged in" && EpicGamesButton.Visibility == Visibility.Visible)
         {
             tasks.Add(EpicGamesHelper.LoadGames());
         }
 
-        tasks.Add(SteamHelper.LoadGames());
+        if (SteamAccounts.SelectedItem is ComboBoxItem && ((ComboBoxItem)SteamAccounts.SelectedItem).Content?.ToString() != "Not logged in" && SteamButton.Visibility == Visibility.Visible)
+        {
+            tasks.Add(SteamHelper.LoadGames());
+        }
+
         tasks.Add(CustomGameHelper.LoadGames());
 
         await Task.WhenAll(tasks);
@@ -404,7 +413,20 @@ public partial class HeaderCarousel : ItemsControl
             ResetAndShuffle();
         }
 
-        return numbers[currentIndex++];
+        int nextIndex = numbers[currentIndex++];
+
+        if (selectedTile != null)
+        {
+            int selectedIndex = Items.IndexOf(selectedTile);
+            if (nextIndex == selectedIndex)
+            {
+                if (currentIndex >= numbers.Count)
+                    ResetAndShuffle();
+                nextIndex = numbers[currentIndex++];
+            }
+        }
+
+        return nextIndex;
     }
 
     private void SetTileVisuals()
@@ -810,6 +832,10 @@ public partial class HeaderCarousel : ItemsControl
                 }
             }
         }
+        else
+        {
+            EpicGamesButton.Visibility = Visibility.Collapsed;
+        }
 
         isInitializingEpicGamesAccounts = false;
     }
@@ -1105,6 +1131,10 @@ public partial class HeaderCarousel : ItemsControl
 
                 SteamAccounts.SelectedIndex = selectedIndex >= 0 ? selectedIndex : 0;
             }
+        }
+        else
+        {
+            SteamButton.Visibility = Visibility.Collapsed;
         }
 
         isInitializingSteamAccounts = false;

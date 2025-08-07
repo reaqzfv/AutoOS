@@ -50,7 +50,7 @@
                                     Spacing="12">
                             <!--  Search Box  -->
                             <AutoSuggestBox x:Name="SearchBox"
-                                            MinWidth="250"
+                                            MinWidth="245"
                                             MaxWidth="400"
                                             Padding="12,8"
                                             CornerRadius="18"
@@ -133,7 +133,7 @@
                                     Orientation="Horizontal"
                                     Spacing="12">
                             <!--  Epic Games  -->
-                            <Button x:Name="EpicAccount"
+                            <Button x:Name="EpicGamesButton"
                                     Padding="12,8"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
@@ -217,7 +217,7 @@
                                 </Button.Flyout>
                             </Button>
                             <!--  Steam  -->
-                            <Button x:Name="SteamAccount"
+                            <Button x:Name="SteamButton"
                                     Padding="12,8"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
