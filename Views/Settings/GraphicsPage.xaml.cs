@@ -46,6 +46,7 @@ public sealed partial class GraphicsPage : Page
                     }
                     if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase))
                     {
+                        Intel_SettingsGroup.Visibility = Visibility.Visible;
                         Intel_SettingsGroup.Description = "Current Version: " + (version?.Split('.')[2] + "." + version?.Split('.')[3]);
                         IntelUpdateCheck.IsChecked = true;
                     }
@@ -231,8 +232,8 @@ public sealed partial class GraphicsPage : Page
 
             try
             {
-                string currentVersion = "1";
-                string newestVersion = "2";
+                string currentVersion = Intel_SettingsGroup.Description.ToString();
+                string newestVersion = Intel_SettingsGroup.Description.ToString();
 
                 // delay
                 await Task.Delay(800);

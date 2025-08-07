@@ -25,7 +25,8 @@
                         Spacing="8">
                 <dev:SettingsGroup x:Name="Nvidia_SettingsGroup"
                                    Header="NVIDIA Driver"
-                                   HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Nvidia.png}">
+                                   HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Nvidia.png}"
+                                   Visibility="Collapsed">
                     <dev:SettingsGroup.Content>
                         <StackPanel Orientation="Horizontal">
                             <dev:ProgressButton x:Name="NvidiaUpdateCheck"
