@@ -221,24 +221,21 @@ namespace AutoOS.Helpers
         {
             try
             {
-                // read and decrypt offline and remember me data
                 var iniHelper = new InIHelper(file);
                 string decryptedOffline = Decrypt(iniHelper.ReadValue("Data", "Offline", 2048));
                 string decryptedRememberMe = Decrypt(iniHelper.ReadValue("Data", "RememberMe", 2048));
 
-                // get data from remember me
                 var rememberMeRoot = JsonDocument.Parse(decryptedRememberMe.TrimEnd('\0')).RootElement[0];
                 string displayName = rememberMeRoot.GetProperty("DisplayName").GetString();
                 string token = rememberMeRoot.GetProperty("Token").GetString();
                 int tokenUseCount = rememberMeRoot.GetProperty("TokenUseCount").GetInt32();
 
-                // get data from offline
                 var offlineArray = JsonDocument.Parse(decryptedOffline.TrimEnd('\0')).RootElement;
                 string accountId = null;
 
                 foreach (var account in offlineArray.EnumerateArray())
                 {
-                    if (account.TryGetProperty("DisplayName", out var nameProp) && nameProp.GetString() == displayName)
+                    if (account.TryGetProperty("Email", out var emailProp) && emailProp.GetString() == rememberMeRoot.GetProperty("Email").GetString())
                     {
                         accountId = account.GetProperty("UserID").GetString();
                         break;
