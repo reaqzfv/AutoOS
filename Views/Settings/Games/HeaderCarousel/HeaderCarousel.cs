@@ -1657,7 +1657,7 @@ public partial class HeaderCarousel : ItemsControl
             Interval = TimeSpan.FromMilliseconds(500)
         };
 
-        async void TickHandler()
+        async Task TickHandler()
         {
             bool isRunning = await isGameRunningAsync();
             bool explorerRunning = Process.GetProcessesByName("explorer").Length > 0;
@@ -1674,6 +1674,11 @@ public partial class HeaderCarousel : ItemsControl
                 {
                     LaunchExplorer.Visibility = (isRunning && !explorerRunning) ? Visibility.Visible : Visibility.Collapsed;
                     previousExplorerState = isRunning && !explorerRunning;
+                }
+
+                if (previousGameState == true && isRunning == false && !explorerRunning)
+                {
+                    LaunchExplorer_Click(this, new RoutedEventArgs());
                 }
 
                 previousGameState = isRunning;
