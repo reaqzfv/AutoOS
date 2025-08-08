@@ -433,6 +433,9 @@ public partial class HeaderCarousel : ItemsControl
     {
         if (selectedTile != null)
         {
+
+            ElementSoundPlayer.Play(ElementSoundKind.Focus);
+
             if (selectedTile.BackgroundImageUrl != null && backDropImage.ImageUrl?.ToString() != selectedTile.BackgroundImageUrl)
                 backDropImage.ImageUrl = new Uri(selectedTile.BackgroundImageUrl);
 
@@ -506,8 +509,12 @@ public partial class HeaderCarousel : ItemsControl
 
     private void Tile_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
     {
-        selectedTile = (HeaderCarouselItem)sender;
-        SelectTile();
+        var tile = (HeaderCarouselItem)sender;
+        if (tile != selectedTile)
+        {
+            selectedTile = tile;
+            SelectTile();
+        }
     }
 
     private void SelectTile()

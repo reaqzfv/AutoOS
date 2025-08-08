@@ -111,7 +111,6 @@ public partial class HeaderCarouselItem : Button
 
     private void PlaySelectAnimation()
     {
-        ElementSoundPlayer.Play(ElementSoundKind.Focus);
         visual.StopAnimation("Scale");
         _dropShadow.StopAnimation(nameof(_dropShadow.Opacity));
         _dropShadow.StopAnimation(nameof(_dropShadow.BlurRadius));
