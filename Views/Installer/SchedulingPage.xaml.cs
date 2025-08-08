@@ -50,13 +50,6 @@ public sealed partial class SchedulingPage : Page
                 {
                     item.IsEnabled = false;
                 }
-                else
-                {
-                    if (isHyperThreadingEnabled && i % 2 == 1)
-                    {
-                        item.IsEnabled = false;
-                    }
-                }
 
                 comboBox.Items.Add(item);
             }
