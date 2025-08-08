@@ -103,6 +103,11 @@ Thank you for your research on [Configuring services and features](https://githu
 
 ---
 
+**Duckleeng:**  
+Thank you for your research on [Receive Side Scaling (RSS)](https://github.com/Duckleeng/TweakCollection/tree/main/Research#which-nicsdrivers-support-receive-side-scaling-rss) and [Windows 11 24H2 AutoBoost Behavior](https://github.com/Duckleeng/TweakCollection/tree/main/Research#windows-11-24h2-autoboost-behavior).
+
+---
+
 **djdallmann:**  
 Thank you for your research on [Network Performance](https://github.com/djdallmann/GamingPCSetup/blob/master/CONTENT/RESEARCH/NETWORK/README.md).
 
