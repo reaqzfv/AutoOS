@@ -965,6 +965,7 @@ public static class ProcessActions
     {
         var i = Convert.ToInt32(localSettings.Values["NicAffinity"]);
 
+        // apply affinity
         foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_NetworkAdapter").Get().Cast<ManagementObject>())
         {
             string pnp = obj["PNPDeviceID"]?.ToString();
@@ -977,6 +978,7 @@ public static class ProcessActions
             using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}", writable: true);
             if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
 
+            // set rss values because NDIS drivers ignore device affinity
             classKey.SetValue("*RSS", "0", RegistryValueKind.String);
             classKey.SetValue("*RssBaseProcNumber", i.ToString(), RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcNumber", i.ToString(), RegistryValueKind.String);
@@ -984,6 +986,22 @@ public static class ProcessActions
             classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
 
+            // set device affinity because NetAdapterCx drivers ignore RSS registry keys
+            using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}\Device Parameters\Interrupt Management\Affinity Policy", writable: true);
+            if (affinityKey != null)
+            {
+                int selectedIndex = i;
+                if (selectedIndex >= 0)
+                {
+                    byte[] binaryValue = new byte[(selectedIndex / 8) + 1];
+                    binaryValue[selectedIndex / 8] = (byte)(1 << (selectedIndex % 8));
+                    affinityKey.SetValue("AssignmentSetOverride", binaryValue, RegistryValueKind.Binary);
+                }
+
+                affinityKey.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
+            }
+
+            // restart nic
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo

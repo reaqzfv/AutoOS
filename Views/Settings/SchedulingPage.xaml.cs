@@ -108,71 +108,69 @@ public sealed partial class SchedulingPage : Page
     {
         foreach (var query in new[]
         {
-        "SELECT PNPDeviceID FROM Win32_VideoController",
-        "SELECT PNPDeviceID FROM Win32_USBController"
+            "SELECT PNPDeviceID FROM Win32_VideoController",
+            "SELECT PNPDeviceID FROM Win32_USBController",
+            "SELECT PNPDeviceID FROM Win32_NetworkAdapter"
         })
 
         {
             foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get())
             {
                 string path = obj["PNPDeviceID"]?.ToString();
-                if (path?.StartsWith("PCI\\VEN_") == true)
+                if (path?.StartsWith("PCI\\VEN_") != true)
+                    continue;
+
+                int? affinityCore = null;
+                using (var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy"))
                 {
-                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy");
-                    if (key?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
+                    if (affinityKey?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
                     {
-                        int coreIndex = -1;
                         for (int i = 0; i < value.Length; i++)
                         {
                             for (int bit = 0; bit < 8; bit++)
                             {
                                 if ((value[i] & (1 << bit)) != 0)
                                 {
-                                    coreIndex = i * 8 + bit;
+                                    affinityCore = i * 8 + bit;
                                     break;
                                 }
                             }
-                            if (coreIndex >= 0)
-                                break;
+                            if (affinityCore.HasValue) break;
                         }
-                        if (coreIndex >= 0)
-                        {
-                            if (query.Contains("VideoController"))
-                            {
-                                GPU.SelectedIndex = coreIndex;
-                            }
-                            else if (query.Contains("USBController"))
-                            {
-                                XHCI.SelectedIndex = coreIndex;
-                            }
-                        }
+                    }
+                }
+
+                if (query.Contains("VideoController"))
+                {
+                    if (affinityCore.HasValue)
+                        GPU.SelectedIndex = affinityCore.Value;
+                }
+                else if (query.Contains("USBController"))
+                {
+                    if (affinityCore.HasValue)
+                        XHCI.SelectedIndex = affinityCore.Value;
+                }
+                else if (query.Contains("NetworkAdapter"))
+                {
+                    using var driverKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}");
+                    string driver = driverKey?.GetValue("Driver")?.ToString();
+                    if (string.IsNullOrEmpty(driver) || !driver.Contains('\\'))
+                        continue;
+
+                    using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}");
+                    if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14")
+                        continue;
+
+                    if (int.TryParse(classKey.GetValue("*RssBaseProcNumber")?.ToString(), out int rssCore))
+                    {
+                        if (affinityCore.HasValue && rssCore == affinityCore.Value)
+                            NIC.SelectedIndex = rssCore;
                     }
                 }
             }
         }
 
-        foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_NetworkAdapter").Get().Cast<ManagementObject>())
-        {
-            string pnp = obj["PNPDeviceID"]?.ToString();
-            if (pnp == null || !pnp.StartsWith("PCI\\VEN_")) continue;
-
-            using var driverKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}");
-            string driver = driverKey?.GetValue("Driver")?.ToString();
-            if (string.IsNullOrEmpty(driver) || !driver.Contains('\\')) continue;
-
-            using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}");
-            if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
-
-            if (int.TryParse(classKey.GetValue("*RssBaseProcNumber")?.ToString(), out int baseCore))
-            {
-                NIC.SelectedIndex = baseCore;
-            }
-
-            break;
-        }
-
         UpdateComboBoxState(GPU, XHCI, NIC);
-
         isInitializingAffinities = false;
     }
 
@@ -463,6 +461,7 @@ public sealed partial class SchedulingPage : Page
         // delay
         await Task.Delay(800);
 
+        // apply affinity
         foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_NetworkAdapter").Get().Cast<ManagementObject>())
         {
             string pnp = obj["PNPDeviceID"]?.ToString();
@@ -475,13 +474,30 @@ public sealed partial class SchedulingPage : Page
             using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}", writable: true);
             if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
 
+            // set rss values because NDIS drivers ignore device affinity
             classKey.SetValue("*RSS", "0", RegistryValueKind.String);
             classKey.SetValue("*RssBaseProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
             classKey.SetValue("*MaxRssProcessors", "1", RegistryValueKind.String);
             classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
-            
+
+            // set device affinity because NetAdapterCx drivers ignore RSS registry keys
+            using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}\Device Parameters\Interrupt Management\Affinity Policy", writable: true);
+            if (affinityKey != null)
+            {
+                int selectedIndex = NIC.SelectedIndex;
+                if (selectedIndex >= 0)
+                {
+                    byte[] binaryValue = new byte[(selectedIndex / 8) + 1];
+                    binaryValue[selectedIndex / 8] = (byte)(1 << (selectedIndex % 8));
+                    affinityKey.SetValue("AssignmentSetOverride", binaryValue, RegistryValueKind.Binary);
+                }
+
+                affinityKey.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
+            }
+
+            // restart nic
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -541,7 +557,7 @@ public sealed partial class SchedulingPage : Page
                 HorizontalAlignment = HorizontalAlignment.Right
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+                Process.Start("shutdown", "/r /f /t 0");
         }
         else
         {
@@ -564,6 +580,7 @@ public sealed partial class SchedulingPage : Page
             AffinityInfo.Children.Clear();
         }
     }
+
 
     private void UpdateComboBoxState(ComboBox combo1, ComboBox combo2, ComboBox combo3)
     {
