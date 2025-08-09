@@ -193,8 +193,8 @@ namespace AutoOS.Helpers
                         int totalNegative = reviewData.GetProperty("total_negative").GetInt32();
 
                         // get age rating
-                        string? rating = null;
-                        string? descriptors = null;
+                        string rating = null;
+                        string descriptors = null;
 
                         if (gameData.GetProperty("data").GetProperty("ratings").TryGetProperty(ratingKey.ToLowerInvariant(), out JsonElement ratingData))
                         {

@@ -78,10 +78,10 @@ public partial class HeaderCarousel : ItemsControl
     public event EventHandler<HeaderCarouselEventArgs> ItemClick;
 
     private readonly Random random = new();
-    private DispatcherTimer selectionTimer = new();
+    private readonly DispatcherTimer selectionTimer = new();
     private readonly DispatcherTimer deselectionTimer = new();
     private readonly List<int> numbers = [];
-    private HeaderCarouselItem? selectedTile;
+    private HeaderCarouselItem selectedTile;
     private int currentIndex;
 
     private BlurEffectManager _blurManager;
@@ -289,7 +289,7 @@ public partial class HeaderCarousel : ItemsControl
 
     private void SubscribeToEvents()
     {
-        foreach (HeaderCarouselItem tile in Items)
+        foreach (HeaderCarouselItem tile in Items.Cast<HeaderCarouselItem>())
         {
             tile.PointerEntered -= Tile_PointerEntered;
             tile.PointerEntered += Tile_PointerEntered;
@@ -316,7 +316,7 @@ public partial class HeaderCarousel : ItemsControl
         //deselectionTimer?.Stop();
         gameWatcherTimer?.Stop();
         
-        foreach (HeaderCarouselItem tile in Items)
+        foreach (HeaderCarouselItem tile in Items.Cast<HeaderCarouselItem>())
         {
             tile.PointerEntered -= Tile_PointerEntered;
             //tile.PointerExited -= Tile_PointerExited;
@@ -326,16 +326,16 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void Tile_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is HeaderCarouselItem tile)
-        {
-            tile.PointerExited -= Tile_PointerExited;
-            ItemClick?.Invoke(sender, new HeaderCarouselEventArgs { HeaderCarouselItem = tile });
-        }
-    }
+    //private void Tile_Click(object sender, RoutedEventArgs e)
+    //{
+    //    if (sender is HeaderCarouselItem tile)
+    //    {
+    //        tile.PointerExited -= Tile_PointerExited;
+    //        ItemClick?.Invoke(sender, new HeaderCarouselEventArgs { HeaderCarouselItem = tile });
+    //    }
+    //}
 
-    private void SelectionTimer_Tick(object? sender, object e)
+    private void SelectionTimer_Tick(object sender, object e)
     {
         SelectNextTile();
     }
@@ -369,19 +369,19 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void DeselectionTimer_Tick(object? sender, object e)
-    {
-        //if (selectedTile != null)
-        //{
-        //    selectedTile.IsSelected = false;
-        //    selectedTile = null;
-        //}
+    //private void DeselectionTimer_Tick(object sender, object e)
+    //{
+    //    if (selectedTile != null)
+    //    {
+    //        selectedTile.IsSelected = false;
+    //        selectedTile = null;
+    //    }
 
-        //deselectionTimer.Stop();
+    //    deselectionTimer.Stop();
 
-        //if (IsAutoScrollEnabled)
-        //    selectionTimer.Start();
-    }
+    //    if (IsAutoScrollEnabled)
+    //        selectionTimer.Start();
+    //}
 
     private void ResetAndShuffle()
     {
@@ -500,12 +500,12 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void Tile_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-    {
-        //((HeaderCarouselItem)sender).IsSelected = false;
-        //if (IsAutoScrollEnabled)
-        //    selectionTimer.Start();
-    }
+    //private void Tile_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+    //{
+    //    ((HeaderCarouselItem)sender).IsSelected = false;
+    //    if (IsAutoScrollEnabled)
+    //        selectionTimer.Start();
+    //}
 
     private void Tile_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
     {
@@ -522,7 +522,7 @@ public partial class HeaderCarousel : ItemsControl
         selectionTimer.Stop();
         //deselectionTimer.Stop();
 
-        foreach (HeaderCarouselItem t in Items)
+        foreach (HeaderCarouselItem t in Items.Cast<HeaderCarouselItem>())
         {
             t.IsSelected = false;
         }
@@ -536,12 +536,12 @@ public partial class HeaderCarousel : ItemsControl
         SelectTile();
     }
 
-    private void Tile_LostFocus(object sender, RoutedEventArgs e)
-    {
-        //((HeaderCarouselItem)sender).IsSelected = false;
-        //if (IsAutoScrollEnabled)
-        //    selectionTimer.Start();
-    }
+    //private void Tile_LostFocus(object sender, RoutedEventArgs e)
+    //{
+    //    ((HeaderCarouselItem)sender).IsSelected = false;
+    //    if (IsAutoScrollEnabled)
+    //        selectionTimer.Start();
+    //}
 
     private void ApplyAutoScroll()
     {
@@ -1381,43 +1381,42 @@ public partial class HeaderCarousel : ItemsControl
     {
         if (isInitializingPresentationMode) return;
 
-        using (var key = Registry.CurrentUser.OpenSubKey(@"System\GameConfigStore\Children", true))
+        using var key = Registry.CurrentUser.OpenSubKey(@"System\GameConfigStore\Children", writable: true);
+
+        foreach (var subKeyName in key.GetSubKeyNames())
         {
-            foreach (var subKeyName in key.GetSubKeyNames())
+            using var subKey = key.OpenSubKey(subKeyName, writable: true);
+
+            if (subKey.GetValueNames().Any(valueName =>
+                subKey.GetValue(valueName) is string strValue && strValue.Contains("Fortnite")))
             {
-                using (var subKey = key.OpenSubKey(subKeyName, true))
+                if (PresentationMode_ComboBox.SelectedIndex == 0)
                 {
-                    if (subKey.GetValueNames().Any(valueName => subKey.GetValue(valueName) is string strValue && strValue.Contains("Fortnite")))
+                    using var process = new Process
                     {
-                        if (PresentationMode_ComboBox.SelectedIndex == 0)
+                        StartInfo = new ProcessStartInfo
                         {
-                            var process = new Process
-                            {
-                                StartInfo = new ProcessStartInfo
-                                {
-                                    FileName = "reg.exe",
-                                    Arguments = $@"delete ""HKCU\System\GameConfigStore\Children\{subKeyName}"" /v Flags /f",
-                                    CreateNoWindow = true,
-                                }
-                            };
-                            process.Start();
-                            process.WaitForExit();
+                            FileName = "reg.exe",
+                            Arguments = $@"delete ""HKCU\System\GameConfigStore\Children\{subKeyName}"" /v Flags /f",
+                            CreateNoWindow = true,
                         }
-                        else if (PresentationMode_ComboBox.SelectedIndex == 1)
+                    };
+                    process.Start();
+                    process.WaitForExit();
+                }
+                else if (PresentationMode_ComboBox.SelectedIndex == 1)
+                {
+                    using var process = new Process
+                    {
+                        StartInfo = new ProcessStartInfo
                         {
-                            var process = new Process
-                            {
-                                StartInfo = new ProcessStartInfo
-                                {
-                                    FileName = "reg.exe",
-                                    Arguments = $@"add ""HKCU\System\GameConfigStore\Children\{subKeyName}"" /v Flags /t REG_DWORD /d 0x211 /f",
-                                    CreateNoWindow = true,
-                                }
-                            };
-                            process.Start();
-                            process.WaitForExit();
+                            FileName = "reg.exe",
+                            Arguments = $@"add ""HKCU\System\GameConfigStore\Children\{subKeyName}"" /v Flags /t REG_DWORD /d 0x211 /f",
+                            CreateNoWindow = true,
                         }
-                    }
+                    };
+                    process.Start();
+                    process.WaitForExit();
                 }
             }
         }
@@ -1472,8 +1471,9 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    [DllImport("kernel32.dll")]
-    static extern bool SetProcessWorkingSetSize(IntPtr process, int min, int max);
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool SetProcessWorkingSetSize(IntPtr process, int min, int max);
 
     private void StopProcesses_Click(object sender, RoutedEventArgs e)
     {
@@ -1482,24 +1482,22 @@ public partial class HeaderCarousel : ItemsControl
         {
             try
             {
-                using (var searcher = new ManagementObjectSearcher(
-                    $"SELECT ProcessId, CommandLine FROM Win32_Process WHERE Name = 'dllhost.exe'"))
-                {
-                    foreach (ManagementObject obj in searcher.Get())
-                    {
-                        string cmdLine = obj["CommandLine"]?.ToString() ?? "";
-                        int pid = Convert.ToInt32(obj["ProcessId"]);
+                using var searcher = new ManagementObjectSearcher($"SELECT ProcessId, CommandLine FROM Win32_Process WHERE Name = 'dllhost.exe'");
 
-                        if (cmdLine.Contains("/PROCESSID", StringComparison.OrdinalIgnoreCase))
+                foreach (ManagementObject obj in searcher.Get().Cast<ManagementObject>())
+                {
+                    string cmdLine = obj["CommandLine"]?.ToString() ?? "";
+                    int pid = Convert.ToInt32(obj["ProcessId"]);
+
+                    if (cmdLine.Contains("/PROCESSID", StringComparison.OrdinalIgnoreCase))
+                    {
+                        try
                         {
-                            try
-                            {
-                                var proc = Process.GetProcessById(pid);
-                                proc.Kill();
-                                proc.WaitForExit();
-                            }
-                            catch { }
+                            var proc = Process.GetProcessById(pid);
+                            proc.Kill();
+                            proc.WaitForExit();
                         }
+                        catch { }
                     }
                 }
             }
@@ -1509,7 +1507,8 @@ public partial class HeaderCarousel : ItemsControl
         // close executables
         Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "AutoRestartShell", 0, RegistryValueKind.DWord);
 
-        string[] processNames = {
+        var processNames = new[]
+        {
             "ApplicationFrameHost",
             "CrashReportClient",
             "CrossDeviceResume",
@@ -1555,7 +1554,8 @@ public partial class HeaderCarousel : ItemsControl
         Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon", "AutoRestartShell", 1, RegistryValueKind.DWord);
 
         // stop services
-        string[] serviceNames = {
+        var serviceNames = new[]
+        {
             "AudioEndpointBuilder",
             "AppXSvc",
             "Appinfo",
@@ -1589,7 +1589,7 @@ public partial class HeaderCarousel : ItemsControl
             try
             {
                 var searcher = new ManagementObjectSearcher($"SELECT ProcessId FROM Win32_Service WHERE Name LIKE '{serviceName}%'");
-                foreach (ManagementObject service in searcher.Get())
+                foreach (ManagementObject service in searcher.Get().Cast<ManagementObject>())
                 {
                     try
                     {
@@ -1617,12 +1617,10 @@ public partial class HeaderCarousel : ItemsControl
     private void LaunchExplorer_Click(object sender, RoutedEventArgs e)
     {
         // start audioendpoint builder
-        using (ServiceController service = new ServiceController("AudioEndpointBuilder"))
+        using var audioService = new ServiceController("AudioEndpointBuilder");
+        if (audioService.Status == ServiceControllerStatus.Stopped)
         {
-            if (service.Status == ServiceControllerStatus.Stopped)
-            {
-                service.Start();
-            }
+            audioService.Start();
         }
 
         // launch ctfmon
@@ -1632,12 +1630,10 @@ public partial class HeaderCarousel : ItemsControl
         Process.Start("explorer.exe");
 
         // start windhawk service
-        using (ServiceController service = new ServiceController("Windhawk"))
+        using var windhawkService = new ServiceController("Windhawk");
+        if (windhawkService.Status == ServiceControllerStatus.Stopped)
         {
-            if (service.Status == ServiceControllerStatus.Stopped)
-            {
-                service.Start();
-            }
+            windhawkService.Start();
         }
     }
 
@@ -1751,7 +1747,7 @@ public partial class HeaderCarousel : ItemsControl
                 await Task.Run(() =>
                 {
                     using var searcher = new ManagementObjectSearcher($"SELECT CommandLine FROM Win32_Process WHERE Name = '{launcherFileName}'");
-                    foreach (ManagementObject obj in searcher.Get())
+                    foreach (var obj in searcher.Get().OfType<ManagementObject>())
                     {
                         string cmdLine = obj["CommandLine"]?.ToString() ?? "";
                         if (cmdLine.Contains(expectedPath))
