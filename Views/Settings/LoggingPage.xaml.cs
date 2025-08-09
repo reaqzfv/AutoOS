@@ -14,8 +14,34 @@ public sealed partial class LoggingPage : Page
     }
     public void GetETSState()
     {
+        // declare services
+        var groups = new[]
+        {
+            (new[] { "EventLog", "EventSystem" }, 2)
+        };
+
+        // check if values match
+        foreach (var group in groups)
+        {
+            foreach (var service in group.Item1)
+            {
+                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}"))
+                {
+                    if (key == null) continue;
+
+                    var startValue = key.GetValue("Start");
+                    if (startValue == null || (int)startValue != group.Item2)
+                    {
+                        isInitializingETSState = false;
+                        return;
+                    }
+                }
+            }
+        }
+
         // check registry
         ETS.IsOn = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
+
         isInitializingETSState = false;
     }
 
@@ -35,6 +61,26 @@ public sealed partial class LoggingPage : Page
             Severity = InfoBarSeverity.Informational,
             Margin = new Thickness(5)
         });
+
+        // declare services and drivers
+        var groups = new[]
+        {
+            (new[] { "EventLog", "EventSystem" }, 2)
+        };
+
+        // set start values
+        foreach (var group in groups)
+        {
+            foreach (var service in group.Item1)
+            {
+                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
+                {
+                    if (key == null) continue;
+
+                    Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", ETS.IsOn ? group.Item2 : 4);
+                }
+            }
+        }
 
         // toggle event trace sessions
         if (ETS.IsOn)
