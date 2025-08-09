@@ -45,10 +45,6 @@ public static class BiosSettingUpdater
 
         // write changes
         File.WriteAllLines(Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "nvram.txt"), lines);
-
-        // reset is modified
-        foreach (var setting in modifiedSettings)
-            setting.IsModified = false;
     }
 
     public static void UpdateValue(BiosSettingModel setting, List<string> lines = null)
