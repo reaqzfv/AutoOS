@@ -60,6 +60,268 @@
                                Text="Exporting NVRAM..." />
                 </StackPanel>
             </dev:Case>
+            <dev:Case Value="Unsupported">
+                <StackPanel Padding="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical"
+                            Spacing="12">
+
+                    <FontIcon HorizontalAlignment="Center"
+                              FontSize="32"
+                              Foreground="{ThemeResource SystemFillColorCritical}"
+                              Glyph="&#xE783;" />
+
+                    <TextBlock HorizontalAlignment="Center"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Text="Unsupported System" />
+
+                    <TextBlock HorizontalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Style="{StaticResource BodyTextBlockStyle}"
+                               Text="AMISCE is not supported on this system."
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </dev:Case>
+            <dev:Case Value="HII Resources (Regular)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="HII Resources not published" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="1. Go to " />
+                            <Run FontWeight="Bold"
+                                 Text="Setup → Tool" />
+                            <Run Text=" section of your BIOS" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="2. Enable " />
+                            <Run FontWeight="Bold"
+                                 Text="Publish HII Resources" />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
+            <dev:Case Value="HII Resources (Protected)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="HII Resources not published" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="1. Go to " />
+                            <Run FontWeight="Bold"
+                                 Text="Setup → Advanced → UEFI Variables Protection" />
+                            <Run Text=" section of your BIOS" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="2. Disable " />
+                            <Run FontWeight="Bold"
+                                 Text="Password protection of Runtime Variables" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="3. Go to " />
+                            <Run FontWeight="Bold"
+                                 Text="Setup → Tool" />
+                            <Run Text=" section of your BIOS" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="4. Enable " />
+                            <Run FontWeight="Bold"
+                                 Text="Publish HII Resources" />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
+            <dev:Case Value="HII Resources (Other)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="HII resources not published" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap">
+                            <Run Text="Currently there is no solution for non-ASUS motherboards. It is currently being investigated. Check" />
+                            <Hyperlink NavigateUri="https://github.com/ab3lkaizen/SCEHUB?tab=readme-ov-file#warning-hii-data-does-not-have-setup-questions-information">
+                                <Run FontWeight="Bold"
+                                     Text="here" />
+                            </Hyperlink>
+                            <Run Text="for updates." />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
+            <dev:Case Value="Write Protected (ASUS)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="HII resources not published" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="1. Go to " />
+                            <Run FontWeight="Bold"
+                                 Text="Setup → Advanced → UEFI Variables Protection" />
+                            <Run Text=" section of your BIOS" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="2. Disable " />
+                            <Run FontWeight="Bold"
+                                 Text="Password protection of Runtime Variables" />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
+            <dev:Case Value="Write Protected (ASRock)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="Write Protected" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="To access this setting, you need to mod your BIOS with" />
+                            <Hyperlink NavigateUri="https://boringboredom.github.io/UEFI-Editor">
+                                <Run FontWeight="Bold"
+                                     Text="UEFI Editor" />
+                            </Hyperlink>
+                            <Run Text=". ASRock's BIOS has 2 Advanced forms, so you need to do a" />
+                            <Hyperlink NavigateUri="https://github.com/BoringBoredom/UEFI-Editor#menu">
+                                <Run FontWeight="Bold"
+                                     Text="Menu swap" />
+                            </Hyperlink>
+                            <Run Text="to gain access to the setting." />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="1. Go to " />
+                            <Run FontWeight="Bold"
+                                 Text="Setup → Advanced → UEFI Variables Protection" />
+                            <Run Text=" section of your BIOS" />
+                        </TextBlock>
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextWrapping="Wrap">
+                            <Run Text="2. Disable " />
+                            <Run FontWeight="Bold"
+                                 Text="Password protection of Runtime Variables" />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
+            <dev:Case Value="Write Protected (Other)">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Padding="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Vertical"
+                                Spacing="12">
+                        <FontIcon HorizontalAlignment="Center"
+                                  FontSize="32"
+                                  Foreground="{ThemeResource SystemFillColorCritical}"
+                                  Glyph="&#xE783;" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Text="Write Protected" />
+                        <TextBlock HorizontalAlignment="Center"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{StaticResource BodyTextBlockStyle}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap">
+                            <Run Text="Currently there is no solution regarding variable write-protection for non-ASUS/ASRock motherboards. It is currently being investigated. Check" />
+                            <Hyperlink NavigateUri="https://github.com/ab3lkaizen/SCEHUB?tab=readme-ov-file#import">
+                                <Run FontWeight="Bold"
+                                     Text="here" />
+                            </Hyperlink>
+                            <Run Text="for updates." />
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </dev:Case>
+
             <dev:Case Value="Loaded">
                 <!--  ScrollViewer  -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

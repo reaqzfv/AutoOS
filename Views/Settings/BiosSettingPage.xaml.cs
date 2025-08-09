@@ -1,6 +1,7 @@
 ﻿using AutoOS.Views.Settings.BIOS;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Management;
 
 namespace AutoOS.Views.Settings;
 
@@ -52,91 +53,158 @@ public sealed partial class BiosSettingPage : Page
                 Arguments = @$"/o /s ""{nvram}""",
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
             }
         };
 
         process.Start();
-        Debug.WriteLine(await process.StandardError.ReadToEndAsync());
+        string errorOutput = await process.StandardError.ReadToEndAsync();
+        string output = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
 
-        // add error checks
+        string manufacturer = "Unknown";
+        string product = "Unknown";
 
-        List<BiosSettingModel> parsedList;
-
-        using var stream = File.OpenRead(nvram);
-        parsedList = await Task.Run(() =>
+        using (var searcher = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard"))
         {
-            var settings = BiosSettingParser.ParseFromStream(stream).ToList();
-
-            foreach (var setting in settings)
+            foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
             {
-                foreach (var option in setting.Options)
-                    option.Parent = setting;
+                manufacturer = mo["Manufacturer"]?.ToString().ToLowerInvariant() ?? "Unknown";
+                product = mo["Product"]?.ToString().ToUpperInvariant() ?? "Unknown";
+            }
+        }
 
-                setting.InitializeSelectedOption();
+        if (output.Contains("AMISCE is not supported on this system.", StringComparison.OrdinalIgnoreCase))
+        {
+            SwitchPresenter.Value = "Unsupported";
+        }
+        else if (errorOutput.Contains("BIOS not compatible", StringComparison.OrdinalIgnoreCase))
+        {
+            SwitchPresenter.Value = "Incompatible";
+        }
+        else if (errorOutput.Contains("WARNING: HII data does not have setup questions information", StringComparison.OrdinalIgnoreCase))
+        {
+            if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+            {
+                var protectedChipsets = new[] {
+                    "Z790", "B760", "H770", "X870", "X670", "B650", "A620"
+                };
 
-                var rule = BiosSettingRecommendationsList.Rules
-                    .FirstOrDefault(r =>
-                        string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
-
-                if (rule != null)
+                if (protectedChipsets.Any(c => product.Contains(c)))
                 {
-                    string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
-                    string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
+                    SwitchPresenter.Value = "HII Resources (Protected)";
+                }
+                else
+                {
+                    SwitchPresenter.Value = "HII Resources (Regular)";
+                }
+            }
+            else
+            {
+                SwitchPresenter.Value = "HII Resources (Other)";
+            }
+        }
+        else if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
+        {
+            // export nvram
+            using var process2 = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
+                    Arguments = @$"/o /s ""{nvram}"" /d",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
+                }
+            };
 
-                    var recommended = setting.Options
-                        .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
+            process2.Start();
+            errorOutput = await process2.StandardError.ReadToEndAsync();
+            output = await process2.StandardOutput.ReadToEndAsync();
+            await process2.WaitForExitAsync();
+        }
+        
+        if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
+        {
+            List<BiosSettingModel> parsedList;
 
-                    if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
+            using var stream = File.OpenRead(nvram);
+            parsedList = await Task.Run(() =>
+            {
+                var settings = BiosSettingParser.ParseFromStream(stream).ToList();
+
+                foreach (var setting in settings)
+                {
+                    foreach (var option in setting.Options)
+                        option.Parent = setting;
+
+                    setting.InitializeSelectedOption();
+
+                    var rule = BiosSettingRecommendationsList.Rules
+                        .FirstOrDefault(r =>
+                            string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                    if (rule != null)
                     {
-                        setting.RecommendedOption = recommended;
-                        setting.IsRecommended = true;
-                    }
-                    else if (setting.HasValueField)
-                    {
-                        string currentValue = setting.Value?.Trim().ToLowerInvariant();
-                        if (!string.IsNullOrEmpty(currentValue) && currentValue != recommendedLabel)
+                        string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
+                        string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
+
+                        var recommended = setting.Options
+                            .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
+
+                        if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
                         {
+                            setting.RecommendedOption = recommended;
                             setting.IsRecommended = true;
-                            setting.RecommendedValue = rule.RecommendedOption;
+                        }
+                        else if (setting.HasValueField)
+                        {
+                            string currentValue = setting.Value?.Trim().ToLowerInvariant();
+                            if (!string.IsNullOrEmpty(currentValue) && currentValue != recommendedLabel)
+                            {
+                                setting.IsRecommended = true;
+                                setting.RecommendedValue = rule.RecommendedOption;
+                            }
                         }
                     }
+
+                    setting.MarkLoaded();
                 }
 
-                setting.MarkLoaded();
+                return settings;
+            });
+
+            var ruleOrder = BiosSettingRecommendationsList.Rules
+             .Select((r, i) => new { r.SetupQuestion, Index = i })
+             .ToDictionary(x => x.SetupQuestion.ToLowerInvariant(), x => x.Index);
+
+            var sortedRecommended = parsedList
+                .Where(s => s.IsRecommended)
+                .OrderBy(s => ruleOrder.TryGetValue(s.SetupQuestion.ToLowerInvariant(), out var index) ? index : int.MaxValue)
+                .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            biosSettings.Clear();
+            recommendedSettings.Clear();
+            allSettings.Clear();
+
+            foreach (var setting in parsedList)
+            {
+                biosSettings.Add(setting);
+                allSettings.Add(setting);
             }
 
-            return settings;
-        });
+            foreach (var setting in sortedRecommended)
+            {
+                recommendedSettings.Add(setting);
+            }
 
-        var ruleOrder = BiosSettingRecommendationsList.Rules
-         .Select((r, i) => new { r.SetupQuestion, Index = i })
-         .ToDictionary(x => x.SetupQuestion.ToLowerInvariant(), x => x.Index);
-
-        var sortedRecommended = parsedList
-            .Where(s => s.IsRecommended)
-            .OrderBy(s => ruleOrder.TryGetValue(s.SetupQuestion.ToLowerInvariant(), out var index) ? index : int.MaxValue)
-            .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
-            .ToList();
-
-        biosSettings.Clear();
-        recommendedSettings.Clear();
-        allSettings.Clear();
-
-        foreach (var setting in parsedList)
-        {
-            biosSettings.Add(setting);
-            allSettings.Add(setting);
+            // show settings
+            SwitchPresenter.Value = "Loaded";
         }
-
-        foreach (var setting in sortedRecommended)
-        {
-            recommendedSettings.Add(setting);
-        }
-
-        // show settings
-        SwitchPresenter.Value = "Loaded";
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -209,11 +277,40 @@ public sealed partial class BiosSettingPage : Page
         };
 
         process.Start();
-        Debug.WriteLine(await process.StandardError.ReadToEndAsync());
+        string errorOutput = await process.StandardError.ReadToEndAsync();
+        string output = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
 
-        await LoadAsync();
+        string manufacturer = "Unknown";
+        string product = "Unknown";
 
-        // add error checks
+        using (var searcher = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard"))
+        {
+            foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
+            {
+                manufacturer = mo["Manufacturer"]?.ToString().ToLowerInvariant() ?? "Unknown";
+                product = mo["Product"]?.ToString().ToUpperInvariant() ?? "Unknown";
+            }
+        }
+
+        if (errorOutput.Contains("Warning: Error in writing variable", StringComparison.OrdinalIgnoreCase))
+        {
+            if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+            {
+                SwitchPresenter.Value = "Write Protected (ASUS)";
+            }
+            else if (manufacturer.Contains("asrock"))
+            {
+                SwitchPresenter.Value = "Write Protected (ASRock)";
+            }
+            else
+            {
+                SwitchPresenter.Value = "Write Protected (Other)";
+            }
+        }
+        else if (errorOutput.Contains("Script file imported successfully.", StringComparison.OrdinalIgnoreCase))
+        {
+            await LoadAsync();
+        }
     }
 }
