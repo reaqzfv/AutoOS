@@ -21,13 +21,11 @@ public partial class BiosSettingModel : INotifyPropertyChanged
     public List<string> OriginalLines { get; set; }
     public string OriginalValue { get; set; }
     public Option OriginalSelectedOption { get; set; }
-    public bool IsModified { get; set; } = false;
 
     // ─────── Display Helpers ───────
     public string DisplayBiosDefault => $"Default: {BiosDefault}";
     public string DisplayCurrent =>
         OriginalSelectedOption?.Label ?? OriginalValue ?? SelectedOption?.Label ?? Value;
-
     public string DisplayRecommended =>
         RecommendedOption?.Label ?? RecommendedValue;
 
@@ -57,8 +55,6 @@ public partial class BiosSettingModel : INotifyPropertyChanged
 
                 if (_isLoaded)
                 {
-                    IsModified = true;
-
                     if (!BiosSettingUpdater.IsBatchUpdating)
                     {
                         BiosSettingUpdater.SaveSingleSetting(this);
@@ -112,8 +108,6 @@ public partial class Option : INotifyPropertyChanged
     public BiosSettingModel Parent { get; set; }
 
     // ─────── Flags ───────
-    public bool IsRecommendedOption => this == Parent?.RecommendedOption;
-
     public bool IsSelected
     {
         get => _isSelected;
@@ -132,7 +126,6 @@ public partial class Option : INotifyPropertyChanged
                             opt.IsSelected = false;
                     }
 
-                    Parent.IsModified = true;
                     Parent.SelectedOption = this;
 
                     if (!BiosSettingUpdater.IsBatchUpdating)
