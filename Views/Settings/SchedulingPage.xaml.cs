@@ -43,7 +43,11 @@ public sealed partial class SchedulingPage : Page
                 {
                     item.IsEnabled = false;
                 }
-                
+                else if (i == 0)
+                {
+                    item.IsEnabled = false;
+                }
+
                 comboBox.Items.Add(item);
             }
         }
