@@ -79,7 +79,7 @@
                     <TextBlock HorizontalAlignment="Center"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Style="{StaticResource BodyTextBlockStyle}"
-                               Text="AMISCE is not supported on this system."
+                               Text="SCEWIN / AMISCE is not supported on this system."
                                TextWrapping="Wrap" />
                 </StackPanel>
             </dev:Case>
