@@ -2,20 +2,26 @@ using System.Text.RegularExpressions;
 
 namespace AutoOS.Views.Settings.BIOS;
 
-public class BiosSettingParser
+public partial class BiosSettingParser
 {
     public static IEnumerable<BiosSettingModel> ParseFromStream(Stream stream)
     {
-        using var reader = new StreamReader(stream);
-        string line;
+        var lines = new List<string>();
+        using (var reader = new StreamReader(stream))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+        }
+
         BiosSettingModel current = null;
         bool readingOptions = false;
-        int lineNumber = 0;
 
-        while ((line = reader.ReadLine()) != null)
+        for (int i = 0; i < lines.Count; i++)
         {
-            lineNumber++;
-            line = line.Trim();
+            var line = lines[i].Trim();
             if (string.IsNullOrWhiteSpace(line)) continue;
 
             if (line.StartsWith("Setup Question", StringComparison.OrdinalIgnoreCase))
@@ -24,15 +30,18 @@ public class BiosSettingParser
                 {
                     yield return current;
                 }
+
                 current = new BiosSettingModel
                 {
-                    Line = lineNumber
+                    Line = i,
+                    OriginalLines = lines
                 };
                 readingOptions = false;
 
                 var parts = line.Split('=', 2);
                 if (parts.Length == 2)
                     current.SetupQuestion = parts[1].Trim().Replace('�', '™');
+
                 continue;
             }
 
@@ -81,9 +90,11 @@ public class BiosSettingParser
             {
                 current.Options = [];
                 readingOptions = true;
-                var inline = line.Substring(line.IndexOf('=') + 1).Trim();
+
+                var inline = line[(line.IndexOf('=') + 1)..].Trim();
                 if (!string.IsNullOrWhiteSpace(inline))
-                    ParseOptionLine(inline, current.Options, current.Token);
+                    ParseOptionLine(inline, current.Options);
+
                 continue;
             }
 
@@ -91,7 +102,7 @@ public class BiosSettingParser
             {
                 if (line.StartsWith("[") || line.StartsWith("*["))
                 {
-                    ParseOptionLine(line, current.Options, current.Token);
+                    ParseOptionLine(line, current.Options);
                 }
                 else
                 {
@@ -108,12 +119,18 @@ public class BiosSettingParser
         static string ExtractValue(string raw)
         {
             raw = raw.Trim();
-            return raw.StartsWith("\"") && raw.EndsWith("\"") ? raw[1..^1]
-                 : raw.StartsWith("<") && raw.EndsWith(">") ? raw[1..^1]
-                 : raw;
+
+            if (raw.StartsWith("\"") && raw.EndsWith("\""))
+                return raw[1..^1];
+            if (raw.StartsWith("<") && raw.EndsWith(">"))
+                return raw[1..^1];
+            if (raw.StartsWith("{") && raw.EndsWith("}"))
+                return raw.TrimStart('{').TrimEnd('}').Trim();
+
+            return raw;
         }
 
-        static void ParseOptionLine(string line, List<Option> options, string groupName)
+        static void ParseOptionLine(string line, List<Option> options)
         {
             var match = Regex.Match(line, @"^\*?\[(\w+)\](.*)$");
             if (!match.Success) return;
@@ -122,7 +139,7 @@ public class BiosSettingParser
             var index = match.Groups[1].Value.Trim();
             var label = match.Groups[2].Value.Trim();
             var commentIndex = label.IndexOf("//");
-            if (commentIndex >= 0) label = label.Substring(0, commentIndex).Trim();
+            if (commentIndex >= 0) label = label[..commentIndex].Trim();
 
             options.Add(new Option
             {
@@ -131,45 +148,49 @@ public class BiosSettingParser
                 IsSelected = isSelected
             });
         }
-
-        static string FormatHelpString(string help)
-        {
-            if (string.IsNullOrWhiteSpace(help))
-                return "No help string";
-
-            help = help.Trim();
-
-            // replace � with °
-            help = help.Replace('�', '°');
-
-            //  new lines before bracketed markers like [Auto]:
-            help = Regex.Replace(
-                help,
-                @"(?<!^)(?=\[\w.*?\]:)",
-                "\n"
-            );
-
-            // insert newline before technical markers like Min.: Max.: etc.
-            string[] markers = { "Min.:", "Max.:", "Standard:", "Increment:" };
-            foreach (var marker in markers)
-            {
-                int index = help.IndexOf(marker);
-                if (index > 0)
-                {
-                    var before = help.Substring(0, index).TrimEnd();
-                    var after = help.Substring(index).TrimStart();
-                    help = $"{before}\n{after}";
-                    break;
-                }
-            }
-
-            // new lines before lines starting with * or * followed by space
-            help = Regex.Replace(help, @"(?<!^)(?=\*\s?)", "\n");
-
-            // new line before NOTE: or Note:
-            help = Regex.Replace(help, @"(?<!^)(?=NOTE:|Note:)", "\n");
-
-            return help;
-        }
     }
+
+    static string FormatHelpString(string help)
+    {
+        if (string.IsNullOrWhiteSpace(help))
+            return "No help string";
+
+        help = help.Trim();
+
+        // replace � with °
+        help = help.Replace('�', '°');
+
+        // new lines before bracketed markers like [Auto]:
+        help = BracketedMarkerRegex().Replace(help, "\n");
+
+        // insert newline before technical markers like Min.: Max.: etc.
+        foreach (var marker in new[] { "Min.:", "Max.:", "Standard:", "Increment:" })
+        {
+            int index = help.IndexOf(marker);
+            if (index > 0)
+            {
+                var before = help[..index].TrimEnd();
+                var after = help[index..].TrimStart();
+                help = $"{before}\n{after}";
+                break;
+            }
+        }
+
+        // new lines before lines starting with * or * followed by space
+        help = AsteriskMarkerRegex().Replace(help, "\n");
+
+        // new line before NOTE: or Note:
+        help = NoteMarkerRegex().Replace(help, "\n");
+
+        return help;
+    }
+
+    [GeneratedRegex(@"(?<!^)(?=\[\w.*?\]:)", RegexOptions.Compiled)]
+    private static partial Regex BracketedMarkerRegex();
+
+    [GeneratedRegex(@"(?<!^)(?=\*\s?)", RegexOptions.Compiled)]
+    private static partial Regex AsteriskMarkerRegex();
+
+    [GeneratedRegex(@"(?<!^)(?=NOTE:|Note:)", RegexOptions.Compiled)]
+    private static partial Regex NoteMarkerRegex();
 }

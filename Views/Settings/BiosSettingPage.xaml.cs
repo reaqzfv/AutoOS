@@ -17,12 +17,7 @@ public sealed partial class BiosSettingPage : Page
 
         RecommendedSettingsListView.ItemsSource = recommendedSettings;
         SettingsListView.ItemsSource = biosSettings;
-        
-        _ = LoadAsync();
-    }
 
-    private async Task LoadAsync()
-    {
         // copy scewin to localstate because of permissions
         Directory.CreateDirectory(Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN"));
         string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN");
@@ -39,6 +34,14 @@ public sealed partial class BiosSettingPage : Page
             string destFilePath = file.Replace(sourcePath, destinationPath);
             File.Copy(file, destFilePath, true);
         }
+
+        _ = LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        // show exporting
+        SwitchPresenter.Value = "Export";
 
         // export nvram
         using var process = new Process
@@ -133,7 +136,7 @@ public sealed partial class BiosSettingPage : Page
         }
 
         // show settings
-        SwitchPresenter.Value = "False";
+        SwitchPresenter.Value = "Loaded";
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -145,7 +148,7 @@ public sealed partial class BiosSettingPage : Page
 
             foreach (var setting in allSettings)
             {
-                if (string.IsNullOrEmpty(query) || setting.SetupQuestion?.ToLower().Contains(query) == true)
+                if (string.IsNullOrEmpty(query) || setting.SetupQuestion?.ToLower().Contains(query, StringComparison.CurrentCultureIgnoreCase) == true)
                 {
                     biosSettings.Add(setting);
                 }
@@ -155,44 +158,61 @@ public sealed partial class BiosSettingPage : Page
 
     private void MergeChanges_Click(object sender, RoutedEventArgs e)
     {
+        BiosSettingUpdater.IsBatchUpdating = true;
+
         foreach (var setting in recommendedSettings)
         {
-            if (setting.OriginalValue == null)
-                setting.OriginalValue = setting.Value;
-
-            if (setting.OriginalSelectedOption == null)
-                setting.OriginalSelectedOption = setting.SelectedOption;
+            setting.OriginalValue ??= setting.Value;
+            setting.OriginalSelectedOption ??= setting.SelectedOption;
 
             if (setting.RecommendedOption != null)
             {
                 foreach (var option in setting.Options)
-                    option.IsSelected = (option == setting.RecommendedOption);
+                    option.IsSelected = option == setting.RecommendedOption;
             }
             else if (!string.IsNullOrEmpty(setting.RecommendedValue))
             {
                 setting.Value = setting.RecommendedValue;
             }
         }
+
+        BiosSettingUpdater.IsBatchUpdating = false;
+
+        var modifiedSettings = recommendedSettings
+            .Where(s =>
+                (s.OriginalValue != null && s.Value != s.OriginalValue) ||
+                (s.OriginalSelectedOption != null && s.SelectedOption != s.OriginalSelectedOption))
+            .ToList();
+
+        if (modifiedSettings.Count > 0)
+        {
+            BiosSettingUpdater.SaveAllSettings(modifiedSettings);
+        }
     }
 
     private async void Import_Click(object sender, RoutedEventArgs e)
     {
-        //// import nvram
-        //using var process = new Process
-        //{
-        //    StartInfo = new ProcessStartInfo
-        //    {
-        //        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN", "SCEWIN_64.exe"),
-        //        Arguments = @$"/i /s ""{nvram}""",
-        //        UseShellExecute = false,
-        //        CreateNoWindow = true,
-        //        RedirectStandardError = true
-        //    }
-        //};
+        // show importing
+        SwitchPresenter.Value = "Import";
 
-        //process.Start();
-        //Debug.WriteLine(await process.StandardError.ReadToEndAsync());
-        //await process.WaitForExitAsync();
+        // import nvram
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN", "SCEWIN_64.exe"),
+                Arguments = @$"/i /s ""{nvram}""",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardError = true
+            }
+        };
+
+        process.Start();
+        Debug.WriteLine(await process.StandardError.ReadToEndAsync());
+        await process.WaitForExitAsync();
+
+        await LoadAsync();
 
         // add error checks
     }

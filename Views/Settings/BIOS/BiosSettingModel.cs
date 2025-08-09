@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace AutoOS.Views.Settings.BIOS;
 
-public class BiosSettingModel : INotifyPropertyChanged
+public partial class BiosSettingModel : INotifyPropertyChanged
 {
     private bool _isLoaded = false;
     private string _value;
@@ -19,8 +18,10 @@ public class BiosSettingModel : INotifyPropertyChanged
     public int Line { get; set; }
 
     // ─────── State Tracking ───────
+    public List<string> OriginalLines { get; set; }
     public string OriginalValue { get; set; }
     public Option OriginalSelectedOption { get; set; }
+    public bool IsModified { get; set; } = false;
 
     // ─────── Display Helpers ───────
     public string DisplayBiosDefault => $"Default: {BiosDefault}";
@@ -51,15 +52,22 @@ public class BiosSettingModel : INotifyPropertyChanged
         {
             if (_value != value)
             {
-                var oldValue = _value;
                 _value = value;
                 OnPropertyChanged();
 
                 if (_isLoaded)
-                    Debug.WriteLine($"[Value] '{SetupQuestion}' changed from '{oldValue}' to '{_value}'");
+                {
+                    IsModified = true;
+
+                    if (!BiosSettingUpdater.IsBatchUpdating)
+                    {
+                        BiosSettingUpdater.SaveSingleSetting(this);
+                    }
+                }
             }
         }
     }
+
     public List<Option> Options { get; set; } = [];
 
     public Option SelectedOption
@@ -89,7 +97,7 @@ public class BiosSettingModel : INotifyPropertyChanged
     }
 }
 
-public class Option : INotifyPropertyChanged
+public partial class Option : INotifyPropertyChanged
 {
     private bool _isSelected;
 
@@ -113,7 +121,6 @@ public class Option : INotifyPropertyChanged
         {
             if (_isSelected != value)
             {
-                var oldSelected = Parent?.SelectedOption;
                 _isSelected = value;
                 OnPropertyChanged();
 
@@ -125,17 +132,15 @@ public class Option : INotifyPropertyChanged
                             opt.IsSelected = false;
                     }
 
-                    string oldLabel = oldSelected?.Label;
-                    string oldIndex = oldSelected?.Index;
-
-                    Debug.WriteLine($"[Option] '{Parent.SetupQuestion}' changed from '{oldLabel} {oldIndex}' to '{Label} {Index}'{Parent.Line}");
-
+                    Parent.IsModified = true;
                     Parent.SelectedOption = this;
+
+                    if (!BiosSettingUpdater.IsBatchUpdating)
+                    {
+                        BiosSettingUpdater.SaveSingleSetting(Parent);
+                    }
                 }
             }
         }
     }
 }
-
-
-

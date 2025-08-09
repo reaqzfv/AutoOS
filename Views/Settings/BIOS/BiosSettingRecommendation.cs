@@ -27,8 +27,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Command Rate Support", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "ECC Support", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Link Training Retry", RecommendedOption = "Disabled" }, // or 2
-        new BiosSettingRecommendation { SetupQuestion = "SA GV", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "Total Memory Encryption", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "SA GV", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Total Memory Encryption", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "CPU C-states", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C State Limit", RecommendedOption = "C0/C1" },
@@ -37,10 +37,12 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "C-State Pre-Wake", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Auto Demotion", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Un-demotion", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Package C-State Demotion", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Package C-State Un-demotion", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Ring Down Bin", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU EIST Function", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "EIST", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "EIST", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel SpeedStep™", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Race To Halt (RTH)", RecommendedOption = "Disabled" },
@@ -51,6 +53,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Dual Tau Boost", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Bi-Directional PROCHOT#", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Vmax Stress", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "V-Max Stress", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel RMT State", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "FIVR Spread Spectrum", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "RFI Spread Spectrum", RecommendedOption = "0.5%" },
@@ -62,12 +65,27 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "AP threads Idle Manner", RecommendedOption = "RUN Loop" },
         new BiosSettingRecommendation { SetupQuestion = "Boot performance mode", RecommendedOption = "Turbo Performance" },
         new BiosSettingRecommendation { SetupQuestion = "PCH Energy Reporting", RecommendedOption = "Enabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel Adaptive Thermal Monitor", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Intel Adaptive Thermal Monitor", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Thermal Monitor", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CFG Lock", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "VT-d", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel (VMX) Virtualization Technology", RecommendedOption = "Disabled" },
+
+        // for oc
+        new BiosSettingRecommendation { SetupQuestion = "BCLK Spread Spectrum", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Intel(R) Adaptive Boost Technology", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", RecommendedOption = "Disabled  Enforce All limits" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", RecommendedOption = "Sync All Cores" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "MCH Full Check", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "VRM Spread Spectrum", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Overclocking TVB", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", RecommendedOption = "Disabled" },
+
+        // timer res
+        new BiosSettingRecommendation { SetupQuestion = "System Time and Alarm Source", RecommendedOption = "Legacy RTC" },
 
         new BiosSettingRecommendation { SetupQuestion = "Power Gating", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCI Express Power Gating", RecommendedOption = "Disabled" },
@@ -114,7 +132,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PEP TCSS", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP VMD", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "HDC Control", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "ACPI Sleep State", RecommendedOption = "Suspend Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCH Cross Throttling", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCI Express Clock Gating", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ASPM Support", RecommendedOption = "Disabled" },
@@ -127,17 +144,18 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "LTR", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEG ASPM", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "PCH ASPM", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "DMI ASPM", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "DMI ASPM", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB power delivery in Soft Off state (S5)", RecommendedOption = "Disabled" },
         
-        new BiosSettingRecommendation { SetupQuestion = "ACPI Standby State", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "ACPI Standby State", RecommendedOption = "Suspend Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "ACPI Sleep State", RecommendedOption = "Suspend Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ErP Ready", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", RecommendedOption = "Enable" },
         new BiosSettingRecommendation { SetupQuestion = "Disabled Gen2 Pll Shutdown and L1 Controller Power gating", RecommendedOption = "Enable" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Disabled Energy Reporting", RecommendedOption = "Enable" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Legacy IO Low Latency", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel Ready Mode Technology", RecommendedOption = "Disabled" },
         
@@ -145,8 +163,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Interrupt Redirection Mode Selection", RecommendedOption = "Round robin" },
         new BiosSettingRecommendation { SetupQuestion = "USB 2.0 Controller Mode", RecommendedOption = "HiSpeed" },
         new BiosSettingRecommendation { SetupQuestion = "3DMark01 Enhancement", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "Legacy Game Compatibility Mode", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Legacy Game Compatibility Mode", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "BIST", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "BIST Enable", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCH Trace Hub Enable Mode", RecommendedOption = "Disabled" },
@@ -190,7 +207,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "NFER", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CER", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PME SCI", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Remote Platform Erase Feature", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Remote Platform Erase Feature", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Tunneling over USB4", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Discrete Thunderbolt(TM) Support", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "IGD VTD Enable", RecommendedOption = "Disabled" },
@@ -199,17 +216,17 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Three Strike Counter", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Control Iommu Pre-boot Behavior", RecommendedOption = "Disable IOMMU" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", RecommendedOption = "Disabled" }, // we might want to use regex or matching
+        new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", RecommendedOption = "Disabled" },
         
         new BiosSettingRecommendation { SetupQuestion = "BME DMA Mitigation", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PAVP Enable", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Enable RH Prevention", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Execute Disable Bit", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "TCM State", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "AES", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ASF Support", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Wake On WiGig", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Wake on WLAN and BT Enable", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", RecommendedOption = "Disabled" }, // (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "USB S5 Wakeup Support", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DeepSx Wake on WLAN and BT Enable", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "WoV (Wake on Voice)", RecommendedOption = "0" },
@@ -223,7 +240,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PS2 Keyboard and Mouse", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS2 Devices Support", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Option ROM Messages", RecommendedOption = "Keep Current" },
-        new BiosSettingRecommendation { SetupQuestion = "Launch PXE OpROM policy", RecommendedOption = "Do no launch" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Launch PXE OpROM policy", RecommendedOption = "Do no launch" },
         new BiosSettingRecommendation { SetupQuestion = "EC Notification", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS3 Enable", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS4 Enable", RecommendedOption = "Disabled" },
@@ -247,12 +264,15 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PEG3 Max Payload size", RecommendedOption = "256" },
 
         new BiosSettingRecommendation { SetupQuestion = "Above 4G Decoding", RecommendedOption = "Enabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Above 4GB MMIO BIOS assignment", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Above 4GB MMIO BIOS assignment", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Above 4G memory/Crypto Currency mining", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", RecommendedOption = "Enabled" },
 
+        new BiosSettingRecommendation { SetupQuestion = "OS Type", RecommendedOption = "Windows UEFI mode" },
+        new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", RecommendedOption = "Standard" },
+        new BiosSettingRecommendation { SetupQuestion = "TPM State", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "TCM State", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Me State", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
-        new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", RecommendedOption = "Disabled" }, // (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "PTT", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", RecommendedOption = "Enabled" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Intel Platform Trust Technology (PTT)", RecommendedOption = "Disabled" }, // didn't find
@@ -268,7 +288,7 @@ public static class BiosSettingRecommendationsList
 
         new BiosSettingRecommendation { SetupQuestion = "Global C-state Control", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "FCH Spread Spectrum", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "NX Mode", RecommendedOption = "Disabled" }, // valorant may need this enabled or virtualization
+        //new BiosSettingRecommendation { SetupQuestion = "NX Mode", RecommendedOption = "Disabled" }, // valorant may need this enabled or virtualization
         new BiosSettingRecommendation { SetupQuestion = "SVM Mode", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SMT Control", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "OC Explore Mode", RecommendedOption = "Expert" },
@@ -296,9 +316,23 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Game Boost", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "TSME", RecommendedOption = "Disabled" },
 
+        // rgb
+        new BiosSettingRecommendation { SetupQuestion = "When system is in working state", RecommendedOption = "Aura Off" },
+        new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", RecommendedOption = "Aura Off" },
+        new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", RecommendedOption = "Disabled" }, // didn't find
+
+        // useful
+        new BiosSettingRecommendation { SetupQuestion = "Boot Sector (MBR/GPT) Recovery Policy", RecommendedOption = "Auto Recovery" },
+
+        // ads
+        new BiosSettingRecommendation { SetupQuestion = "Download & Install ARMOURY CRATE app", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Download & Install MyASUS service & app", RecommendedOption = "Disabled" },
+
         //new BiosSettingRecommendation { SetupQuestion = "Tcc Activation Offset", RecommendedOption = "0" }, // exists both as Auto Setting and as value setting i think only the value setting should be changed to 0 (default is 0 anyway)
         //new BiosSettingRecommendation { SetupQuestion = "LAN Wake From DeepSx", RecommendedOption = "Disabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Wake on LAN Enable", RecommendedOption = "Disabled" }, // required for wake on lan
+        //new BiosSettingRecommendation { SetupQuestion = "PME Enable", RecommendedOption = "Enabled" }, // required for wake on lan
+        //new BiosSettingRecommendation { SetupQuestion = "Power On By PCI-E", RecommendedOption = "Enabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN", RecommendedOption = "Disabled" }, // required for wlan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN Device", RecommendedOption = "Disabled" }, // required for wlan and bt
         //new BiosSettingRecommendation { SetupQuestion = "WWAN participant (WIFI)", RecommendedOption = "Disabled" }, // didn't find

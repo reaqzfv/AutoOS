@@ -47,8 +47,8 @@
         </StackPanel>
         <dev:SwitchPresenter x:Name="SwitchPresenter"
                              Grid.Row="1"
-                             Value="True">
-            <dev:Case Value="True">
+                             Value="Export">
+            <dev:Case Value="Export">
                 <StackPanel HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Orientation="Vertical"
@@ -60,7 +60,7 @@
                                Text="Exporting NVRAM..." />
                 </StackPanel>
             </dev:Case>
-            <dev:Case Value="False">
+            <dev:Case Value="Loaded">
                 <!--  ScrollViewer  -->
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid Margin="36,0,36,0">
@@ -253,6 +253,18 @@
                         </Expander>
                     </Grid>
                 </ScrollViewer>
+            </dev:Case>
+            <dev:Case Value="Import">
+                <StackPanel HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical"
+                            Spacing="8">
+                    <ProgressRing IsActive="True" />
+                    <TextBlock HorizontalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Text="Importing NVRAM..." />
+                </StackPanel>
             </dev:Case>
         </dev:SwitchPresenter>
     </Grid>
