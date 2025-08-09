@@ -217,7 +217,7 @@
                                   Glyph="&#xE783;" />
                         <TextBlock HorizontalAlignment="Center"
                                    Style="{StaticResource TitleTextBlockStyle}"
-                                   Text="HII resources not published" />
+                                   Text="Write Protected" />
                         <TextBlock HorizontalAlignment="Center"
                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                    Style="{StaticResource BodyTextBlockStyle}"
