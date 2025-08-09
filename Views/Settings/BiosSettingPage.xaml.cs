@@ -272,7 +272,8 @@ public sealed partial class BiosSettingPage : Page
                 Arguments = @$"/i /s ""{nvram}""",
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                RedirectStandardError = true
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
             }
         };
 
