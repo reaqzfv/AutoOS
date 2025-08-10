@@ -72,7 +72,12 @@ public sealed partial class PersonalizationPage : Page
     private void GetSchedule()
     {
         // load mode
-        ScheduleMode.SelectedIndex = (localSettings.Values["ScheduleMode"] as string ?? "Sunset to sunrise") switch
+        if (localSettings.Values["ScheduleMode"] is not string)
+        {
+            localSettings.Values["ScheduleMode"] = "Sunset to sunrise";
+        }
+
+        ScheduleMode.SelectedIndex = (localSettings.Values["ScheduleMode"] as string) switch
         {
             "Always Light" => 0,
             "Always Dark" => 1,
