@@ -202,7 +202,7 @@ public partial class HeaderCarousel : ItemsControl
             tasks.Add(EpicGamesHelper.LoadGames());
         }
 
-        if (SteamAccounts.SelectedItem is ComboBoxItem && ((ComboBoxItem)SteamAccounts.SelectedItem).Content?.ToString() != "Not logged in" && SteamButton.Visibility == Visibility.Visible)
+        if ((SteamAccounts.SelectedItem is string && SteamAccounts.SelectedItem.ToString() != "Not logged in") && SteamButton.Visibility == Visibility.Visible)
         {
             tasks.Add(SteamHelper.LoadGames());
         }
