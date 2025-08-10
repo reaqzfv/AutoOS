@@ -63,7 +63,6 @@ public partial class HeaderCarousel : ItemsControl
     private StackPanel PresentationMode;
     private ComboBox PresentationMode_ComboBox;
 
-
     private AutoSuggestBox SearchBox;
     private string currentSortKey = "Title";
     private bool ascending = true;
@@ -75,7 +74,7 @@ public partial class HeaderCarousel : ItemsControl
     private TextBlock FullscreenText;
     private FontIcon FullscreenIcon;
 
-    public event EventHandler<HeaderCarouselEventArgs> ItemClick;
+    //public event EventHandler<HeaderCarouselEventArgs> ItemClick;
 
     private readonly Random random = new();
     private readonly DispatcherTimer selectionTimer = new();
@@ -202,7 +201,7 @@ public partial class HeaderCarousel : ItemsControl
             tasks.Add(EpicGamesHelper.LoadGames());
         }
 
-        if (SteamAccounts.SelectedItem is ComboBoxItem && ((ComboBoxItem)SteamAccounts.SelectedItem).Content?.ToString() != "Not logged in" && SteamButton.Visibility == Visibility.Visible)
+        if ((SteamAccounts.SelectedItem is string && SteamAccounts.SelectedItem.ToString() != "Not logged in") && SteamButton.Visibility == Visibility.Visible)
         {
             tasks.Add(SteamHelper.LoadGames());
         }
