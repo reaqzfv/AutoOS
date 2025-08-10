@@ -168,18 +168,23 @@ public static class ProcessActions
         await Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName, executable), arguments) { CreateNoWindow = true })!.WaitForExitAsync();
     }
 
-    public static async Task RunDownload(string url, string path, string file)
+    public static async Task RunDownload(string url, string path, string? file = null)
     {
         string title = InstallPage.Info.Title;
 
         var uiContext = SynchronizationContext.Current;
 
-        var download = DownloadBuilder.New()
-            .WithUrl(url)
-            .WithDirectory(path)
-            .WithFileName(file)
-            .WithConfiguration(new DownloadConfiguration())
-            .Build();
+        var downloadBuilder = DownloadBuilder.New()
+        .WithUrl(url)
+        .WithDirectory(path)
+        .WithConfiguration(new DownloadConfiguration());
+
+        if (!string.IsNullOrWhiteSpace(file))
+        {
+            downloadBuilder.WithFileName(file);
+        }
+
+        var download = downloadBuilder.Build();
 
         DateTime lastLoggedTime = DateTime.MinValue;
 
@@ -482,32 +487,37 @@ public static class ProcessActions
         await action();
     }
 
-    public static async Task RunMicrosoftStoreDownload(string productFamilyName, string fileType, string architecture, string fileName, int version)
+    public static async Task RunMicrosoftStoreDownload(string productFamilyName, string catalogId, string fileType, int index, bool dependencies)
     {
-        string[] urls = Array.Empty<string>();
-        string url = "";
+        string title = InstallPage.Info.Title;
 
-        for (int attempt = 0; attempt < 2; attempt++)
+        string output = await Process.Start(new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -File {Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")} {productFamilyName} {catalogId} {fileType} {index} {(dependencies ? " -Dependencies" : "")}")
         {
-            string output = await Process.Start(new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")}\" \"{productFamilyName}\" \"{fileType}\" \"{architecture}\"")
-            {
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true
-            })!.StandardOutput.ReadToEndAsync();
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            RedirectStandardOutput = true
+        })!.StandardOutput.ReadToEndAsync();
 
-            urls = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            if (urls.Length > version)
+        string folderName = $"{productFamilyName} {(dependencies ? "(Dependencies)" : "(Package)")}";
+        string downloadFolder = Path.Combine(Path.GetTempPath(), folderName);
+
+        Directory.CreateDirectory(downloadFolder);
+
+        if (dependencies)
+        {
+            string[] urls = output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string url in urls)
             {
-                url = urls[version];
-                break;
+                InstallPage.Info.Title = title;
+                await RunDownload(url.Trim(), downloadFolder);
             }
         }
-
-        if (string.IsNullOrWhiteSpace(url))
-            throw new Exception("Failed to get download link for " + productFamilyName);
-
-        await RunDownload(url, Path.GetTempPath(), fileName);
+        else
+        {
+            string url = output.Trim();
+            await RunDownload(url, downloadFolder);
+        }
     }
 
     public static async Task RunImportEpicGamesLauncherAccount()
