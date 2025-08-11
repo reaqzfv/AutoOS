@@ -133,11 +133,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                GPU.SelectedIndex = GPU.Items
-                    .OfType<ComboBoxItem>()
-                    .Select((item, index) => (item, index))
-                    .First(pair => pair.item.IsEnabled)
-                    .index;
+                GPU.SelectedIndex = isHyperThreadingEnabled ? 2 : 1;
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
 
@@ -147,11 +143,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                XHCI.SelectedIndex = XHCI.Items
-                    .OfType<ComboBoxItem>()
-                    .Select((item, index) => (item, index))
-                    .First(pair => pair.item.IsEnabled)
-                    .index;
+                XHCI.SelectedIndex = GPU.SelectedIndex + (isHyperThreadingEnabled ? 2 : 1);
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
 
@@ -161,11 +153,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                NIC.SelectedIndex = NIC.Items
-                    .OfType<ComboBoxItem>()
-                    .Select((item, index) => (item, index))
-                    .First(pair => pair.item.IsEnabled)
-                    .index;
+                NIC.SelectedIndex = XHCI.SelectedIndex + (isHyperThreadingEnabled ? 2 : 1);
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
         }
