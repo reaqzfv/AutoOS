@@ -74,14 +74,14 @@ public static class BiosSettingRecommendationsList
 
         // for oc
         new BiosSettingRecommendation { SetupQuestion = "BCLK Spread Spectrum", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel(R) Adaptive Boost Technology", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", RecommendedOption = "Disabled  Enforce All limits" },
-        new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", RecommendedOption = "Sync All Cores" },
+        //new BiosSettingRecommendation { SetupQuestion = "Intel(R) Adaptive Boost Technology", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", RecommendedOption = "Disabled  Enforce All limits" },
+        //new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", RecommendedOption = "Sync All Cores" },
         new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "MCH Full Check", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "VRM Spread Spectrum", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Overclocking TVB", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", RecommendedOption = "Disabled" },
 
         // timer res
@@ -272,8 +272,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", RecommendedOption = "Standard" },
         new BiosSettingRecommendation { SetupQuestion = "TPM State", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "TCM State", RecommendedOption = "Enabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Me State", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
-        new BiosSettingRecommendation { SetupQuestion = "PTT", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
+        //new BiosSettingRecommendation { SetupQuestion = "Me State", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
+        //new BiosSettingRecommendation { SetupQuestion = "PTT", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", RecommendedOption = "Enabled" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Intel Platform Trust Technology (PTT)", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Software Guard Extensions (SGX)", RecommendedOption = "Disabled" }, // didn't find
