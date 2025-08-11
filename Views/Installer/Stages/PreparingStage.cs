@@ -36,7 +36,6 @@ public static class PreparingStage
 
     public static bool? AppleMusic;
     public static bool? WOL;
-    public static int? CoreCount;
     public static bool? TxIntDelay;
 
     public static bool? HID;
@@ -85,7 +84,6 @@ public static class PreparingStage
     public static bool? SteamGames;
 
     public static bool? Scheduling;
-    public static bool? Hyperthreading;
     public static bool? Reserve;
 
     private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
@@ -245,11 +243,6 @@ public static class PreparingStage
                 .Cast<ManagementObject>()
                 .Any(obj => ((ushort[])obj["ChassisTypes"])?.Any(type => new ushort[] { 3, 4, 5, 6, 7, 15, 16, 17 }.Contains(type)) == true);
 
-            CoreCount = new ManagementObjectSearcher("SELECT NumberOfCores FROM Win32_Processor")
-            .Get()
-            .Cast<ManagementObject>()
-            .Sum(m => Convert.ToInt32(m["NumberOfCores"]));
-
             foreach (var obj in new ManagementObjectSearcher("SELECT * FROM Win32_NetworkAdapter").Get())
             {
                 var pnpDeviceId = obj["PNPDeviceID"]?.ToString();
@@ -269,12 +262,10 @@ public static class PreparingStage
                 }
             }
 
-            Hyperthreading = new ManagementObjectSearcher("SELECT NumberOfCores, NumberOfLogicalProcessors FROM Win32_Processor")
-               .Get()
-               .Cast<ManagementObject>()
-               .Any(obj => Convert.ToInt32(obj["NumberOfLogicalProcessors"]) > Convert.ToInt32(obj["NumberOfCores"]));
-
-            Reserve = CoreCount >= 6;
+            Reserve = new ManagementObjectSearcher("SELECT NumberOfCores FROM Win32_Processor")
+                .Get()
+                .Cast<ManagementObject>()
+                .Sum(m => Convert.ToInt32(m["NumberOfCores"])) >= 6;
         });
 
         InstallPage.Info.Severity = InfoBarSeverity.Informational;

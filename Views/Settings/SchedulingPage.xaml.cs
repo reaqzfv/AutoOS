@@ -72,29 +72,41 @@ public sealed partial class SchedulingPage : Page
         string configPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "AutoGpuAffinity", "config.ini");
         string[] lines = File.ReadAllLines(configPath);
 
-        if (physicalCoreCount > 2)
+        if (isHyperThreadingEnabled)
         {
-            if (isHyperThreadingEnabled)
+            if (physicalCoreCount == 2 && logicalCoreCount == 4)
             {
                 lines = [.. lines.Select(line =>
                 {
                     if (line.StartsWith("custom_cpus="))
                     {
-                        var cores = Enumerable.Range(2, logicalCoreCount - 2).Where(i => i % 2 == 0);
-                        return $"custom_cpus=[{string.Join(",", cores)}]";
+                        return $"custom_cpus=[1..3]";
                     }
                     return line;
                 })];
             }
             else
             {
+                var cores = Enumerable.Range(2, logicalCoreCount - 1)
+                                      .Where(i => i % 2 == 0);
                 lines = [.. lines.Select(line =>
                 {
                     if (line.StartsWith("custom_cpus="))
-                        return $"custom_cpus=[1..{logicalCoreCount - 1}]";
+                    {
+                        return $"custom_cpus=[{string.Join(",", cores)}]";
+                    }
                     return line;
                 })];
             }
+        }
+        else
+        {
+            lines = [.. lines.Select(line =>
+            {
+                if (line.StartsWith("custom_cpus="))
+                    return $"custom_cpus=[1..{logicalCoreCount - 1}]";
+                return line;
+            })];
         }
 
         if (Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") &&
