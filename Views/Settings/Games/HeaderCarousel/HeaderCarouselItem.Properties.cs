@@ -122,6 +122,14 @@ public partial class HeaderCarouselItem
     public static readonly DependencyProperty AgeRatingDescriptionProperty =
         DependencyProperty.Register(nameof(AgeRatingDescription), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(defaultValue: null));
 
+    public string Elements
+    {
+        get => (string)GetValue(ElementsProperty);
+        set => SetValue(ElementsProperty, value);
+    }
+    public static readonly DependencyProperty ElementsProperty =
+        DependencyProperty.Register(nameof(Elements), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(defaultValue: null));
+
     public IList<string> Genres
     {
         get => (IList<string>)GetValue(GenresProperty);

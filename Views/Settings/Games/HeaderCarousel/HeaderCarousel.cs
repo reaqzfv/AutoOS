@@ -57,6 +57,9 @@ public partial class HeaderCarousel : ItemsControl
     private StackPanel EpicGrowl;
     private StackPanel SteamGrowl;
 
+    private TextBlock AgeRatingDescriptionText;
+    private TextBlock ElementsText;
+
     private Button OpenInstallLocation;
     
     private bool isInitializingPresentationMode = true;
@@ -160,6 +163,9 @@ public partial class HeaderCarousel : ItemsControl
         StopProcesses.Click += StopProcesses_Click;
         LaunchExplorer = GetTemplateChild("LaunchExplorer") as Button;
         LaunchExplorer.Click += LaunchExplorer_Click;
+
+        AgeRatingDescriptionText = GetTemplateChild("AgeRatingDescriptionText") as TextBlock;
+        ElementsText = GetTemplateChild("ElementsText") as TextBlock;
 
         Screenshots_ScrollViewer = GetTemplateChild("Screenshots_ScrollViewer") as ScrollViewer;
         //Screenshots_Gallery = GetTemplateChild("Screenshots_Gallery") as GameGallery;
@@ -455,6 +461,14 @@ public partial class HeaderCarousel : ItemsControl
             AgeRatingUrl = selectedTile?.AgeRatingUrl;
             AgeRatingTitle = selectedTile?.AgeRatingTitle;
             AgeRatingDescription = selectedTile?.AgeRatingDescription;
+            AgeRatingDescriptionText.Visibility = string.IsNullOrEmpty(AgeRatingDescription)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            Elements = selectedTile?.Elements;
+            ElementsText.Visibility = string.IsNullOrEmpty(Elements)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
 
             Genres = selectedTile?.Genres;
             Features = selectedTile?.Features;
@@ -513,6 +527,10 @@ public partial class HeaderCarousel : ItemsControl
         {
             selectedTile = tile;
             SelectTile();
+        }
+        else
+        {
+            selectionTimer?.Stop();
         }
     }
 

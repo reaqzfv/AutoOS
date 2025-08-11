@@ -529,6 +529,7 @@ namespace AutoOS.Helpers
                                 AgeRatingUrl = ageRatingData[ratingKey]?["ratingImage"]?.ToString(),
                                 AgeRatingTitle = ageRatingData[ratingKey]?["title"]?.ToString(),
                                 AgeRatingDescription = ageRatingData[ratingKey]?["descriptor"]?.ToString()?.Replace(",", ", "),
+                                Elements = ageRatingData[ratingKey]?["element"]?.ToString()?.Replace(",", ", "),
                                 //Description = offerData["description"]?.GetValue<string>(),
                                 Description = description,
                                 Screenshots = [.. mediaData["images"]

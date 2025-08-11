@@ -464,7 +464,7 @@
                                         VerticalAlignment="Center"
                                         Orientation="Horizontal"
                                         Spacing="12">
-                                <dev:ImageEx Height="36"
+                                <dev:ImageEx Height="44"
                                              IsCacheEnabled="True"
                                              Source="{TemplateBinding AgeRatingUrl}"
                                              Stretch="Uniform" />
@@ -472,11 +472,18 @@
                                     <TextBlock RequestedTheme="Dark"
                                                Style="{StaticResource BodyStrongTextBlockStyle}"
                                                Text="{TemplateBinding AgeRatingTitle}" />
-                                    <TextBlock FontSize="8"
+                                    <TextBlock x:Name="AgeRatingDescriptionText"
+                                               FontSize="10"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                RequestedTheme="Dark"
                                                Style="{StaticResource CaptionTextBlockStyle}"
                                                Text="{TemplateBinding AgeRatingDescription}" />
+                                    <TextBlock x:Name="ElementsText"
+                                               FontSize="8"
+                                               Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                               RequestedTheme="Dark"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="{TemplateBinding Elements}" />
                                 </StackPanel>
                             </StackPanel>
                             <!--  Metadata Scrollviewer  -->
