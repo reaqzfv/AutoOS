@@ -272,8 +272,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", RecommendedOption = "Standard" },
         new BiosSettingRecommendation { SetupQuestion = "TPM State", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "TCM State", RecommendedOption = "Enabled" },
-        //new BiosSettingRecommendation { SetupQuestion = "Me State", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
-        //new BiosSettingRecommendation { SetupQuestion = "PTT", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
+        new BiosSettingRecommendation { SetupQuestion = "Me State", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
+        new BiosSettingRecommendation { SetupQuestion = "PTT", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", RecommendedOption = "Enabled" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Intel Platform Trust Technology (PTT)", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Software Guard Extensions (SGX)", RecommendedOption = "Disabled" }, // didn't find

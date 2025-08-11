@@ -329,9 +329,16 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <InfoBar Title="Incorrect settings may affect system stability or leave it in an unbootable state. The recommended changes are verified to be safe but will disable all kinds of powersaving features."
+                                 Grid.Row="0"
+                                 Margin="0,0,0,12"
+                                 IsOpen="True"
+                                 Severity="Warning">
+                        </InfoBar>
                         <!--  Recommended Changes  -->
-                        <Expander Grid.Row="0"
+                        <Expander Grid.Row="1"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   IsExpanded="True">
@@ -349,13 +356,13 @@
                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
                                                    Text="Recommended Changes" />
                                         <!--  Apply  -->
-                                        <Button Click="MergeChanges_Click">
+                                        <Button Click="MergeAll_Click">
                                             <StackPanel VerticalAlignment="Center"
                                                         Orientation="Horizontal">
                                                 <FontIcon Margin="0,0,8,0"
                                                           FontSize="14"
                                                           Glyph="&#xE930;" />
-                                                <TextBlock Text="Merge Changes" />
+                                                <TextBlock Text="Merge All" />
                                             </StackPanel>
                                         </Button>
                                     </StackPanel>
@@ -368,7 +375,7 @@
                                 </Grid>
                             </Expander.Header>
                             <!--  ListView  -->
-                            <Grid MaxHeight="550">
+                            <Grid MaxHeight="485">
                                 <ListView x:Name="RecommendedSettingsListView"
                                           HorizontalContentAlignment="Stretch"
                                           ItemsSource="{x:Bind recommendedSettings}"
@@ -440,8 +447,8 @@
                             </Grid>
                         </Expander>
                         <!--  All Settings  -->
-                        <Expander Grid.Row="1"
-                                  Margin="0,12,0,0"
+                        <Expander Grid.Row="2"
+                                  Margin="0,12,0,36"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   IsExpanded="False">

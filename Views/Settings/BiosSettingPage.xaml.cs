@@ -224,7 +224,7 @@ public sealed partial class BiosSettingPage : Page
         }
     }
 
-    private void MergeChanges_Click(object sender, RoutedEventArgs e)
+    private void MergeAll_Click(object sender, RoutedEventArgs e)
     {
         BiosSettingUpdater.IsBatchUpdating = true;
 
