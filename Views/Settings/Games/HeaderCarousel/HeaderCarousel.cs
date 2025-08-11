@@ -251,7 +251,8 @@ public partial class HeaderCarousel : ItemsControl
             }
         }
 
-        selectionTimer.Start();
+        if (Items.Count > 1)
+            selectionTimer.Start();
     }
 
     private void ApplyBackdropBlur()
