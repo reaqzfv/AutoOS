@@ -168,7 +168,7 @@ public static class ProcessActions
         await Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName, executable), arguments) { CreateNoWindow = true })!.WaitForExitAsync();
     }
 
-    public static async Task RunDownload(string url, string path, string? file = null)
+    public static async Task RunDownload(string url, string path, string file = null)
     {
         string title = InstallPage.Info.Title;
 

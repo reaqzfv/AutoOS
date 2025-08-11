@@ -57,7 +57,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Intel RMT State", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "FIVR Spread Spectrum", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "RFI Spread Spectrum", RecommendedOption = "0.5%" },
-        new BiosSettingRecommendation { SetupQuestion = "Hyper-Threading", RecommendedOption = "Disabled" }, // condition if >6 cores
+        //new BiosSettingRecommendation { SetupQuestion = "Hyper-Threading", RecommendedOption = "Disabled" }, // condition if >6 cores
         new BiosSettingRecommendation { SetupQuestion = "Thermal Throttling Level", RecommendedOption = "Manual" },
         new BiosSettingRecommendation { SetupQuestion = "T0 Level", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "T1 Level", RecommendedOption = "0" },
@@ -290,7 +290,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "FCH Spread Spectrum", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "NX Mode", RecommendedOption = "Disabled" }, // valorant may need this enabled or virtualization
         new BiosSettingRecommendation { SetupQuestion = "SVM Mode", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "SMT Control", RecommendedOption = "Disable" },
+        //new BiosSettingRecommendation { SetupQuestion = "SMT Control", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "OC Explore Mode", RecommendedOption = "Expert" },
         new BiosSettingRecommendation { SetupQuestion = "CPU Over Temperature Alert", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU temperature Warning Control", RecommendedOption = "Disabled" },

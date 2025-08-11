@@ -448,7 +448,7 @@ public partial class HeaderCarousel : ItemsControl
             if (MetadataGrid.Visibility == Visibility.Collapsed)
                 MetadataGrid.Visibility = Visibility.Visible;
 
-            Metadata_ScrollViewer.Focus(FocusState.Programmatic);
+            //Metadata_ScrollViewer.Focus(FocusState.Programmatic);
             Metadata_ScrollViewer.ChangeView(null, 0, null);
             
             Title = selectedTile?.Title;

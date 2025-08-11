@@ -152,7 +152,7 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
 4. **AutoGpuAffinity**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)
-   - Changes: Added functionality to also apply the affinity to the parent of the GPU
+   - Changes: Added functionality to also apply the affinity to the parent of the GPU and output the 3 best performing CPUs
    - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/AutoGpuAffinity)
 
 5. **Service List Builder**
