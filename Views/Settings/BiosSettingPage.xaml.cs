@@ -129,6 +129,17 @@ public sealed partial class BiosSettingPage : Page
         
         if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
         {
+            // backup nvram.txt
+            string backupDir = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
+            string backupPath = Path.Combine(backupDir, "nvram.txt");
+
+            if (!Directory.Exists(backupDir))
+                Directory.CreateDirectory(backupDir);
+
+            if (!File.Exists(backupPath))
+                File.Copy(nvram, backupPath);
+
+            // parse nvram.txt
             List<BiosSettingModel> parsedList;
 
             using var stream = File.OpenRead(nvram);
