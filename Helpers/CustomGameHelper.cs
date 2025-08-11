@@ -146,7 +146,9 @@ namespace AutoOS.Helpers
                             PlayTime = playTime,
                             AgeRatingUrl = result["age_rating_url"],
                             AgeRatingTitle = result["age_rating_title"],
-                            AgeRatingDescription = entry.GetProperty("ratingContent")[0].GetString(),
+                            AgeRatingDescription = result["age_rating_title"] is not null
+                                                    ? entry.GetProperty("ratingContent")[0].GetString()
+                                                    : null,
                             Description = data.GetProperty("summary").GetString(),
                             Screenshots = [.. entry.GetProperty("screenshots").EnumerateArray().Select(x => x.GetString())],
                             //Videos = [.. data.GetProperty("videos")
@@ -240,7 +242,6 @@ namespace AutoOS.Helpers
                     }
                 }
 
-
                 if (maxGame.HasValue && maxGame.Value.TryGetProperty("cover", out var cover) && cover.ValueKind == JsonValueKind.Object && cover.TryGetProperty("url", out var url) && url.ValueKind == JsonValueKind.String)
                 {
                     string thumb = url.GetString() ?? "";
@@ -268,6 +269,13 @@ namespace AutoOS.Helpers
                         }
 
                         string developerNames = developers != null && developers.Any() ? string.Join(", ", developers) : "Unknown";
+
+                        string gameUrl = maxGame is JsonElement { ValueKind: JsonValueKind.Object } game &&
+                                            game.TryGetProperty("id", out var id) &&
+                                            id.ValueKind == JsonValueKind.Number &&
+                                            id.TryGetInt32(out var gameId)
+                            ? $"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{gameId}.json"
+                            : "";
 
                         string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
 
@@ -301,7 +309,7 @@ namespace AutoOS.Helpers
                             },
                                                     "USK" => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                             {
-                                {"0", "USK 0"}, {"6", "USK 6"}, {"12", "USK 12"}, {"16", "USK 16"}, {"18", "USK 18"},
+                                {"0", "USK ab 0"}, {"6", "USK ab 6"}, {"12", "USK ab 12"}, {"16", "USK ab 16"}, {"18", "USK ab 18"},
                             },
                                                     "ESRB" => new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                             {
@@ -317,7 +325,10 @@ namespace AutoOS.Helpers
                         {
                             foreach (var rating in ageRatings.EnumerateArray())
                             {
-                                if (string.Equals(rating.GetProperty("organization").GetProperty("name").GetString(), ratingKey, StringComparison.OrdinalIgnoreCase))
+                                if (string.Equals(
+                                    rating.GetProperty("organization").GetProperty("name").GetString(),
+                                    ratingKey,
+                                    StringComparison.OrdinalIgnoreCase))
                                 {
                                     ratingEntry = rating;
                                     break;
@@ -325,31 +336,34 @@ namespace AutoOS.Helpers
                             }
                         }
 
-                        string ratingCode = ratingEntry?.GetProperty("rating_category").GetProperty("rating").GetString();
-
-                        if (ratingCode is null)
+                        // If no matching rating for this region
+                        if (ratingEntry is null ||
+                            !ratingEntry.Value.TryGetProperty("rating_category", out var ratingCategory) ||
+                            !ratingCategory.TryGetProperty("rating", out var ratingValue))
+                        {
                             return new Dictionary<string, string>
                             {
-                                { "age_rating_url", "" },
-                                { "age_rating_title", "Unknown" }
+                                { "name", maxGame?.GetProperty("name").GetString() },
+                                { "game_url", gameUrl },
+                                { "cover_url", $"https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{slug}.jpg" },
+                                { "developers", developerNames },
+                                { "age_rating_url", null },
+                                { "age_rating_title", null }
                             };
+                        }
 
-                        string ratingKeyForUrl = ratingKey == "ESRB" && ratingCode.StartsWith("e10+", StringComparison.OrdinalIgnoreCase) ? "e10" : ratingCode;
+                        string ratingCode = ratingValue.GetString();
+
+                        string ratingKeyForUrl = ratingKey == "ESRB" &&
+                                                    ratingCode.StartsWith("e10+", StringComparison.OrdinalIgnoreCase) ? "e10" : ratingCode;
 
                         string ratingTitle = ratingTitles.TryGetValue(ratingCode, out var title) ? title : ratingCode;
 
                         string ratingUrl = $"{baseUrl}{ratingKeyForUrl.ToLowerInvariant()}.png";
 
-                        string gameUrl = maxGame is JsonElement { ValueKind: JsonValueKind.Object } game &&
-                                     game.TryGetProperty("id", out var id) &&
-                                     id.ValueKind == JsonValueKind.Number &&
-                                     id.TryGetInt32(out var gameId)
-                        ? $"https://raw.githubusercontent.com/LizardByte/GameDB/gh-pages/games/{gameId}.json"
-                        : "";
-
                         return new Dictionary<string, string>
                         {
-                            { "name", maxGame.Value.GetProperty("name").GetString() },
+                            { "name", maxGame?.GetProperty("name").GetString() ?? "Unknown" },
                             { "game_url", gameUrl },
                             { "cover_url", $"https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{slug}.jpg" },
                             { "developers", developerNames },
@@ -359,7 +373,10 @@ namespace AutoOS.Helpers
                     }
                 }
             }
-            catch { }
+            catch 
+            {
+                return null;
+            }
 
             return null;
         }
