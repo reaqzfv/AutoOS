@@ -86,6 +86,8 @@ public sealed partial class GraphicsPage : Page
                 Nvidia_SettingsGroup.Description = "Current Version: " + (await Task.Run(() => Process.Start(new ProcessStartInfo("nvidia-smi", "--query-gpu=driver_version --format=csv,noheader") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEndAsync()))?.Trim();
 
                 NvidiaUpdateCheck.IsChecked = false;
+                NvidiaUpdateCheck.Content = "Checking for updates";
+                NvidiaUpdateCheck.IsChecked = true;
             }
             else
             {
