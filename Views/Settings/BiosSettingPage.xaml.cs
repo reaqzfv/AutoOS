@@ -1,12 +1,46 @@
 ﻿using AutoOS.Views.Settings.BIOS;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
+using System.Runtime.CompilerServices;
 
 namespace AutoOS.Views.Settings;
 
-public sealed partial class BiosSettingPage : Page
+public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    private bool _isAnyModified;
+    public bool IsAnyModified
+    {
+        get => _isAnyModified;
+        set
+        {
+            if (_isAnyModified != value)
+            {
+                _isAnyModified = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    private bool _hasRecommendations;
+    public bool HasRecommendations
+    {
+        get => _hasRecommendations;
+        set
+        {
+            if (_hasRecommendations != value)
+            {
+                _hasRecommendations = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     private readonly string nvram = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "nvram.txt");
     private readonly ObservableCollection<BiosSettingModel> biosSettings = [];
     private readonly ObservableCollection<BiosSettingModel> recommendedSettings = [];
@@ -154,6 +188,12 @@ public sealed partial class BiosSettingPage : Page
 
                     setting.InitializeSelectedOption();
 
+                    if (setting.HasValueField)
+                        setting.OriginalValue = setting.Value;
+
+                    if (setting.HasOptions)
+                        setting.OriginalSelectedOption = setting.SelectedOption;
+
                     var rule = BiosSettingRecommendationsList.Rules
                         .FirstOrDefault(r =>
                             string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
@@ -206,12 +246,19 @@ public sealed partial class BiosSettingPage : Page
             {
                 biosSettings.Add(setting);
                 allSettings.Add(setting);
+
+                setting.ModifiedChanged += (s, e) =>
+                {
+                    IsAnyModified = allSettings.Any(x => x.IsModified);
+                };
             }
 
             foreach (var setting in sortedRecommended)
             {
                 recommendedSettings.Add(setting);
             }
+
+            HasRecommendations = parsedList.Any(s => s.IsRecommended);
 
             // show settings
             SwitchPresenter.Value = "Loaded";

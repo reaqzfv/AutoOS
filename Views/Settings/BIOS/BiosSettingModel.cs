@@ -55,10 +55,9 @@ public partial class BiosSettingModel : INotifyPropertyChanged
 
                 if (_isLoaded)
                 {
+                    RaiseModifiedChanged();
                     if (!BiosSettingUpdater.IsBatchUpdating)
-                    {
                         BiosSettingUpdater.SaveSingleSetting(this);
-                    }
                 }
             }
         }
@@ -78,6 +77,9 @@ public partial class BiosSettingModel : INotifyPropertyChanged
 
                 foreach (var opt in Options)
                     opt.IsSelected = opt == value;
+
+                if (_isLoaded)
+                    RaiseModifiedChanged();
             }
         }
     }
@@ -90,6 +92,17 @@ public partial class BiosSettingModel : INotifyPropertyChanged
     public void InitializeSelectedOption()
     {
         SelectedOption = Options.Find(o => o.IsSelected);
+    }
+
+    public bool IsModified => HasOptions
+        ? SelectedOption != OriginalSelectedOption
+        : Value != OriginalValue;
+
+    public event EventHandler ModifiedChanged;
+
+    private void RaiseModifiedChanged()
+    {
+        ModifiedChanged?.Invoke(this, EventArgs.Empty);
     }
 }
 

@@ -34,7 +34,8 @@
                 </dev:TextBox>
                 <!--  Import  -->
                 <Button Grid.Column="1"
-                        Click="Import_Click">
+                        Click="Import_Click"
+                        IsEnabled="{x:Bind IsAnyModified, Mode=OneWay}">
                     <StackPanel VerticalAlignment="Center"
                                 Orientation="Horizontal">
                         <FontIcon Margin="0,0,8,0"
@@ -341,7 +342,8 @@
                         <Expander Grid.Row="1"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
-                                  IsExpanded="True">
+                                  IsEnabled="{x:Bind HasRecommendations, Mode=OneWay}"
+                                  IsExpanded="{x:Bind HasRecommendations, Mode=OneWay}">
                             <Expander.Header>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -355,8 +357,9 @@
                                         <TextBlock VerticalAlignment="Center"
                                                    Style="{StaticResource BodyStrongTextBlockStyle}"
                                                    Text="Recommended Changes" />
-                                        <!--  Apply  -->
-                                        <Button Click="MergeAll_Click">
+                                        <!--  Merge All  -->
+                                        <Button Click="MergeAll_Click"
+                                                Visibility="{x:Bind HasRecommendations, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
                                             <StackPanel VerticalAlignment="Center"
                                                         Orientation="Horizontal">
                                                 <FontIcon Margin="0,0,8,0"
