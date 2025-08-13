@@ -5,15 +5,21 @@ using System.Text.Json;
 
 namespace AutoOS.Views.Installer.Stages;
 
-public static class GamesStage
+public static partial class GamesStage
 {
-    [DllImport("user32.dll")] static extern IntPtr GetDC(IntPtr hwnd);
-    [DllImport("gdi32.dll")] static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
-    [DllImport("user32.dll")] static extern int ReleaseDC(IntPtr hwnd, IntPtr hdc);
+    [LibraryImport("user32.dll")]
+    private static partial IntPtr GetDC(IntPtr hwnd);
+
+    [LibraryImport("gdi32.dll")]
+    private static partial int GetDeviceCaps(IntPtr hdc, int nIndex);
+
+    [LibraryImport("user32.dll")]
+    private static partial int ReleaseDC(IntPtr hwnd, IntPtr hdc);
 
     public static async Task Run()
     {
         bool? Fortnite = ApplicationStage.Fortnite;
+        bool? NVIDIA = PreparingStage.NVIDIA;
 
         InstallPage.Status.Text = "Configuring Games...";
 
@@ -22,12 +28,20 @@ public static class GamesStage
 
         string fortnitePath = string.Empty;
 
+        string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini");
+        InIHelper iniHelper = null;
+
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
+            // adjust fortnite settings
+            ("Adjusting Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
+            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini")))), () => Fortnite == true),
+            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings"))), () => Fortnite == true),
+            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference"))), () => Fortnite == true && NVIDIA == true),
+            
             // import fortnite settings
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient"""), () => Fortnite == true),
-            ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c copy /Y """ + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini") + @""" ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient\GameUserSettings.ini"""), () => Fortnite == true),
-            ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @$"powershell -Command ""$path = Join-Path $env:LOCALAPPDATA 'FortniteGame\Saved\Config\WindowsClient\GameUserSettings.ini'; $lines = Get-Content $path; $lines = $lines | ForEach-Object {{ if ($_ -like 'FrameRateLimit=*') {{ 'FrameRateLimit=' + {GetDeviceCaps(GetDC(IntPtr.Zero), 116)} + '.000000' }} else {{ $_ }} }}; Set-Content -Path $path -Value $lines"""), () => Fortnite == true),
+            ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c copy /Y """ + iniPath + @""" ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient\GameUserSettings.ini"""), () => Fortnite == true),
 
             // set gpu preference to high performance for fortnite
             ("Setting GPU Preference to high performance for Fortnite", async () => await ProcessActions.RunCustom(async () => fortnitePath = await Task.Run(() => JsonDocument.Parse(File.ReadAllText(@"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat")).RootElement.GetProperty("InstallationList").EnumerateArray().FirstOrDefault(e => e.GetProperty("AppName").GetString() == "Fortnite").GetProperty("InstallLocation").GetString())), () => Fortnite == true),

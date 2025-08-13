@@ -54,7 +54,7 @@ namespace AutoOS
 
                     MainWindow.AppWindow.MoveAndResize(new RectInt32(posX, posY, windowWidth, windowHeight));
 
-                    if (!(ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] is true))
+                    if (ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] is not true)
                     {
                         MainWindow.Activate();
                     }
