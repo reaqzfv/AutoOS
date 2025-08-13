@@ -320,7 +320,7 @@
                                 <Grid HorizontalAlignment="Stretch">
                                     <!--  Games  -->
                                     <ScrollViewer x:Name="PART_ScrollViewer"
-                                                  Margin="0,140,0,0"
+                                                  Margin="0,141,0,0"
                                                   VerticalAlignment="Top"
                                                   HorizontalScrollBarVisibility="Hidden"
                                                   VerticalScrollBarVisibility="Disabled"
