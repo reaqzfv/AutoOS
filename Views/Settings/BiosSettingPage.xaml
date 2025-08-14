@@ -335,6 +335,7 @@
                         <InfoBar Title="Incorrect settings may affect system stability or leave it in an unbootable state. The recommended changes are verified to be safe but will disable all kinds of powersaving features."
                                  Grid.Row="0"
                                  Margin="0,0,0,12"
+                                 IsClosable="False"
                                  IsOpen="True"
                                  Severity="Warning">
                         </InfoBar>
@@ -475,7 +476,7 @@
                                 </Grid>
                             </Expander.Header>
                             <!--  ListView  -->
-                            <Grid MaxHeight="550">
+                            <Grid MaxHeight="485">
                                 <ListView x:Name="SettingsListView"
                                           HorizontalContentAlignment="Stretch"
                                           ItemsSource="{x:Bind biosSettings}"
