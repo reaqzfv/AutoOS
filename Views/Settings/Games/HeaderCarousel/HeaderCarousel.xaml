@@ -313,7 +313,7 @@
                                                HorizontalAlignment="Center"
                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                               Text="Fetching data..." />
+                                               Text="Fetching Games..." />
                                 </StackPanel>
                             </dev:Case>
                             <dev:Case Value="False">
