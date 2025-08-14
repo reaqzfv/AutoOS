@@ -216,6 +216,14 @@ public partial class HeaderCarouselItem
     public static readonly DependencyProperty AppNameProperty =
         DependencyProperty.Register(nameof(AppName), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
 
+    public string LaunchCommand
+    {
+        get => (string)GetValue(LaunchCommandProperty);
+        set => SetValue(LaunchCommandProperty, value);
+    }
+    public static readonly DependencyProperty LaunchCommandProperty =
+        DependencyProperty.Register(nameof(LaunchCommand), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+
     public string LaunchExecutable
     {
         get => (string)GetValue(LaunchExecutableProperty);
@@ -223,6 +231,14 @@ public partial class HeaderCarouselItem
     }
     public static readonly DependencyProperty LaunchExecutableProperty =
         DependencyProperty.Register(nameof(LaunchExecutable), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+
+    public string ArtifactId
+    {
+        get => (string)GetValue(ArtifactIdProperty);
+        set => SetValue(ArtifactIdProperty, value);
+    }
+    public static readonly DependencyProperty ArtifactIdProperty =
+        DependencyProperty.Register(nameof(ArtifactId), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
 
     public string GameID
     {

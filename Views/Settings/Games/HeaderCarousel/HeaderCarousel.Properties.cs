@@ -59,7 +59,7 @@ public partial class HeaderCarousel
     }
 
     public static readonly DependencyProperty UpdateIsAvailableProperty =
-        DependencyProperty.Register(nameof(UpdateIsAvailable), typeof(bool), typeof(HeaderCarouselItem), new PropertyMetadata(false));
+        DependencyProperty.Register(nameof(UpdateIsAvailable), typeof(bool), typeof(HeaderCarousel), new PropertyMetadata(false));
 
     private void UpdateButtonsVisibility()
     {
@@ -187,7 +187,7 @@ public partial class HeaderCarousel
     }
 
     public static readonly DependencyProperty LauncherProperty =
-        DependencyProperty.Register(nameof(Launcher), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(Launcher), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string CatalogItemId
     {
@@ -195,7 +195,7 @@ public partial class HeaderCarousel
         set => SetValue(CatalogItemIdProperty, value);
     }
     public static readonly DependencyProperty CatalogItemIdProperty =
-        DependencyProperty.Register(nameof(CatalogItemId), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(CatalogItemId), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string CatalogNamespace
     {
@@ -203,7 +203,7 @@ public partial class HeaderCarousel
         set => SetValue(CatalogNamespaceProperty, value);
     }
     public static readonly DependencyProperty CatalogNamespaceProperty =
-        DependencyProperty.Register(nameof(CatalogNamespace), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(CatalogNamespace), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string AppName
     {
@@ -211,7 +211,15 @@ public partial class HeaderCarousel
         set => SetValue(AppNameProperty, value);
     }
     public static readonly DependencyProperty AppNameProperty =
-        DependencyProperty.Register(nameof(AppName), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(AppName), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
+
+    public string LaunchCommand
+    {
+        get => (string)GetValue(LaunchCommandProperty);
+        set => SetValue(LaunchCommandProperty, value);
+    }
+    public static readonly DependencyProperty LaunchCommandProperty =
+        DependencyProperty.Register(nameof(LaunchCommand), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string LaunchExecutable
     {
@@ -219,7 +227,15 @@ public partial class HeaderCarousel
         set => SetValue(LaunchExecutableProperty, value);
     }
     public static readonly DependencyProperty LaunchExecutableProperty =
-        DependencyProperty.Register(nameof(LaunchExecutable), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(LaunchExecutable), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
+
+    public string ArtifactId
+    {
+        get => (string)GetValue(ArtifactIdProperty);
+        set => SetValue(ArtifactIdProperty, value);
+    }
+    public static readonly DependencyProperty ArtifactIdProperty =
+        DependencyProperty.Register(nameof(ArtifactId), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string GameID
     {
@@ -228,7 +244,7 @@ public partial class HeaderCarousel
     }
 
     public static readonly DependencyProperty GameIDProperty =
-        DependencyProperty.Register(nameof(GameID), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(GameID), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string LauncherLocation
     {
@@ -236,7 +252,7 @@ public partial class HeaderCarousel
         set => SetValue(LauncherLocationProperty, value);
     }
     public static readonly DependencyProperty LauncherLocationProperty =
-        DependencyProperty.Register(nameof(LauncherLocation), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(LauncherLocation), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string DataLocation
     {
@@ -244,7 +260,7 @@ public partial class HeaderCarousel
         set => SetValue(DataLocationProperty, value);
     }
     public static readonly DependencyProperty DataLocationProperty =
-        DependencyProperty.Register(nameof(DataLocation), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(DataLocation), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public string GameLocation
     {
@@ -252,7 +268,7 @@ public partial class HeaderCarousel
         set => SetValue(GameLocationProperty, value);
     }
     public static readonly DependencyProperty GameLocationProperty =
-        DependencyProperty.Register(nameof(GameLocation), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+        DependencyProperty.Register(nameof(GameLocation), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
     public Stretch ImageStretch
     {

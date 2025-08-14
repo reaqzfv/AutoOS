@@ -250,6 +250,37 @@ namespace AutoOS.Helpers
             }
         }
 
+        public static async Task<string> Exchange()
+        {
+            try
+            {
+                string AccessToken = String.Empty;
+                try
+                {
+                    AccessToken = await UpdateEpicGamesToken(ActiveEpicGamesAccountPath);
+                }
+                catch
+                {
+                    return null;
+                }
+
+                loginClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+
+                var response = await loginClient.GetAsync("https://account-public-service-prod.ol.epicgames.com/account/api/oauth/exchange");
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var responseJson = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+                return responseJson.RootElement.GetProperty("code").GetString();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public static async Task<string> UpdateEpicGamesToken(string file)
         {
             // close epic games launcher
@@ -312,6 +343,41 @@ namespace AutoOS.Helpers
             return newAccessToken;
         }
 
+        public static async Task AddPlaytime(string artifactId, DateTime startTime)
+        {
+            var url = $"https://library-service.live.use1a.on.epicgames.com/library/api/public/playtime/account/{GetAccountData(ActiveEpicGamesAccountPath).AccountId}";
+            var endTime = DateTime.UtcNow;
+
+            string startTimeStr = startTime.ToString("o"); 
+            string endTimeStr = endTime.ToString("o");
+
+            var payload = new
+            {
+                machineId = Guid.NewGuid().ToString(),
+                artifactId,
+                startTime = startTimeStr,
+                endTime = endTimeStr,
+                startSegment = true,
+                endSegment = true
+            };
+
+            var json = JsonSerializer.Serialize(payload);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var response = await loginClient.PutAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var duration = endTime - startTime;
+                Debug.WriteLine($"Playtime added successfully. Status: {(int)response.StatusCode}, Duration: {duration.TotalSeconds} seconds");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Failed to add playtime. Status: {(int)response.StatusCode}, Error: {error}");
+            }
+        }
+
         public static async Task LoadGames()
         {
             if (File.Exists(EpicGamesPath) && Directory.Exists(EpicGamesMainfestDir))
@@ -332,17 +398,6 @@ namespace AutoOS.Helpers
                 }
 
                 loginClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-
-                string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
-                string ratingKey = region switch
-                {
-                    "AU" => "ACB",
-                    "BR" => "ClassInd",
-                    "KR" => "GRAC",
-                    "DE" => "USK",
-                    "US" or "CA" => "ESRB",
-                    _ => "PEGI"
-                };
 
                 // get library data
                 var libraryData = new List<JsonNode>();
@@ -386,6 +441,17 @@ namespace AutoOS.Helpers
                     p => p["artifactId"]?.GetValue<string>(),
                     p => p["totalTime"]?.GetValue<int>() ?? 0
                 );
+
+                string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
+                string ratingKey = region switch
+                {
+                    "AU" => "ACB",
+                    "BR" => "ClassInd",
+                    "KR" => "GRAC",
+                    "DE" => "USK",
+                    "US" or "CA" => "ESRB",
+                    _ => "PEGI"
+                };
 
                 // for each manifest
                 await Parallel.ForEachAsync(Directory.GetFiles(EpicGamesMainfestDir, "*.item", SearchOption.TopDirectoryOnly), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 }, async (file, _) =>
@@ -484,7 +550,6 @@ namespace AutoOS.Helpers
                         // get key images
                         var keyImages = manifestData[itemJson["MainGameCatalogItemId"]?.GetValue<string>()]?["keyImages"]?.AsArray() ?? [];
 
-
                         // get artifactid
                         //string artifactId = itemData?["releaseInfo"]?[0]?["appId"]?.ToString();
                         string artifactId = manifestData[itemJson["MainGameCatalogItemId"]?.GetValue<string>()]?["releaseInfo"]?[0]?["appId"]?.ToString();
@@ -510,7 +575,9 @@ namespace AutoOS.Helpers
                                 CatalogItemId = itemJson["MainGameCatalogItemId"]?.GetValue<string>(),
                                 AppName = itemJson["MainGameAppName"]?.GetValue<string>(),
                                 InstallLocation = itemJson["InstallLocation"]?.GetValue<string>(),
+                                LaunchCommand = itemJson["LaunchCommand"]?.GetValue<string>(),
                                 LaunchExecutable = itemJson["LaunchExecutable"]?.GetValue<string>(),
+                                ArtifactId = artifactId,
                                 UpdateIsAvailable = latestVersion != null && latestVersion != currentVersion,
                                 //ImageUrl = imageTallUrl,
                                 //BackgroundImageUrl = imageWideUrl,

@@ -247,7 +247,6 @@ public partial class HeaderCarousel : ItemsControl
                 scrollViewer.ChangeView(point.X - (scrollViewer.ActualWidth / 2) + (selectedTile.ActualSize.X / 2), null, null);
                 SetTileVisuals();
                 PageTitle.RequestedTheme = ElementTheme.Dark;
-                //deselectionTimer?.Start();
             }
         }
 
@@ -282,7 +281,6 @@ public partial class HeaderCarousel : ItemsControl
     private void HeaderCarousel_Loaded(object sender, RoutedEventArgs e)
     {
         selectionTimer.Tick += SelectionTimer_Tick;
-        //deselectionTimer.Tick += DeselectionTimer_Tick;
 
         ElementSoundPlayer.State = ElementSoundPlayerState.On;
     }
@@ -300,14 +298,8 @@ public partial class HeaderCarousel : ItemsControl
             tile.PointerEntered -= Tile_PointerEntered;
             tile.PointerEntered += Tile_PointerEntered;
 
-            //tile.PointerExited -= Tile_PointerExited;
-            //tile.PointerExited += Tile_PointerExited;
-
             tile.GotFocus -= Tile_GotFocus;
             tile.GotFocus += Tile_GotFocus;
-
-            //tile.LostFocus -= Tile_LostFocus;
-            //tile.LostFocus += Tile_LostFocus;
 
             //tile.Click -= Tile_Click;
             //tile.Click += Tile_Click;
@@ -317,17 +309,13 @@ public partial class HeaderCarousel : ItemsControl
     private void UnsubscribeToEvents()
     {
         selectionTimer.Tick -= SelectionTimer_Tick;
-        //deselectionTimer.Tick -= DeselectionTimer_Tick;
         selectionTimer?.Stop();
-        //deselectionTimer?.Stop();
         gameWatcherTimer?.Stop();
         
         foreach (HeaderCarouselItem tile in Items.Cast<HeaderCarouselItem>())
         {
             tile.PointerEntered -= Tile_PointerEntered;
-            //tile.PointerExited -= Tile_PointerExited;
             tile.GotFocus -= Tile_GotFocus;
-            //tile.LostFocus -= Tile_LostFocus;
             //tile.Click -= Tile_Click;
         }
     }
@@ -370,24 +358,9 @@ public partial class HeaderCarousel : ItemsControl
                 scrollViewer.ChangeView(point.X - (scrollViewer.ActualWidth / 2) + (selectedTile.ActualSize.X / 2), null, null);
                 await Task.Delay(500);
                 SetTileVisuals();
-                //deselectionTimer?.Start();
             }
         }
     }
-
-    //private void DeselectionTimer_Tick(object sender, object e)
-    //{
-    //    if (selectedTile != null)
-    //    {
-    //        selectedTile.IsSelected = false;
-    //        selectedTile = null;
-    //    }
-
-    //    deselectionTimer.Stop();
-
-    //    if (IsAutoScrollEnabled)
-    //        selectionTimer.Start();
-    //}
 
     private void ResetAndShuffle()
     {
@@ -485,6 +458,8 @@ public partial class HeaderCarousel : ItemsControl
             CatalogNamespace = selectedTile?.CatalogNamespace;
             AppName = selectedTile?.AppName;
             LaunchExecutable = selectedTile?.LaunchExecutable;
+            LaunchCommand = selectedTile?.LaunchCommand;
+            ArtifactId = selectedTile?.ArtifactId;
 
             GameID = selectedTile?.GameID;
 
@@ -496,6 +471,8 @@ public partial class HeaderCarousel : ItemsControl
 
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
+                await CheckGameRunningAsync();
+
                 await Task.Delay(100);
                 Screenshots = selectedTile?.Screenshots;
                 Screenshots_ScrollViewer.Visibility = (Screenshots?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
@@ -508,18 +485,9 @@ public partial class HeaderCarousel : ItemsControl
                 {
                     await GetPresentationMode();
                 }
-
-                await CheckGameRunningAsync();
             });
         }
     }
-
-    //private void Tile_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
-    //{
-    //    ((HeaderCarouselItem)sender).IsSelected = false;
-    //    if (IsAutoScrollEnabled)
-    //        selectionTimer.Start();
-    //}
 
     private void Tile_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
     {
@@ -538,7 +506,6 @@ public partial class HeaderCarousel : ItemsControl
     private void SelectTile()
     {
         selectionTimer.Stop();
-        //deselectionTimer.Stop();
 
         foreach (HeaderCarouselItem t in Items.Cast<HeaderCarouselItem>())
         {
@@ -554,13 +521,6 @@ public partial class HeaderCarousel : ItemsControl
         SelectTile();
     }
 
-    //private void Tile_LostFocus(object sender, RoutedEventArgs e)
-    //{
-    //    ((HeaderCarouselItem)sender).IsSelected = false;
-    //    if (IsAutoScrollEnabled)
-    //        selectionTimer.Start();
-    //}
-
     private void ApplyAutoScroll()
     {
         if (IsAutoScrollEnabled)
@@ -571,7 +531,6 @@ public partial class HeaderCarousel : ItemsControl
         else
         {
             selectionTimer?.Stop();
-            //deselectionTimer?.Stop();
         }
     }
 
@@ -628,7 +587,6 @@ public partial class HeaderCarousel : ItemsControl
             Point point = transform.TransformPoint(new Point(0, 0));
             scrollViewer.ChangeView(point.X - (scrollViewer.ActualWidth / 2) + (selectedTile.ActualSize.X / 2), null, null);
             SetTileVisuals();
-            //deselectionTimer?.Start();
         }
 
         await Task.Delay(500);
@@ -1453,12 +1411,37 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void Play_Click(object sender, RoutedEventArgs e)
+    private async void Play_Click(object sender, RoutedEventArgs e)
     {
+        selectionTimer?.Stop();
+
         if (Launcher == "Epic Games")
         {
-            EpicGamesHelper.CloseEpicGames();
-            Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{CatalogNamespace}%3A{CatalogItemId}%3A{AppName}?action=launch&silent=true") { UseShellExecute = true });
+            string exchangeCode = await EpicGamesHelper.Exchange();
+            var (accountId, displayName, _, _) = EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath);
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = Path.Combine(InstallLocation, LaunchExecutable),
+                Arguments = string.Join(" ", new[]
+                {
+                    LaunchCommand,
+                    "-AUTH_LOGIN=unused",
+                    $"-AUTH_PASSWORD={exchangeCode}",
+                    "-AUTH_TYPE=exchangeCode",
+                    $"-epicapp={AppName}",
+                    "-epicenv=Prod",
+                    "-EpicPortal",
+                    $"-epicusername={displayName}",
+                    $"-epicuserid={accountId}",
+                    "-epiclocale=en",
+                    $"-epicsandboxid={CatalogNamespace}"
+                }),
+                WorkingDirectory = Path.GetDirectoryName(Path.Combine(InstallLocation, LaunchExecutable)),
+                UseShellExecute = false
+            };
+
+            Process.Start(startInfo);
         }
         else if (Launcher == "Steam")
         {
@@ -1659,6 +1642,7 @@ public partial class HeaderCarousel : ItemsControl
     private bool? previousGameState = null;
     private bool? previousExplorerState = null;
     private bool servicesState = false;
+    //private readonly Dictionary<string, DateTime> epicGameStartTimes = new();
 
     async Task StartGameWatcherAsync(Func<Task<bool>> isGameRunningAsync)
     {
@@ -1702,6 +1686,21 @@ public partial class HeaderCarousel : ItemsControl
                     LaunchExplorer_Click(this, new RoutedEventArgs());
                 }
 
+                //if (Launcher == "Epic Games")
+                //{
+                //    if (isRunning && !epicGameStartTimes.ContainsKey(ArtifactId))
+                //    {
+                //        Debug.WriteLine($"SETTING STARTTIME for {Title}");
+                //        epicGameStartTimes[ArtifactId] = DateTime.UtcNow;
+                //    }
+                //    else if (!isRunning && epicGameStartTimes.TryGetValue(ArtifactId, out var startTime))
+                //    {
+                //        Debug.WriteLine($"ADDING PLAYTIME for {Title}");
+                //        EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
+                //        epicGameStartTimes.Remove(ArtifactId);
+                //    }
+                //}
+
                 previousGameState = isRunning;
             });
         }
@@ -1723,10 +1722,10 @@ public partial class HeaderCarousel : ItemsControl
             string onlineExecutable = Title switch
             {
                 "Fortnite" => "FortniteClient-Win64-Shipping",
-                "Fall Guys" => "FallGuys_client_game.exe",
+                "Fall Guys" => "FallGuys_client_game",
                 _ => string.Empty
             };
-            if (Title == "Fall Guys") offlineExecutable = "FallGuys_client.exe";
+            if (Title == "Fall Guys") offlineExecutable = "FallGuys_client";
 
             await StartGameWatcherAsync(async () =>
                 await Task.Run(() =>
