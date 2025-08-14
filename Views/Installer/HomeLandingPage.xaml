@@ -36,6 +36,13 @@
                         </PathIcon>
                     </dev:HeaderTile.Source>
                 </dev:HeaderTile>
+                <dev:HeaderTile Title="Discord"
+                                Description="Join the community and get the latest updates."
+                                Link="https://discord.gg/bZU4dMMWpg">
+                    <dev:HeaderTile.Source>
+                        <Image Source="/Assets/Fluent/Discord.png" />
+                    </dev:HeaderTile.Source>
+                </dev:HeaderTile>
                 <dev:HeaderTile Title="Donate"
                                 Description="Leave a sign of appreciation of my work."
                                 Link="https://www.paypal.com/donate?hosted_button_id=W3YRLW35QEZWS">
