@@ -608,7 +608,7 @@ public partial class HeaderCarousel : ItemsControl
             .OfType<HeaderCarouselItem>()
             .FirstOrDefault(t => string.Equals(t.Title, title, StringComparison.CurrentCultureIgnoreCase));
 
-        if (tile == null)
+        if (tile == null || tile == selectedTile)
             return;
 
         if (selectedTile != null)
