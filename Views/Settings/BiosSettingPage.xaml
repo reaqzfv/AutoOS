@@ -32,18 +32,33 @@
                         <Button Content="&#xE71E;" />
                     </dev:TextBox.Content>
                 </dev:TextBox>
-                <!--  Import  -->
-                <Button Grid.Column="1"
-                        Click="Import_Click"
-                        IsEnabled="{x:Bind IsAnyModified, Mode=OneWay}">
-                    <StackPanel VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                        <FontIcon Margin="0,0,8,0"
-                                  FontSize="14"
-                                  Glyph="&#xE8B5;" />
-                        <TextBlock Text="Import to NVRAM" />
-                    </StackPanel>
-                </Button>
+                <!--  Backup  -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                    <Button x:Name="Backup"
+                            Click="Backup_Click"
+                            IsEnabled="False">
+                        <StackPanel VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <FontIcon Margin="0,0,8,0"
+                                      FontSize="14"
+                                      Glyph="&#xE777;" />
+                            <TextBlock Text="Restore from Backup" />
+                        </StackPanel>
+                    </Button>
+                    <!--  Import  -->
+                    <Button Click="Import_Click"
+                            IsEnabled="{x:Bind IsAnyModified, Mode=OneWay}">
+                        <StackPanel VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                            <FontIcon Margin="0,0,8,0"
+                                      FontSize="14"
+                                      Glyph="&#xE8B5;" />
+                            <TextBlock Text="Import to NVRAM" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Grid>
         </StackPanel>
         <dev:SwitchPresenter x:Name="SwitchPresenter"

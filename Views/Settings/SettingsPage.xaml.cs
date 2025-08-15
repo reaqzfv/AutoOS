@@ -1,5 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media;
-using Windows.ApplicationModel.DataTransfer;
+﻿using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.UI;
 
@@ -47,6 +46,7 @@ public sealed partial class SettingsPage : Page
                     Title = "Invalid File",
                     Content = "Please select the Ryujinx.exe file.",
                     CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
                     XamlRoot = App.MainWindow.Content.XamlRoot
                 };
                 await dialog.ShowAsync();
@@ -83,6 +83,7 @@ public sealed partial class SettingsPage : Page
                     Title = "Invalid Folder",
                     Content = "Please select the portable folder.",
                     CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
                     XamlRoot = App.MainWindow.Content.XamlRoot
                 };
                 await dialog.ShowAsync();

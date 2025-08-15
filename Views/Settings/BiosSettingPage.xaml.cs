@@ -164,14 +164,20 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
         {
             // backup nvram.txt
-            string backupDir = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
-            string backupPath = Path.Combine(backupDir, "nvram.txt");
+            string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+            string backupDir = Path.Combine(backupRoot, timestamp);
 
-            if (!Directory.Exists(backupDir))
-                Directory.CreateDirectory(backupDir);
+            Directory.CreateDirectory(backupDir);
+            File.Copy(nvram, Path.Combine(backupDir, "nvram.txt"), false);
 
-            if (!File.Exists(backupPath))
-                File.Copy(nvram, backupPath);
+            var backupFolders = Directory.GetDirectories(backupRoot)
+                .OrderByDescending(dir => dir)
+                .Skip(10)
+                .ToList();
+
+            foreach (var folder in backupFolders)
+                Directory.Delete(folder, true);
 
             // parse nvram.txt
             List<BiosSettingModel> parsedList;
@@ -262,6 +268,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 
             // show settings
             SwitchPresenter.Value = "Loaded";
+            Backup.IsEnabled = true;
         }
     }
 
@@ -314,6 +321,99 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         {
             BiosSettingUpdater.SaveAllSettings(modifiedSettings);
         }
+    }
+
+    private async void Backup_Click(object sender, RoutedEventArgs e)
+    {
+        // disable the button to avoid double-clicking
+        var senderButton = sender as Button;
+        senderButton.IsEnabled = false;
+
+        // launch file picker
+        var picker = new FilePicker(App.MainWindow)
+        {
+            ShowAllFilesOption = false,
+            InitialDirectory = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup")
+        };
+        picker.FileTypeChoices.Add("NVRAM", new List<string> { "*.txt" });
+        var file = await picker.PickSingleFileAsync();
+
+        if (file != null)
+        {
+            if (file.Name == "nvram.txt")
+            {
+                // show importing
+                SwitchPresenter.Value = "Import";
+
+                // import nvram
+                using var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN", "SCEWIN_64.exe"),
+                        Arguments = @$"/i /s ""{file.Path}""",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true
+                    }
+                };
+
+                process.Start();
+                string errorOutput = await process.StandardError.ReadToEndAsync();
+                string output = await process.StandardOutput.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                string manufacturer = "Unknown";
+                string product = "Unknown";
+
+                using (var searcher = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard"))
+                {
+                    foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
+                    {
+                        manufacturer = mo["Manufacturer"]?.ToString().ToLowerInvariant() ?? "Unknown";
+                        product = mo["Product"]?.ToString().ToUpperInvariant() ?? "Unknown";
+                    }
+                }
+
+                if (errorOutput.Contains("Warning: Error in writing variable", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+                    {
+                        SwitchPresenter.Value = "Write Protected (ASUS)";
+                    }
+                    else if (manufacturer.Contains("asrock"))
+                    {
+                        SwitchPresenter.Value = "Write Protected (ASRock)";
+                    }
+                    else
+                    {
+                        SwitchPresenter.Value = "Write Protected (Other)";
+                    }
+                }
+                else if (errorOutput.Contains("Script file imported successfully.", StringComparison.OrdinalIgnoreCase))
+                {
+                    await LoadAsync();
+                }
+                else if (errorOutput.Contains("System configuration not modified.", StringComparison.OrdinalIgnoreCase))
+                {
+                    await LoadAsync();
+                }
+            }
+            else {
+                var dialog = new ContentDialog
+                {
+                    Title = "Invalid File",
+                    Content = "Please select a valid nvram.txt file.",
+                    DefaultButton = ContentDialogButton.Close,
+                    CloseButtonText = "OK",
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
+
+                senderButton.IsEnabled = true;
+            }
+        }        
     }
 
     private async void Import_Click(object sender, RoutedEventArgs e)

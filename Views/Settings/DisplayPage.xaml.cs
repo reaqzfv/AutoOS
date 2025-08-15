@@ -35,9 +35,11 @@ public sealed partial class DisplayPage : Page
         await Task.Delay(300);
 
         // launch file picker
-        var picker = new FilePicker(App.MainWindow);
-        picker.ShowAllFilesOption = false;
-        picker.FileTypeChoices.Add("CRU profile", new List<string> { "*.exe" });
+        var picker = new FilePicker(App.MainWindow)
+        {
+            ShowAllFilesOption = false
+        };
+        picker.FileTypeChoices.Add("CRU profile", ["*.exe"]);
         var file = await picker.PickSingleFileAsync();
 
         if (file != null)
