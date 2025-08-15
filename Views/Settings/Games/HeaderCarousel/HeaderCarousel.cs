@@ -471,7 +471,7 @@ public partial class HeaderCarousel : ItemsControl
 
             DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, async () =>
             {
-                await CheckGameRunningAsync();
+                CheckGameRunning();
 
                 await Task.Delay(100);
                 Screenshots = selectedTile?.Screenshots;
@@ -1642,9 +1642,9 @@ public partial class HeaderCarousel : ItemsControl
     private bool? previousGameState = null;
     private bool? previousExplorerState = null;
     private bool servicesState = false;
-    //private readonly Dictionary<string, DateTime> epicGameStartTimes = new();
+    private readonly Dictionary<string, DateTime> epicGameStartTimes = new();
 
-    async Task StartGameWatcherAsync(Func<Task<bool>> isGameRunningAsync)
+    void StartGameWatcher(Func<bool> isGameRunning)
     {
         if (gameWatcherTimer != null)
         {
@@ -1662,9 +1662,9 @@ public partial class HeaderCarousel : ItemsControl
             Interval = TimeSpan.FromMilliseconds(500)
         };
 
-        async Task TickHandler()
+        void TickHandler()
         {
-            bool isRunning = await isGameRunningAsync();
+            bool isRunning = isGameRunning();
             bool explorerRunning = Process.GetProcessesByName("explorer").Length > 0;
 
             DispatcherQueue.TryEnqueue(() =>
@@ -1686,32 +1686,30 @@ public partial class HeaderCarousel : ItemsControl
                     LaunchExplorer_Click(this, new RoutedEventArgs());
                 }
 
-                //if (Launcher == "Epic Games")
-                //{
-                //    if (isRunning && !epicGameStartTimes.ContainsKey(ArtifactId))
-                //    {
-                //        Debug.WriteLine($"SETTING STARTTIME for {Title}");
-                //        epicGameStartTimes[ArtifactId] = DateTime.UtcNow;
-                //    }
-                //    else if (!isRunning && epicGameStartTimes.TryGetValue(ArtifactId, out var startTime))
-                //    {
-                //        Debug.WriteLine($"ADDING PLAYTIME for {Title}");
-                //        EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
-                //        epicGameStartTimes.Remove(ArtifactId);
-                //    }
-                //}
+                if (Launcher == "Epic Games")
+                {
+                    if (isRunning && !epicGameStartTimes.ContainsKey(ArtifactId))
+                    {
+                        epicGameStartTimes[ArtifactId] = DateTime.UtcNow;
+                    }
+                    else if (!isRunning && epicGameStartTimes.TryGetValue(ArtifactId, out var startTime))
+                    {
+                        EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
+                        epicGameStartTimes.Remove(ArtifactId);
+                    }
+                }
 
                 previousGameState = isRunning;
             });
         }
 
-        gameWatcherTimer.Tick += async (s, e) => await Task.Run(TickHandler);
+        gameWatcherTimer.Tick += (s, e) => TickHandler();
 
-        await Task.Run(TickHandler);
+        TickHandler();
         gameWatcherTimer.Start();
     }
 
-    public async Task CheckGameRunningAsync()
+    public void CheckGameRunning()
     {
         previousGameState = null;
         previousExplorerState = null;
@@ -1727,12 +1725,10 @@ public partial class HeaderCarousel : ItemsControl
             };
             if (Title == "Fall Guys") offlineExecutable = "FallGuys_client";
 
-            await StartGameWatcherAsync(async () =>
-                await Task.Run(() =>
-                    Process.GetProcessesByName(offlineExecutable).Length > 0 ||
-                    (!string.IsNullOrEmpty(onlineExecutable) &&
-                     Process.GetProcessesByName(onlineExecutable).Length > 0)
-                )
+            StartGameWatcher(() =>
+                Process.GetProcessesByName(offlineExecutable).Length > 0 ||
+                (!string.IsNullOrEmpty(onlineExecutable) &&
+                 Process.GetProcessesByName(onlineExecutable).Length > 0)
             );
         }
         else if (Launcher == "Steam")
@@ -1740,19 +1736,14 @@ public partial class HeaderCarousel : ItemsControl
             string installLocation = InstallLocation;
             if (string.IsNullOrEmpty(installLocation)) return;
 
-            var exeNames = await Task.Run(() =>
-                Directory.GetFiles(installLocation, "*.exe")
-                    .Select(Path.GetFileNameWithoutExtension)
-                    .ToList()
-            );
+            var exeNames = Directory.GetFiles(installLocation, "*.exe")
+                .Select(Path.GetFileNameWithoutExtension)
+                .ToList();
 
             if (exeNames.Count == 0) return;
 
-            await StartGameWatcherAsync(async () =>
-                await Task.Run(() =>
-                    exeNames.Any(name =>
-                        Process.GetProcessesByName(name).Length > 0)
-                )
+            StartGameWatcher(() =>
+                exeNames.Any(name => Process.GetProcessesByName(name).Length > 0)
             );
         }
         else if (Launcher == "Ryujinx")
@@ -1760,19 +1751,19 @@ public partial class HeaderCarousel : ItemsControl
             string launcherFileName = Path.GetFileName(LauncherLocation);
             string expectedPath = $@"-r ""{DataLocation}"" -fullscreen ""{GameLocation}""";
 
-            await StartGameWatcherAsync(async () =>
-                await Task.Run(() =>
+            StartGameWatcher(() =>
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT CommandLine FROM Win32_Process WHERE Name = '{launcherFileName}'");
+
+                foreach (var obj in searcher.Get().OfType<ManagementObject>())
                 {
-                    using var searcher = new ManagementObjectSearcher($"SELECT CommandLine FROM Win32_Process WHERE Name = '{launcherFileName}'");
-                    foreach (var obj in searcher.Get().OfType<ManagementObject>())
-                    {
-                        string cmdLine = obj["CommandLine"]?.ToString() ?? "";
-                        if (cmdLine.Contains(expectedPath))
-                            return true;
-                    }
-                    return false;
-                })
-            );
+                    string cmdLine = obj["CommandLine"]?.ToString() ?? "";
+                    if (cmdLine.Contains(expectedPath))
+                        return true;
+                }
+                return false;
+            });
         }
     }
 }

@@ -343,12 +343,12 @@ namespace AutoOS.Helpers
             return newAccessToken;
         }
 
-        public static async Task AddPlaytime(string artifactId, DateTime startTime)
+        public static void AddPlaytime(string artifactId, DateTime startTime)
         {
             var url = $"https://library-service.live.use1a.on.epicgames.com/library/api/public/playtime/account/{GetAccountData(ActiveEpicGamesAccountPath).AccountId}";
             var endTime = DateTime.UtcNow;
 
-            string startTimeStr = startTime.ToString("o"); 
+            string startTimeStr = startTime.ToString("o");
             string endTimeStr = endTime.ToString("o");
 
             var payload = new
@@ -364,17 +364,49 @@ namespace AutoOS.Helpers
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            using var response = await loginClient.PutAsync(url, content);
+            using var response = loginClient.PutAsync(url, content).GetAwaiter().GetResult();
 
             if (response.IsSuccessStatusCode)
             {
                 var duration = endTime - startTime;
-                Debug.WriteLine($"Playtime added successfully. Status: {(int)response.StatusCode}, Duration: {duration.TotalSeconds} seconds");
+
+                var playTimeResponse = loginClient
+                    .GetAsync($"https://library-service.live.use1a.on.epicgames.com/library/api/public/playtime/account/{GetAccountData(ActiveEpicGamesAccountPath).AccountId}/artifact/{artifactId}")
+                    .GetAwaiter().GetResult();
+
+                if (playTimeResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    return;
+                }
+
+                var playTimeJson = JsonNode.Parse(playTimeResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                var newTotalTime = playTimeJson?["totalTime"]?.GetValue<int>() ?? 0;
+
+                GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
+                {
+                    var existingItem = GamesPage.Instance.Games.Items
+                        .OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>()
+                        .FirstOrDefault(item => item.ArtifactId == artifactId);
+
+                    if (existingItem != null)
+                    {
+                        var ts = TimeSpan.FromSeconds(newTotalTime);
+                        var formattedTime = ts.TotalHours >= 1
+                            ? $"{(int)ts.TotalHours}h {ts.Minutes}m"
+                            : $"{ts.Minutes}m";
+
+                        existingItem.PlayTime = formattedTime;
+
+                        if (GamesPage.Instance.Games.ArtifactId == artifactId)
+                        {
+                            GamesPage.Instance.Games.PlayTime = formattedTime;
+                        }
+                    }
+                });
             }
             else
             {
-                var error = await response.Content.ReadAsStringAsync();
-                Debug.WriteLine($"Failed to add playtime. Status: {(int)response.StatusCode}, Error: {error}");
+                var error = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             }
         }
 
