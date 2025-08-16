@@ -264,6 +264,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 recommendedSettings.Add(setting);
             }
 
+            HasRecommendations = false;
             HasRecommendations = parsedList.Any(s => s.IsRecommended);
 
             // show settings
