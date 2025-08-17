@@ -491,7 +491,7 @@ public static class ProcessActions
     {
         string title = InstallPage.Info.Title;
 
-        string output = await Process.Start(new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -File {Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")} {productFamilyName} {catalogId} {fileType} {index} {(dependencies ? " -Dependencies" : "")}")
+        string output = await Process.Start(new ProcessStartInfo("powershell.exe", @$"-ExecutionPolicy Bypass -File ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")}"" {productFamilyName} {catalogId} {fileType} {index}{(dependencies ? " -Dependencies" : "")}")
         {
             CreateNoWindow = true,
             UseShellExecute = false,
