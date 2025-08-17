@@ -41,8 +41,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Package C-State Un-demotion", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Ring Down Bin", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "CPU EIST Function", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "EIST", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel SpeedStep™", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Race To Halt (RTH)", RecommendedOption = "Disabled" },
@@ -74,6 +72,8 @@ public static class BiosSettingRecommendationsList
 
         // for oc
         new BiosSettingRecommendation { SetupQuestion = "BCLK Spread Spectrum", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "CPU EIST Function", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "EIST", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel(R) Adaptive Boost Technology", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", RecommendedOption = "Disabled  Enforce All limits" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", RecommendedOption = "Sync All Cores" },
@@ -173,8 +173,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "CrashLog Feature", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PMC Debug Message Enable", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SMART Self Test", RecommendedOption = "0" },
-        new BiosSettingRecommendation { SetupQuestion = "Serial Port", RecommendedOption = "Disabled" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "Parallel Port", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Serial Port", RecommendedOption = "0" },
+        new BiosSettingRecommendation { SetupQuestion = "Parallel Port", RecommendedOption = "0" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Port 60/64 Emulation", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Port 61h Bit-4 Emulation", RecommendedOption = "Disabled" }, // didn't find
         
