@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
-using Windows.Storage;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Windows.Storage;
 
 namespace AutoOS.Views.Installer;
 
@@ -13,6 +14,35 @@ public sealed partial class PersonalizationPage : Page
     private bool isInitializingTaskbarAlignmentState = true;
 
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+    private static readonly Guid CLSID_IThemeManager = new("C04B329E-5823-4415-9C93-BA44688947B0");
+    private static readonly Guid IID_IThemeManager = new("0646EBBE-C1B7-4045-8FD0-FFD65D3FC792");
+
+    private const uint CLSCTX_INPROC_SERVER = 1;
+    private const uint WM_SETTINGCHANGE = 0x001A;
+    private const uint SMTO_ABORTIFHUNG = 0x0002;
+    private static readonly IntPtr HWND_BROADCAST = new(0xffff);
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    private delegate int ApplyThemeFunc(IntPtr pThis, [MarshalAs(UnmanagedType.BStr)] string themePath);
+
+    [DllImport("ole32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+    private static extern int CoCreateInstance(
+        ref Guid rclsid,
+        IntPtr pUnkOuter,
+        uint dwClsContext,
+        ref Guid riid,
+        out IntPtr ppv);
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern IntPtr SendMessageTimeoutW(
+        IntPtr hWnd,
+        uint Msg,
+        UIntPtr wParam,
+        string lParam,
+        uint fuFlags,
+        uint uTimeout,
+        out UIntPtr lpdwResult);
 
     public PersonalizationPage()
     {
@@ -32,15 +62,41 @@ public sealed partial class PersonalizationPage : Page
         MainWindow.Instance.CheckAllPagesVisited();
     }
 
-    public class GridViewItem
-    {
-        public string ImageSource { get; set; }
-    }
-
     public class ThemeItem
     {
         public string ImageSource1 { get; set; }
         public string ImageSource2 { get; set; }
+    }
+
+    public static Task ApplyTheme(string themePath)
+    {
+        return Task.Run(() =>
+        {
+            var thread = new Thread(() =>
+            {
+                Guid clsid = CLSID_IThemeManager;
+                Guid iid = IID_IThemeManager;
+
+                int hr = CoCreateInstance(ref clsid, IntPtr.Zero, CLSCTX_INPROC_SERVER,
+                                          ref iid, out IntPtr pThemeManager);
+                if (hr != 0 || pThemeManager == IntPtr.Zero) return;
+
+                IntPtr vtable = Marshal.ReadIntPtr(pThemeManager);
+                IntPtr applyThemePtr = Marshal.ReadIntPtr(vtable, IntPtr.Size * 4);
+
+                var applyTheme = (ApplyThemeFunc)Marshal.GetDelegateForFunctionPointer(applyThemePtr, typeof(ApplyThemeFunc));
+                applyTheme(pThemeManager, themePath);
+
+                SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE, UIntPtr.Zero, "ImmersiveColorSet",
+                                    SMTO_ABORTIFHUNG, 100, out _);
+
+                Marshal.Release(pThemeManager);
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+        });
     }
 
     private void GetItems()
@@ -56,7 +112,7 @@ public sealed partial class PersonalizationPage : Page
         using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes");
         string currentTheme = key?.GetValue("CurrentTheme") as string ?? string.Empty;
 
-        if (currentTheme == @"C:\Windows\resources\Themes\aero.theme" || currentTheme == @"C:\Windows\resources\Themes\dark.theme")
+        if (currentTheme == @"C:\Windows\Resources\Themes\aero.theme" || currentTheme == @"C:\Windows\Resources\Themes\dark.theme")
         {
             Themes.SelectedIndex = 0;
         }
@@ -112,11 +168,22 @@ public sealed partial class PersonalizationPage : Page
         isInitializingSchedule = false;
     }
 
-    private void ScheduleMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void ScheduleMode_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (isInitializingSchedule) return;
 
-        localSettings.Values["ScheduleMode"] = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
+        string selected = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
+
+        if (selected == "Always Light")
+        {
+            await ApplyTheme(@"C:\Windows\Resources\Themes\aero.theme");
+        }
+        else if (selected == "Always Dark")
+        {
+            await ApplyTheme(@"C:\Windows\Resources\Themes\dark.theme");
+        }
+
+        localSettings.Values["ScheduleMode"] = selected;
         UpdateTimeCardsVisibility();
     }
 
