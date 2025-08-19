@@ -160,7 +160,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             output = await process2.StandardOutput.ReadToEndAsync();
             await process2.WaitForExitAsync();
         }
-        
+
         if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
         {
             // backup nvram.txt
@@ -207,17 +207,22 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                     if (rule != null)
                     {
                         string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
-                        string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
 
-                        var recommended = setting.Options
-                            .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
-
-                        if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
+                        if ((rule.Type?.Equals("Option", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasOptions)
                         {
-                            setting.RecommendedOption = recommended;
-                            setting.IsRecommended = true;
+                            string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
+
+                            var recommended = setting.Options
+                                .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
+
+                            if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
+                            {
+                                setting.RecommendedOption = recommended;
+                                setting.IsRecommended = true;
+                            }
                         }
-                        else if (setting.HasValueField)
+
+                        if ((rule.Type?.Equals("Value", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasValueField)
                         {
                             string currentValue = setting.Value?.Trim().ToLowerInvariant();
                             if (!string.IsNullOrEmpty(currentValue) && currentValue != recommendedLabel)

@@ -35,7 +35,7 @@
                 <!--  Backup  -->
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
-                            Spacing="8">
+                            Spacing="12">
                     <Button x:Name="Backup"
                             Click="Backup_Click"
                             IsEnabled="False">
