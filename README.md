@@ -29,7 +29,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 💻 System Requirements
 
 - AutoOS is currently only supported on x64 builds of Windows 11 23H2 `22631`
-- Another partition with at least 64GB
+- 80GB of free storage
 
 ## 🚀 Getting Started
 
@@ -44,7 +44,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 
 **Step 4:** Right click on it and select "Shrink Volume".
 
-**Step 5:** In "Enter the amount of space to shrink in MB:" input at least 65538 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
+**Step 5:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
 
 **Step 6:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the CMD window (e.g. E:).
 
