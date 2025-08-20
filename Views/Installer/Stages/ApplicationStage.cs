@@ -225,7 +225,6 @@ public static class ApplicationStage
             ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess", "61e179bf-d7a6-4201-aa9b-88cf1bcbc472", "msixbundle", 1, false), () => AppleMusic == true),
 
             // install dolby access
-            ("Installing Dolby Access", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path ""$env:TEMP\DolbyAccess.Msixbundle"""), () => AppleMusic == true),
             ("Installing Dolby Access", async () => await ProcessActions.RunCustom(async () => dolbyAccessVersion =(await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"DolbyLaboratories.DolbyAccess\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }))), () => AppleMusic == true),
 
             // log in to dolby access
