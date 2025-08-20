@@ -29,52 +29,64 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 💻 System Requirements
 
 - AutoOS is currently only supported on x64 builds of Windows 11 23H2 `22631`
-- Another partition with at least 64GB
+- 80GB of free storage
 
 ## 🚀 Getting Started
 
 > [!NOTE]
-> You must be logged into GitHub in order to be able to download the artifact
+> You must be logged into GitHub in order to be able to download the artifact (Windows ISO)
 
-**Step 1:** Download the latest Windows ISO from the latest action artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17014785924). 
+**Step 1:** Open CMD as Admin and don't close it until the installation is done.
 
-**Step 2:** Extract the downloaded zip file.
+**Step 2:** Open Disk Management.
 
-**Step 3:** Extract the ISO file.
+**Step 3:** Find your your C: partition.
 
-**Step 4:** Open cmd as admin and define these variables:
+**Step 4:** Right click on it and select "Shrink Volume".
 
-```bat
-set EXTRACTED_ISO=
-```
+**Step 5:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
+
+**Step 6:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the CMD window (e.g. E:).
 
 ```bat
 set TARGETDRIVE=
 ```
 
+**Step 7:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all into one folder. Then define this variable in the CMD window.
+
 ```bat
 set DRIVERDIR=
 ```
 
-**Step 5:** Apply `install.wim` to the newly created partition.
+**Step 8:** Download the latest Windows ISO from the latest action artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17014785924).
+
+**Step 9:** Extract the downloaded zip file.
+
+**Step 10:** Extract the ISO file using 7-Zip / NanaZip /WinRar etc. Then define this variable in the CMD window.
+
+```bat
+set EXTRACTED_ISO=
+```
+
+**Step 11:** Apply `install.wim` to new partition.
 
 ```bat
 DISM /Apply-Image /ImageFile:%EXTRACTED_ISO%\sources\install.wim /Index:1 /ApplyDir:%TARGETDRIVE%
 ```
 
-**Step 6:** Create Panther directory, download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and move it into the folder.
+**Step 12:** Create Panther directory, download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and move it into the folder (THIS IS IMPORTANT!).
 
 ```bat
 mkdir %TARGETDRIVE%\Windows\Panther && explorer %TARGETDRIVE%\Windows\Panther
 ```
 
-**Step 7:** Install drivers (Ethernet, WiFi, Bluetooth, etc.).
+**Step 13:** Install drivers.
 
 ```bat
 DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
 ```
 
-**Step 8:** Create the boot entry.
+**Step 14:** Create the boot entry.
 
 ```bat
 bcdboot %TARGETDRIVE%\Windows

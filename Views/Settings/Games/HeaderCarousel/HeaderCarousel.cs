@@ -213,6 +213,7 @@ public partial class HeaderCarousel : ItemsControl
         }
 
         tasks.Add(CustomGameHelper.LoadGames());
+        //tasks.Add(UbisoftConnectHelper.LoadGames());
 
         await Task.WhenAll(tasks);
 
@@ -1446,6 +1447,29 @@ public partial class HeaderCarousel : ItemsControl
         else if (Launcher == "Steam")
         {
             Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\Steam\steam.exe", Arguments = $"-applaunch {GameID} -silent" });
+        }
+        else if (Launcher == "Ubisoft Connect")
+        {
+            Process.Start(new ProcessStartInfo($"uplay://launch/{GameID}") { UseShellExecute = true });
+
+            //var startInfo = new ProcessStartInfo
+            //{
+            //    FileName = LauncherLocation,
+            //    Arguments = string.Join(" ", new[]
+            //    {
+            //        LaunchCommand,
+            //        "gamelauncher_wait_handle 1012",
+            //        $"-upc_uplay_id {GameID}",
+            //        "-upc_game_version 1",
+            //        $"-upc_exe_path ",
+            //        $"-upc_working_directory",
+            //        $"-upc_arguments"
+            //    }),
+            //    WorkingDirectory = Path.GetDirectoryName(Path.Combine(InstallLocation, LaunchExecutable)),
+            //    UseShellExecute = false
+            //};
+
+            //Process.Start(startInfo);
         }
         else if (Launcher == "Ryujinx")
         {
