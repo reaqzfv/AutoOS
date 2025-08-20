@@ -13,9 +13,9 @@ public static class StartupStage
         bool MSI = Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") &&
            Directory.GetFiles(@"C:\Program Files (x86)\MSI Afterburner\Profiles\")
            .Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
-        bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "1";
-        bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "1";
-        bool WindowsUpdates = localSettings.Values["PauseWindowsUpdates"]?.ToString() == "1";
+        bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "0";
+        bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "0";
+        bool WindowsUpdates = localSettings.Values["PauseWindowsUpdates"]?.ToString() == "0";
         bool Discord = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord"));
 
         string discordVersion = "";
@@ -40,10 +40,10 @@ public static class StartupStage
             ("Disabling device power management", async () => await StartupActions.RunPowerShellScript("devicepowermanagement.ps1", ""), null),
 
             // disable hid devices
-            ("Disabling Human Interface Devices (HID)", async () => await StartupActions.RunPowerShell("Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false"), () => HID == false),
+            ("Disabling Human Interface Devices (HID)", async () => await StartupActions.RunPowerShell("Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false"), () => HID == true),
 
             // disable xhci interrupt moderation
-            ("Disabling XHCI Interrupt Moderation (IMOD)", async () => await StartupActions.RunPowerShellScript("imod.ps1", $"-disable \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}\""), () => IMOD == false),
+            ("Disabling XHCI Interrupt Moderation (IMOD)", async () => await StartupActions.RunPowerShellScript("imod.ps1", $"-disable \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}\""), () => IMOD == true),
 
             // apply timer resolution
             ("Applying Timer Resolution", async () => await StartupActions.RunApplication("TimerResolution", "SetTimerResolution.exe", "--resolution 5067 --no-console"), null),
@@ -55,7 +55,7 @@ public static class StartupStage
             ("Disabling Event Trace Sessions (ETS)", async () => await StartupActions.RunNsudo("TrustedInstaller", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "ets-disable.reg")}\""), null),
             
             // pause windows updates
-            ("Pausing Windows Updates", async () => await StartupActions.RunPowerShellScript("pausewindowsupdates.ps1", ""), () => WindowsUpdates == false),
+            ("Pausing Windows Updates", async () => await StartupActions.RunPowerShellScript("pausewindowsupdates.ps1", ""), () => WindowsUpdates == true),
 
             // clean up devices
             ("Cleaning up devices", async () => await StartupActions.RunApplication("DeviceCleanup", "DeviceCleanupCmd.exe", "/s *"), null),

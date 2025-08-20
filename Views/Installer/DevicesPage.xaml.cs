@@ -50,7 +50,8 @@ public sealed partial class DevicesPage : Page
     {
         if (!localSettings.Values.TryGetValue("HumanInterfaceDevices", out object value))
         {
-            localSettings.Values["HumanInterfaceDevices"] = 0;
+            localSettings.Values["HumanInterfaceDevices"] = 1;
+            HID.IsOn = true;
         }
         else
         {
