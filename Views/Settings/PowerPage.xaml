@@ -41,12 +41,6 @@
                                               IsActive="True" />
                             </StackPanel>
                         </dev:SettingsCard>
-                        <dev:SettingsCard Description="Disabling forces the use of BIOS power management instead of Windows. Only disable if you have a fully tweaked BIOS with cfglock/oclock enabled."
-                                          Header="Power Service"
-                                          IsClickEnabled="False">
-                            <ToggleSwitch x:Name="PowerService"
-                                          Toggled="PowerService_Toggled" />
-                        </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="PowerInfo" />

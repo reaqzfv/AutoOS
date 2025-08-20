@@ -5,7 +5,6 @@ namespace AutoOS.Views.Installer;
 public sealed partial class PowerPage : Page
 {
     private bool isInitializingIdleStatesState = true;
-    private bool isInitializingPowerServiceState = true;
 
     private ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -13,7 +12,6 @@ public sealed partial class PowerPage : Page
     {
         InitializeComponent();
         GetIdleState();
-        GetPowerServiceState();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -56,35 +54,5 @@ public sealed partial class PowerPage : Page
         if (isInitializingIdleStatesState) return;
 
         localSettings.Values["IdleStates"] = IdleStates.IsOn ? 1 : 0;
-    }
-
-    private void GetPowerServiceState()
-    {
-        var value = localSettings.Values["PowerService"];
-
-        if (value == null)
-        {
-            localSettings.Values["PowerService"] = 1;
-            PowerService.IsOn = true;
-        }
-        else if (Convert.ToInt32(value) == 1)
-        {
-            PowerService.IsOn = true;
-        }
-        else
-        {
-            Idle_SettingsCard.IsEnabled = false;
-        }
-
-        isInitializingPowerServiceState = false;
-    }
-
-    private void PowerService_Toggled(object sender, RoutedEventArgs e)
-    {
-        if (isInitializingPowerServiceState) return;
-
-        localSettings.Values["PowerService"] = PowerService.IsOn ? 1 : 0;
-
-        Idle_SettingsCard.IsEnabled = PowerService.IsOn;
     }
 }

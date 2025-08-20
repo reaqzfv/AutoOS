@@ -311,7 +311,7 @@ public static class BrowserStage
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
         double incrementPerTitle = filteredActions.Select(a => a.Title).Distinct().Count() > 0 ? stagePercentage / (double)filteredActions.Select(a => a.Title).Distinct().Count() : 0;
 
-        List<Func<Task>> currentGroup = new();
+        List<Func<Task>> currentGroup = [];
 
         foreach (var (title, action, condition) in filteredActions)
         {

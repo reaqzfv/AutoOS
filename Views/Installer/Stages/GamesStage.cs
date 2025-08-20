@@ -71,7 +71,7 @@ public static partial class GamesStage
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
         int groupedTitleCount = 0;
 
-        List<Func<Task>> currentGroup = new();
+        List<Func<Task>> currentGroup = [];
 
         for (int i = 0; i < filteredActions.Count; i++)
         {

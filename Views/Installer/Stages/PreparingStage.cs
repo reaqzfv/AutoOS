@@ -13,7 +13,6 @@ public static class PreparingStage
 {
     public static bool? Desktop;
     public static bool? IdleStates;
-    public static bool? PowerService;
 
     public static bool? SSD;
     public static bool? Wifi;
@@ -125,7 +124,6 @@ public static class PreparingStage
             }
 
             IdleStates = (localSettings.Values["IdleStates"]?.ToString() == "1");
-            PowerService = (localSettings.Values["PowerService"]?.ToString() == "1");
             Wifi = (localSettings.Values["WiFi"]?.ToString() == "1");
             Bluetooth = (localSettings.Values["Bluetooth"]?.ToString() == "1");
             WindowsDefender = (localSettings.Values["WindowsDefender"]?.ToString() == "1");
