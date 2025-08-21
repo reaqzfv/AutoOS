@@ -94,14 +94,12 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                var cores = Enumerable.Range(2, logicalCoreCount - 1)
+                var cores = Enumerable.Range(2, logicalCoreCount - 2)
                                       .Where(i => i % 2 == 0);
                 lines = [.. lines.Select(line =>
                 {
                     if (line.StartsWith("custom_cpus="))
-                    {
                         return $"custom_cpus=[{string.Join(",", cores)}]";
-                    }
                     return line;
                 })];
             }
