@@ -67,7 +67,7 @@ set DRIVERDIR=
 
 **Step 9:** Extract the downloaded zip file.
 
-**Step 10:** Extract the ISO file using 7-Zip / NanaZip /WinRar etc. Then define this variable in the CMD window.
+**Step 10:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the CMD window.
 
 ```bat
 set EXTRACTED_ISO=
