@@ -24,7 +24,12 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Toggle between service states with configured functionality
 - Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Automatically import Epic Games and Steam titles from old install
-- Stop processes when running your Game to automatically stop all unnecessary services and executables
+- Stop processes when running your game to automatically stop all unnecessary services and executables
+
+## ⚠️ Current Issues
+- **System Settings:** `Account -> Sign-in options` may not load after installing AutoOS.
+   - **Workaround:** If you want to set a password or PIN, do so *before* installing AutoOS.
+   - **Status:** The cause of this bug is currently unknown and it isn't easy to troubleshoot (sometimes it just starts working again).
 
 ## 💻 System Requirements
 
@@ -58,7 +63,7 @@ set TARGETDRIVE=
 set DRIVERDIR=
 ```
 
-**Step 8:** Download the latest Windows ISO from the latest action artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17014785924).
+**Step 8:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17014785924). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
 
 **Step 9:** Extract the downloaded zip file.
 
