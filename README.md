@@ -92,6 +92,12 @@ DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
 bcdboot %TARGETDRIVE%\Windows
 ```
 
+**Step 15:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
+
+**Step 16:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
+
+**Step 17:** Select your settings and click "Install AutoOS".
+
 ## 🙏 Credits
 
 **Amitxv / Valleyofdoom:**  
