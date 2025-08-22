@@ -662,7 +662,7 @@
                                               Style="{StaticResource StoreCardStyle}">
                                         <!--  Install Location  -->
                                         <StackPanel Orientation="Vertical"
-                                                    Spacing="12">
+                                                    Spacing="18">
                                             <StackPanel Orientation="Vertical">
                                                 <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
                                                            Text="Install Location:" />
