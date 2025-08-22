@@ -33,7 +33,7 @@ public partial class HeaderCarousel : ItemsControl
     private Grid MetadataGrid;
     private ScrollViewer Metadata_ScrollViewer;
 
-    private ScrollViewer Screenshots_ScrollViewer;
+    private Card Screenshots_Card;
     //private GameGallery Screenshots_Gallery;
     //private ScrollViewer Videos_ScrollViewer;
 
@@ -167,7 +167,7 @@ public partial class HeaderCarousel : ItemsControl
         AgeRatingDescriptionText = GetTemplateChild("AgeRatingDescriptionText") as TextBlock;
         ElementsText = GetTemplateChild("ElementsText") as TextBlock;
 
-        Screenshots_ScrollViewer = GetTemplateChild("Screenshots_ScrollViewer") as ScrollViewer;
+        Screenshots_Card = GetTemplateChild("Screenshots_Card") as Card;
         //Screenshots_Gallery = GetTemplateChild("Screenshots_Gallery") as GameGallery;
         //Videos_ScrollViewer = GetTemplateChild("Videos_ScrollViewer") as ScrollViewer;
 
@@ -476,7 +476,7 @@ public partial class HeaderCarousel : ItemsControl
 
                 await Task.Delay(100);
                 Screenshots = selectedTile?.Screenshots;
-                Screenshots_ScrollViewer.Visibility = (Screenshots?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
+                Screenshots_Card.Visibility = (Screenshots?.Count > 0) ? Visibility.Visible : Visibility.Collapsed;
                 //Screenshots_Gallery.ResetScrollPosition();
 
                 //Videos = selectedTile?.Videos;

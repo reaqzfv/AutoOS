@@ -554,10 +554,12 @@
                                         </ScrollViewer>
                                     </StackPanel>
                                     <!--  Description  -->
-                                    <TextBlock Margin="0,24,0,18"
-                                               LineHeight="22"
-                                               Text="{TemplateBinding Description}"
-                                               TextWrapping="Wrap" />
+                                    <dev:Card Title="Description"
+                                              Margin="0,24,0,8"
+                                              Style="{StaticResource StoreCardStyle}">
+                                        <TextBlock Text="{TemplateBinding Description}"
+                                                   TextWrapping="Wrap" />
+                                    </dev:Card>
                                     <!--  Screenshots  -->
                                     <!--<views:GameGallery x:Name="Screenshots_Gallery" Margin="0,0,0,16" >
                                             <views:GameGallery.HeaderContent>
@@ -584,37 +586,48 @@
                                                 </ItemsControl>
                                             </views:GameGallery.HeaderContent>
                                         </views:GameGallery>-->
-                                    <ScrollViewer x:Name="Screenshots_ScrollViewer"
-                                                  Margin="0,0,0,16"
-                                                  HorizontalAlignment="Left"
-                                                  HorizontalScrollBarVisibility="Hidden"
-                                                  HorizontalScrollMode="Disabled"
-                                                  VerticalScrollBarVisibility="Hidden"
-                                                  VerticalScrollMode="Disabled"
-                                                  Visibility="Collapsed"
-                                                  ZoomMode="Disabled">
-                                        <ItemsControl ItemsSource="{TemplateBinding Screenshots}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"
-                                                                Spacing="18" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <dev:ImageEx Height="160"
-                                                                 Margin="0,8,0,8"
-                                                                 HorizontalAlignment="Stretch"
-                                                                 VerticalAlignment="Stretch"
-                                                                 AutomationProperties.AccessibilityView="Raw"
-                                                                 CornerRadius="{ThemeResource ControlCornerRadius}"
-                                                                 IsCacheEnabled="True"
-                                                                 Source="{Binding}"
-                                                                 Stretch="Uniform" />
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
+                                    <dev:Card x:Name="Screenshots_Card"
+                                              Title="Screenshots"
+                                              Margin="0,0,0,8"
+                                              Style="{StaticResource StoreCardStyle}"
+                                              Visibility="Collapsed">
+                                        <dev:Card.TitleContent>
+                                            <Button Margin="0,4,16,4"
+                                                    Padding="6"
+                                                    Style="{StaticResource SubtleButtonStyle}"
+                                                    Visibility="Collapsed">
+                                                <FontIcon FontSize="16"
+                                                          Glyph="&#xE76C;" />
+                                            </Button>
+                                        </dev:Card.TitleContent>
+                                        <ScrollViewer HorizontalAlignment="Left"
+                                                      HorizontalScrollBarVisibility="Hidden"
+                                                      HorizontalScrollMode="Disabled"
+                                                      VerticalScrollBarVisibility="Hidden"
+                                                      VerticalScrollMode="Disabled"
+                                                      ZoomMode="Disabled">
+                                            <ItemsControl ItemsSource="{TemplateBinding Screenshots}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    Spacing="24" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <dev:ImageEx Height="160"
+                                                                     HorizontalAlignment="Stretch"
+                                                                     VerticalAlignment="Stretch"
+                                                                     AutomationProperties.AccessibilityView="Raw"
+                                                                     CornerRadius="{ThemeResource ControlCornerRadius}"
+                                                                     IsCacheEnabled="True"
+                                                                     Source="{Binding}"
+                                                                     Stretch="Uniform" />
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </dev:Card>
                                     <!--  Videos  -->
                                     <ScrollViewer x:Name="Videos_ScrollViewer"
                                                   Margin="0,0,0,16"
@@ -644,41 +657,46 @@
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </ScrollViewer>
-                                    <!--  Install Location  -->
-                                    <StackPanel Margin="0,0,0,16"
-                                                Orientation="Vertical">
-                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                   Text="Install Location:" />
-                                        <TextBlock Margin="0,2,0,12"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                                   Text="Open the install location." />
-                                        <dev:TextBox HorizontalAlignment="Left"
-                                                     IsReadOnly="True"
-                                                     IsTabStop="False"
-                                                     Text="{TemplateBinding InstallLocation}">
-                                            <dev:TextBox.Content>
-                                                <Button x:Name="OpenInstallLocation"
-                                                        Content="&#xE838;"
-                                                        IsTabStop="True" />
-                                            </dev:TextBox.Content>
-                                        </dev:TextBox>
-                                    </StackPanel>
-                                    <!--  Presentation Mode  -->
-                                    <StackPanel x:Name="PresentationMode"
-                                                Margin="0,0,0,16"
-                                                Visibility="Collapsed">
-                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                   Text="Presentation Mode:" />
-                                        <TextBlock Margin="0,2,0,12"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                                   Text="Use Hardware: Independent Flip if you have issues when tabbing out." />
-                                        <ComboBox x:Name="PresentationMode_ComboBox">
-                                            <ComboBoxItem Content="Hardware: Independent Flip" />
-                                            <ComboBoxItem Content="Hardware: Legacy Flip" />
-                                        </ComboBox>
-                                    </StackPanel>
+                                    <dev:Card Title="Additional information"
+                                              Margin="0,0,0,8"
+                                              Style="{StaticResource StoreCardStyle}">
+                                        <!--  Install Location  -->
+                                        <StackPanel Orientation="Vertical"
+                                                    Spacing="12">
+                                            <StackPanel Orientation="Vertical">
+                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                           Text="Install Location:" />
+                                                <TextBlock Margin="0,2,0,12"
+                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Text="Open the install location." />
+                                                <dev:TextBox HorizontalAlignment="Left"
+                                                             IsReadOnly="True"
+                                                             IsTabStop="False"
+                                                             Text="{TemplateBinding InstallLocation}">
+                                                    <dev:TextBox.Content>
+                                                        <Button x:Name="OpenInstallLocation"
+                                                                Content="&#xE838;"
+                                                                IsTabStop="True" />
+                                                    </dev:TextBox.Content>
+                                                </dev:TextBox>
+                                            </StackPanel>
+                                            <!--  Presentation Mode  -->
+                                            <StackPanel x:Name="PresentationMode"
+                                                        Visibility="Collapsed">
+                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                           Text="Presentation Mode:" />
+                                                <TextBlock Margin="0,2,0,12"
+                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Text="Use Hardware: Independent Flip if you have issues when tabbing out." />
+                                                <ComboBox x:Name="PresentationMode_ComboBox">
+                                                    <ComboBoxItem Content="Hardware: Independent Flip" />
+                                                    <ComboBoxItem Content="Hardware: Legacy Flip" />
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </dev:Card>
                                     <Border Height="32"
                                             Background="Transparent" />
                                 </StackPanel>
