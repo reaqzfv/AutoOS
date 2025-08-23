@@ -251,6 +251,9 @@ public static class AppxStage
 
             // update cross device
             //("Updating MicrosoftWindows.CrossDevice_cw5n1h2txyewy", async () => await ProcessActions.UpdateAppx("MicrosoftWindows.CrossDevice_cw5n1h2txyewy"), null),
+
+            // optimize notepad settings
+            ("Optimizing Notepad settings", async () => await ProcessActions.RunPowerShellScript("notepad.ps1", ""), null),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
