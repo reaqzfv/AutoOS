@@ -205,7 +205,11 @@ namespace AutoOS.Helpers
 
                             if (ratingData.TryGetProperty("descriptors", out JsonElement descElement) && descElement.ValueKind == JsonValueKind.String)
                             {
-                                descriptors = descElement.GetString();
+                                descriptors = descElement
+                                    .GetString()?
+                                    .Replace("\r\n", ", ")
+                                    .Replace("\n", ", ")
+                                    .Replace("\r", ", ");
                             }
                         }
 
