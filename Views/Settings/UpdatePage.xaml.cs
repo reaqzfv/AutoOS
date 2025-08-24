@@ -7,6 +7,7 @@ namespace AutoOS.Views.Settings;
 public sealed partial class UpdatePage : Page
 {
     private bool isInitializingWindowsUpdateState = true;
+    private bool isInitializingTargetVersion = true;
 
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -14,6 +15,7 @@ public sealed partial class UpdatePage : Page
     {
         InitializeComponent();
         GetWindowsUpdateState();
+        GetTargetVersion();
     }
 
     private void GetWindowsUpdateState()
@@ -110,5 +112,50 @@ public sealed partial class UpdatePage : Page
             FileName = "https://github.com/Duckleeng/TweakCollection/tree/main/Research#windows-11-24h2-autoboost-behavior",
             UseShellExecute = true
         });
+    }
+
+    private void GetTargetVersion()
+    {
+        string version = "Default";
+
+        using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", false);
+
+        if (key?.GetValue("TargetReleaseVersion") is int trv && trv == 1)
+        {
+            version = key.GetValue("TargetReleaseVersionInfo") as string ?? "Default";
+        }
+
+        TargetVersion.SelectedIndex = version switch
+        {
+            "23H2" => 1,
+            "24H2" => 2,
+            "25H2" => 3,
+            _ => 0
+        };
+
+        isInitializingTargetVersion = false;
+    }
+
+    private void TargetVersion_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (isInitializingTargetVersion) return;
+
+        if (TargetVersion.SelectedItem is ComboBoxItem selectedItem)
+        {
+            string version = selectedItem.Content.ToString();
+
+            using var key = Registry.LocalMachine.CreateSubKey(@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", true);
+
+            if (version == "Default")
+            {
+                key?.DeleteValue("TargetReleaseVersion", false);
+                key?.DeleteValue("TargetReleaseVersionInfo", false);
+            }
+            else
+            {
+                key?.SetValue("TargetReleaseVersion", 1, RegistryValueKind.DWord);
+                key?.SetValue("TargetReleaseVersionInfo", version, RegistryValueKind.String);
+            }
+        }
     }
 }
