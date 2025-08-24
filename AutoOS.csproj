@@ -74,6 +74,8 @@
     <ProjectCapability Include="Msix" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.250402" />
     <PackageReference Include="DevWinUI" Version="9.0.0-Preview1" />
     <PackageReference Include="DevWinUI.Controls" Version="9.0.0-Preview1" />
     <PackageReference Include="Downloader" Version="4.0.3" />

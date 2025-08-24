@@ -1,7 +1,9 @@
 ﻿using AutoOS.Helpers;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Management;
@@ -17,16 +19,20 @@ namespace AutoOS.Views.Settings.Games.HeaderCarousel;
 
 [TemplatePart(Name = nameof(PART_BackDropImage), Type = typeof(AnimatedImage))]
 [TemplatePart(Name = nameof(PART_ScrollViewer), Type = typeof(ScrollViewer))]
+[TemplatePart(Name = nameof(PART_ItemsRepeater), Type = typeof(ItemsRepeater))]
+
 public partial class HeaderCarousel : ItemsControl
 {
     private const string PART_ScrollViewer = "PART_ScrollViewer";
     private const string PART_BackDropImage = "PART_BackDropImage";
+    private const string PART_ItemsRepeater = "PART_ItemsRepeater";
     private ScrollViewer scrollViewer;
     private AnimatedImage backDropImage;
+    private ItemsRepeater itemsRepeater;
 
     private TextBlock PageTitle;
     private SwitchPresenter SwitchPresenter;
-    private TextBlock SwitchPresenter_TextBlock;
+    //private TextBlock SwitchPresenter_TextBlock;
 
     private StackPanel NoGames_StackPanel;
 
@@ -60,9 +66,6 @@ public partial class HeaderCarousel : ItemsControl
     private TextBlock AgeRatingDescriptionText;
     private TextBlock ElementsText;
 
-    private Grid VersionInfo;
-    private HyperlinkButton OpenInstallLocation;
-    
     private bool isInitializingPresentationMode = true;
     private Card PresentationMode;
     private ComboBox PresentationMode_ComboBox;
@@ -89,9 +92,11 @@ public partial class HeaderCarousel : ItemsControl
 
     private BlurEffectManager _blurManager;
 
+    public ObservableCollection<InfoItem> InfoItems { get; } = new ObservableCollection<InfoItem>();
+
     public HeaderCarousel()
     {
-        DefaultStyleKey = typeof(HeaderCarousel);    
+        DefaultStyleKey = typeof(HeaderCarousel);
     }
 
     protected override void OnApplyTemplate()
@@ -103,6 +108,8 @@ public partial class HeaderCarousel : ItemsControl
 
         scrollViewer = GetTemplateChild(PART_ScrollViewer) as ScrollViewer;
         backDropImage = GetTemplateChild(PART_BackDropImage) as AnimatedImage;
+        itemsRepeater = GetTemplateChild("PART_ItemsRepeater") as ItemsRepeater;
+        itemsRepeater.ElementPrepared += ItemsRepeater_ElementPrepared;
 
         PageTitle = GetTemplateChild("PageTitle") as TextBlock;
 
@@ -151,7 +158,7 @@ public partial class HeaderCarousel : ItemsControl
         LoadSteamAccounts();
 
         SwitchPresenter = GetTemplateChild("SwitchPresenter") as SwitchPresenter;
-        SwitchPresenter_TextBlock = GetTemplateChild("SwitchPresenter_TextBlock") as TextBlock;
+        //SwitchPresenter_TextBlock = GetTemplateChild("SwitchPresenter_TextBlock") as TextBlock;
         NoGames_StackPanel = GetTemplateChild("NoGames_StackPanel") as StackPanel;
         MetadataGrid = GetTemplateChild("MetadataGrid") as Grid;
         Metadata_ScrollViewer = GetTemplateChild("Metadata_ScrollViewer") as ScrollViewer;
@@ -171,10 +178,6 @@ public partial class HeaderCarousel : ItemsControl
         Screenshots_Card = GetTemplateChild("Screenshots_Card") as Card;
         //Screenshots_Gallery = GetTemplateChild("Screenshots_Gallery") as GameGallery;
         //Videos_ScrollViewer = GetTemplateChild("Videos_ScrollViewer") as ScrollViewer;
-
-        VersionInfo = GetTemplateChild("VersionInfo") as Grid;
-        OpenInstallLocation = GetTemplateChild("OpenInstallLocation") as HyperlinkButton;
-        OpenInstallLocation.Click += OpenInstallLocation_Click;
 
         PresentationMode = GetTemplateChild("PresentationMode") as Card;
 
@@ -473,8 +476,52 @@ public partial class HeaderCarousel : ItemsControl
             ReleaseDate = selectedTile?.ReleaseDate;
             Size = selectedTile?.Size;
             Version = selectedTile?.Version;
-            
-            VersionInfo.Visibility = Version != null ? Visibility.Visible : Visibility.Collapsed;
+
+            InfoItems.Clear();
+
+            InfoItems.Add(new InfoItem
+            {
+                Label = "Published by",
+                Value = Developers,
+                PathData = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), Application.Current.Resources["PackageIconPath"]),
+                IconType = InfoIconType.PathIcon
+            });
+
+            InfoItems.Add(new InfoItem
+            {
+                Label = "Release date",
+                Value = ReleaseDate,
+                Glyph = "\uE787",
+                IconType = InfoIconType.FontIcon
+            });
+
+            InfoItems.Add(new InfoItem
+            {
+                Label = "Approximate size",
+                Value = Size,
+                Glyph = "\uECAA",
+                IconType = InfoIconType.FontIcon
+            });
+
+            if (!string.IsNullOrEmpty(Version))
+            {
+                InfoItems.Add(new InfoItem
+                {
+                    Label = "Installed version",
+                    Value = Version,
+                    PathData = (Geometry)XamlBindingHelper.ConvertValue(typeof(Geometry), Application.Current.Resources["VersionIconPath"]),
+                    IconType = InfoIconType.PathIcon
+                });
+            }
+
+            InfoItems.Add(new InfoItem
+            {
+                Label = "Install location",
+                IsHyperlink = true,
+                Hyperlink = InstallLocation,
+                Glyph = "\uE8B7",
+                IconType = InfoIconType.FontIcon
+            });
 
             PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
 
@@ -1332,6 +1379,31 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
+
+    private void ItemsRepeater_ElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
+    {
+        if (args.Element is FrameworkElement container)
+        {
+            var button = container.FindName("Link") as HyperlinkButton;
+            if (button != null)
+            {
+                button.Click -= Link_Click;
+                button.Click += Link_Click;
+            }
+        }
+    }
+
+    private async void Link_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is HyperlinkButton button && button.DataContext is InfoItem item)
+        {
+            if (!string.IsNullOrEmpty(item.Hyperlink))
+            {
+                await Windows.System.Launcher.LaunchFolderPathAsync(item.Hyperlink);
+            }
+        }
+    }
+
     private async Task GetPresentationMode()
     {
         isInitializingPresentationMode = true;
@@ -1404,19 +1476,6 @@ public partial class HeaderCarousel : ItemsControl
                     process.WaitForExit();
                 }
             }
-        }
-    }
-
-    private void OpenInstallLocation_Click(object sender, RoutedEventArgs e)
-    {
-        if (!string.IsNullOrWhiteSpace(InstallLocation) && Directory.Exists(InstallLocation))
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "explorer.exe",
-                Arguments = @$"{InstallLocation}",
-                UseShellExecute = true
-            });
         }
     }
 
@@ -1798,4 +1857,23 @@ public partial class HeaderCarousel : ItemsControl
             });
         }
     }
+}
+
+public enum InfoIconType
+{
+    FontIcon,
+    PathIcon
+}
+
+public class InfoItem
+{
+    public string Label { get; set; }
+    public string Value { get; set; }
+    public string Glyph { get; set; }
+    public Geometry PathData { get; set; }
+    public InfoIconType IconType { get; set; }
+    public bool IsFontIcon => IconType == InfoIconType.FontIcon;
+    public bool IsPathIcon => IconType == InfoIconType.PathIcon;
+    public bool IsHyperlink { get; set; } = false;
+    public string Hyperlink { get; set; }
 }

@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+                    xmlns:converters="using:CommunityToolkit.WinUI.Converters"
                     xmlns:dev="using:DevWinUI"
                     xmlns:local="using:AutoOS.Views.Settings.Games.HeaderCarousel"
                     xmlns:views="using:AutoOS.Views.Settings.Games">
@@ -18,6 +20,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="local:HeaderCarousel">
                     <Grid x:Name="RootGrid">
+                        <Grid.Resources>
+                            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+                        </Grid.Resources>
                         <dev:OpacityMaskView VerticalAlignment="Top">
                             <dev:OpacityMaskView.OpacityMask>
                                 <RadialGradientBrush Center="0.5,0.22" GradientOrigin="0.5,0.0" MappingMode="RelativeToBoundingBox" RadiusX="0.92" RadiusY="0.82" SpreadMethod="Pad">
@@ -661,118 +666,54 @@
                                     <dev:Card Title="Additional information"
                                               Margin="0,0,0,8"
                                               Style="{StaticResource StoreCardStyle}">
-                                        <dev:UniformGrid Columns="4"
-                                                         RowSpacing="24">
-                                            <!--  Published  -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <Viewbox Width="14"
-                                                         Height="14"
-                                                         Margin="0,2,12,0"
-                                                         VerticalAlignment="Top">
-                                                    <PathIcon Data="{StaticResource PackageIconPath}" />
-                                                </Viewbox>
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Vertical"
-                                                            Spacing="4">
-                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               Style="{StaticResource BodyTextBlockStyle}"
-                                                               Text="Published by" />
-                                                    <TextBlock Text="{TemplateBinding Developers}"
-                                                               TextWrapping="Wrap" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <!--  Release Date  -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <FontIcon Grid.Column="0"
-                                                          Margin="0,2,12,0"
-                                                          VerticalAlignment="Top"
-                                                          FontSize="14"
-                                                          Glyph="&#xE787;" />
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Vertical"
-                                                            Spacing="4">
-                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               Style="{StaticResource BodyTextBlockStyle}"
-                                                               Text="Release date" />
-                                                    <TextBlock Text="{TemplateBinding ReleaseDate}"
-                                                               TextWrapping="Wrap" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <!--  Approximate Size  -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <FontIcon Grid.Column="0"
-                                                          Margin="0,2,12,0"
-                                                          VerticalAlignment="Top"
-                                                          FontSize="14"
-                                                          Glyph="&#xECAA;" />
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Vertical"
-                                                            Spacing="4">
-                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               Style="{StaticResource BodyTextBlockStyle}"
-                                                               Text="Approximate size" />
-                                                    <TextBlock Text="{TemplateBinding Size}"
-                                                               TextWrapping="Wrap" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <!--  Installed Version  -->
-                                            <Grid x:Name="VersionInfo"
-                                                  Visibility="Collapsed">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <Viewbox Width="14"
-                                                         Height="14"
-                                                         Margin="0,2,12,0"
-                                                         VerticalAlignment="Top">
-                                                    <PathIcon Data="{StaticResource VersionIconPath}" />
-                                                </Viewbox>
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Vertical"
-                                                            Spacing="4">
-                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               Style="{StaticResource BodyTextBlockStyle}"
-                                                               Text="Installed version" />
-                                                    <TextBlock Text="{TemplateBinding Version}"
-                                                               TextWrapping="Wrap" />
-                                                </StackPanel>
-                                            </Grid>
-                                            <!--  Install Location  -->
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <FontIcon Grid.Column="0"
-                                                          Margin="0,2,12,0"
-                                                          VerticalAlignment="Top"
-                                                          FontSize="14"
-                                                          Glyph="&#xE8B7;" />
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Vertical"
-                                                            Spacing="4">
-                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                               Style="{StaticResource BodyTextBlockStyle}"
-                                                               Text="Install location" />
-                                                    <HyperlinkButton x:Name="OpenInstallLocation"
-                                                                     Content="{TemplateBinding InstallLocation}"
-                                                                     Style="{StaticResource TextBlockButtonStyle}" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </dev:UniformGrid>
+                                        <ItemsRepeater x:Name="PART_ItemsRepeater"
+                                                       ItemsSource="{Binding InfoItems, RelativeSource={RelativeSource TemplatedParent}}">
+                                            <ItemsRepeater.Layout>
+                                                <controls:StaggeredLayout ColumnSpacing="12"
+                                                                          DesiredColumnWidth="225"
+                                                                          ItemsStretch="Fill"
+                                                                          RowSpacing="24" />
+                                            </ItemsRepeater.Layout>
+                                            <ItemsRepeater.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <FontIcon Grid.Column="0"
+                                                                  Margin="0,2,12,0"
+                                                                  VerticalAlignment="Top"
+                                                                  FontSize="14"
+                                                                  Glyph="{Binding Glyph}"
+                                                                  Visibility="{Binding IsFontIcon, Converter={StaticResource BoolToVisibilityConverter}}" />
+
+                                                        <Viewbox Width="14"
+                                                                 Height="14"
+                                                                 Margin="0,2,12,0"
+                                                                 VerticalAlignment="Top"
+                                                                 Visibility="{Binding IsPathIcon, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                            <PathIcon Data="{Binding PathData}" />
+                                                        </Viewbox>
+                                                        <StackPanel Grid.Column="1"
+                                                                    Orientation="Vertical"
+                                                                    Spacing="4">
+                                                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                       Style="{StaticResource BodyTextBlockStyle}"
+                                                                       Text="{Binding Label}" />
+                                                            <TextBlock Text="{Binding Value}"
+                                                                       TextWrapping="Wrap"
+                                                                       Visibility="{Binding IsHyperlink, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" />
+                                                            <HyperlinkButton x:Name="Link"
+                                                                             Margin="0,-6"
+                                                                             Content="{Binding Hyperlink}"
+                                                                             Style="{StaticResource TextBlockButtonStyle}"
+                                                                             Visibility="{Binding IsHyperlink, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsRepeater.ItemTemplate>
+                                        </ItemsRepeater>
                                     </dev:Card>
                                     <dev:Card x:Name="PresentationMode"
                                               Title="Settings"

@@ -1,6 +1,7 @@
 ﻿<Page x:Class="AutoOS.Views.Settings.BiosSettingPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:converters="using:CommunityToolkit.WinUI.Converters"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:dev="using:DevWinUI"
       xmlns:local="using:AutoOS.Views.Settings.BIOS"
@@ -375,7 +376,7 @@
                                                    Text="Recommended Changes" />
                                         <!--  Merge All  -->
                                         <Button Click="MergeAll_Click"
-                                                Visibility="{x:Bind HasRecommendations, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                Visibility="{x:Bind HasRecommendations, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <StackPanel VerticalAlignment="Center"
                                                         Orientation="Horizontal">
                                                 <FontIcon Margin="0,0,8,0"
@@ -419,7 +420,7 @@
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Text="{x:Bind DisplayBiosDefault}"
                                                            TextWrapping="Wrap"
-                                                           Visibility="{x:Bind HasDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                           Visibility="{x:Bind HasDefault, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                 <!--  Recommended Changes  -->
                                                 <StackPanel Margin="0,8,0,0"
                                                             Orientation="Horizontal"
@@ -458,7 +459,7 @@
                                                 <TextBox Margin="12,4,0,0"
                                                          HorizontalAlignment="Left"
                                                          Text="{x:Bind Value, Mode=TwoWay}"
-                                                         Visibility="{x:Bind HasValueField, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                         Visibility="{x:Bind HasValueField, Converter={StaticResource BoolToVisibilityConverter}}" />
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -516,7 +517,7 @@
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Text="{x:Bind DisplayBiosDefault}"
                                                            TextWrapping="Wrap"
-                                                           Visibility="{x:Bind HasDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                           Visibility="{x:Bind HasDefault, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                 <!--  Options  -->
                                                 <ItemsControl Margin="0,8,0,0"
                                                               ItemsSource="{x:Bind Options}">
@@ -532,7 +533,7 @@
                                                 <TextBox Margin="12,4,0,0"
                                                          HorizontalAlignment="Left"
                                                          Text="{x:Bind Value, Mode=TwoWay}"
-                                                         Visibility="{x:Bind HasValueField, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                                         Visibility="{x:Bind HasValueField, Converter={StaticResource BoolToVisibilityConverter}}" />
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListView.ItemTemplate>
@@ -557,6 +558,6 @@
         </dev:SwitchPresenter>
     </Grid>
     <Page.Resources>
-        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
 </Page>
