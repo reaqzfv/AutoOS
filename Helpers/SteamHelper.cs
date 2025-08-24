@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 using ValveKeyValue;
@@ -29,8 +30,12 @@ namespace AutoOS.Helpers
             if (!File.Exists(SteamLoginUsersPath))
                 return [];
 
+            string content = File.ReadAllText(SteamLoginUsersPath);
+            if (string.IsNullOrWhiteSpace(content))
+                return [];
+
             var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text)
-                                 .Deserialize(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(SteamLoginUsersPath))));
+                                 .Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(content)));
 
             return [.. kv.Children
                 .Select(c =>
@@ -40,10 +45,7 @@ namespace AutoOS.Helpers
                     bool mostRecent = c["MostRecent"]?.ToString() == "1";
                     bool allowAutoLogin = c["AllowAutoLogin"]?.ToString() == "1";
 
-                    if (string.IsNullOrWhiteSpace(accountName))
-                        return null;
-
-                    if (string.IsNullOrWhiteSpace(steam64Id))
+                    if (string.IsNullOrWhiteSpace(accountName) || string.IsNullOrWhiteSpace(steam64Id))
                         return null;
 
                     return new SteamAccountInfo
