@@ -598,6 +598,10 @@ namespace AutoOS.Helpers
                         string currentVersion = itemJson["AppVersionString"]?.GetValue<string>();
                         string latestVersion = buildData?.FirstOrDefault(x => x?["appName"]?.ToString() == itemJson["AppName"]?.GetValue<string>())?["buildVersion"]?.ToString();
 
+                        DateTimeOffset releaseDate = DateTimeOffset.Parse(offerData[offerId]!["releaseDate"]!.GetValue<string>()!);
+
+                        long? sizeBytes = itemJson["InstallSize"]?.GetValue<long>();
+
                         GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                         {
                             GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarousel.HeaderCarouselItem
@@ -643,6 +647,11 @@ namespace AutoOS.Helpers
                                 //                output["key"]?.ToString() == "low" &&
                                 //                !string.IsNullOrWhiteSpace(output["url"]?.ToString()))
                                 //            .Select(output => MediaSource.CreateFromUri(new Uri(output["url"].ToString())))],
+                                ReleaseDate = releaseDate.ToString("d"),
+                                Size = sizeBytes >= 1024 * 1024 * 1024
+                                    ? $"{sizeBytes.Value / (1024d * 1024d * 1024d):F1} GB"
+                                    : $"{sizeBytes.Value / (1024d * 1024d):F2} MB",
+                                Version = currentVersion,
                                 Width = 240,
                                 Height = 320,
                             });

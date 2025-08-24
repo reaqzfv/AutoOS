@@ -124,6 +124,8 @@ namespace AutoOS.Helpers
                         playTime = (int)ts.TotalHours > 0 ? $"{(int)ts.TotalHours}h {ts.Minutes}m" : $"{ts.Minutes}m";
                     }
 
+                    long sizeBytes = new FileInfo(bestInstallLocation).Length;
+
                     using var doc = JsonDocument.Parse(await httpClient.GetStringAsync(result["game_url"], _));
                     var data = doc.RootElement.Clone();
 
@@ -151,6 +153,10 @@ namespace AutoOS.Helpers
                                                     : null,
                             Description = data.GetProperty("summary").GetString(),
                             Screenshots = [.. entry.GetProperty("screenshots").EnumerateArray().Select(x => x.GetString())],
+                            ReleaseDate = result["release_date"],
+                            Size = sizeBytes >= 1024 * 1024 * 1024
+                                    ? $"{sizeBytes / (1024d * 1024d * 1024d):F1} GB"
+                                    : $"{sizeBytes / (1024d * 1024d):F2} MB",
                             //Videos = [.. data.GetProperty("videos")
                             //                .EnumerateArray()
                             //                .Select(g => g.TryGetProperty("url", out var url) && Uri.TryCreate(url.GetString(), UriKind.Absolute, out var uri)
@@ -361,6 +367,20 @@ namespace AutoOS.Helpers
 
                         string ratingUrl = $"{baseUrl}{ratingKeyForUrl.ToLowerInvariant()}.png";
 
+                        DateTimeOffset? releaseDate = null;
+
+                        if (maxGame.HasValue && maxGame.Value.TryGetProperty("release_dates", out var releaseDates))
+                        {
+                            var firstRelease = releaseDates.EnumerateArray().FirstOrDefault();
+                            if (firstRelease.ValueKind != JsonValueKind.Undefined &&
+                                firstRelease.TryGetProperty("date", out var dateProp) &&
+                                dateProp.ValueKind == JsonValueKind.Number)
+                            {
+                                long unixTime = dateProp.GetInt64();
+                                releaseDate = DateTimeOffset.FromUnixTimeSeconds(unixTime);
+                            }
+                        }
+
                         return new Dictionary<string, string>
                         {
                             { "name", maxGame?.GetProperty("name").GetString() ?? "Unknown" },
@@ -368,7 +388,8 @@ namespace AutoOS.Helpers
                             { "cover_url", $"https://images.igdb.com/igdb/image/upload/t_cover_big_2x/{slug}.jpg" },
                             { "developers", developerNames },
                             { "age_rating_url", ratingUrl },
-                            { "age_rating_title", ratingTitle }
+                            { "age_rating_title", ratingTitle },
+                            { "release_date", releaseDate?.ToString("d") }
                         };
                     }
                 }

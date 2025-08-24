@@ -272,4 +272,28 @@ public partial class HeaderCarouselItem
     }
     public static readonly DependencyProperty GameLocationProperty =
         DependencyProperty.Register(nameof(GameLocation), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+
+    public string ReleaseDate
+    {
+        get => (string)GetValue(ReleaseDateProperty);
+        set => SetValue(ReleaseDateProperty, value);
+    }
+    public static readonly DependencyProperty ReleaseDateProperty =
+        DependencyProperty.Register(nameof(ReleaseDate), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+
+    public string Size
+    {
+        get => (string)GetValue(SizeProperty);
+        set => SetValue(SizeProperty, value);
+    }
+    public static readonly DependencyProperty SizeProperty =
+        DependencyProperty.Register(nameof(Size), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
+
+    public string Version
+    {
+        get => (string)GetValue(VersionProperty);
+        set => SetValue(VersionProperty, value);
+    }
+    public static readonly DependencyProperty VersionProperty =
+        DependencyProperty.Register(nameof(Version), typeof(string), typeof(HeaderCarouselItem), new PropertyMetadata(null));
 }

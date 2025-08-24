@@ -181,7 +181,7 @@ namespace AutoOS.Helpers
                             .Select(game =>
                             {
                                 var hoursStr = (string)game.Element("hoursOnRecord");
-                                return double.TryParse(hoursStr, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var h)
+                                return double.TryParse(hoursStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var h)
                                     ? $"{(int)h}h {(int)((h - (int)h) * 60)}min"
                                     : null;
                             })
@@ -212,6 +212,15 @@ namespace AutoOS.Helpers
                                     .Replace("\r", ", ");
                             }
                         }
+
+                        DateTimeOffset releaseDate = DateTimeOffset.Parse(
+                            gameData.GetProperty("data")
+                                    .GetProperty("release_date")
+                                    .GetProperty("date")
+                                    .GetString()!
+                        );
+
+                        long? sizeBytes = long.TryParse(appManifestData["SizeOnDisk"]?.ToString(), out var result) ? result : null;
 
                         GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                         {
@@ -244,6 +253,11 @@ namespace AutoOS.Helpers
                                                 .Select(s => s.GetProperty("path_thumbnail").GetString())
                                                 .Where(s => !string.IsNullOrWhiteSpace(s))],
                                 InstallLocation = Path.Combine(steamAppsDir, "common", appManifestData["installdir"]?.ToString()),
+                                ReleaseDate = releaseDate.ToString("d"),
+                                Size = sizeBytes >= 1024 * 1024 * 1024
+                                    ? $"{sizeBytes.Value / (1024d * 1024d * 1024d):F1} GB"
+                                    : $"{sizeBytes.Value / (1024d * 1024d):F2} MB",
+                                Version = appManifestData["buildid"]?.ToString(),
                                 GameID = gameId,
                                 Width = 240,
                                 Height = 320,

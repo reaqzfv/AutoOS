@@ -433,7 +433,8 @@
                                     </Button>
                                 </StackPanel>
                                 <!--  Divider  -->
-                                <dev:Divider Margin="0,12,0,12" />
+                                <dev:Divider Margin="0,12,0,12"
+                                             RequestedTheme="Dark" />
                             </StackPanel>
                             <!--  Ratings  -->
                             <StackPanel HorizontalAlignment="Right"
@@ -660,41 +661,136 @@
                                     <dev:Card Title="Additional information"
                                               Margin="0,0,0,8"
                                               Style="{StaticResource StoreCardStyle}">
-                                        <!--  Install Location  -->
-                                        <StackPanel Orientation="Vertical"
-                                                    Spacing="18">
-                                            <StackPanel Orientation="Vertical">
-                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                           Text="Install Location:" />
-                                                <TextBlock Margin="0,2,0,12"
-                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                           Style="{StaticResource CaptionTextBlockStyle}"
-                                                           Text="Open the install location." />
-                                                <dev:TextBox HorizontalAlignment="Left"
-                                                             IsReadOnly="True"
-                                                             IsTabStop="False"
-                                                             Text="{TemplateBinding InstallLocation}">
-                                                    <dev:TextBox.Content>
-                                                        <Button x:Name="OpenInstallLocation"
-                                                                Content="&#xE838;"
-                                                                IsTabStop="True" />
-                                                    </dev:TextBox.Content>
-                                                </dev:TextBox>
-                                            </StackPanel>
-                                            <!--  Presentation Mode  -->
-                                            <StackPanel x:Name="PresentationMode"
-                                                        Visibility="Collapsed">
-                                                <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                           Text="Presentation Mode:" />
-                                                <TextBlock Margin="0,2,0,12"
-                                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                           Style="{StaticResource CaptionTextBlockStyle}"
-                                                           Text="Use Hardware: Independent Flip if you have issues when tabbing out." />
-                                                <ComboBox x:Name="PresentationMode_ComboBox">
-                                                    <ComboBoxItem Content="Hardware: Independent Flip" />
-                                                    <ComboBoxItem Content="Hardware: Legacy Flip" />
-                                                </ComboBox>
-                                            </StackPanel>
+                                        <dev:UniformGrid Columns="4"
+                                                         RowSpacing="24">
+                                            <!--  Published  -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Viewbox Width="14"
+                                                         Height="14"
+                                                         Margin="0,2,12,0"
+                                                         VerticalAlignment="Top">
+                                                    <PathIcon Data="{StaticResource PackageIconPath}" />
+                                                </Viewbox>
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            Spacing="4">
+                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="Published by" />
+                                                    <TextBlock Text="{TemplateBinding Developers}"
+                                                               TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <!--  Release Date  -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <FontIcon Grid.Column="0"
+                                                          Margin="0,2,12,0"
+                                                          VerticalAlignment="Top"
+                                                          FontSize="14"
+                                                          Glyph="&#xE787;" />
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            Spacing="4">
+                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="Release date" />
+                                                    <TextBlock Text="{TemplateBinding ReleaseDate}"
+                                                               TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <!--  Approximate Size  -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <FontIcon Grid.Column="0"
+                                                          Margin="0,2,12,0"
+                                                          VerticalAlignment="Top"
+                                                          FontSize="14"
+                                                          Glyph="&#xECAA;" />
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            Spacing="4">
+                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="Approximate size" />
+                                                    <TextBlock Text="{TemplateBinding Size}"
+                                                               TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <!--  Installed Version  -->
+                                            <Grid x:Name="VersionInfo"
+                                                  Visibility="Collapsed">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Viewbox Width="14"
+                                                         Height="14"
+                                                         Margin="0,2,12,0"
+                                                         VerticalAlignment="Top">
+                                                    <PathIcon Data="{StaticResource VersionIconPath}" />
+                                                </Viewbox>
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            Spacing="4">
+                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="Installed version" />
+                                                    <TextBlock Text="{TemplateBinding Version}"
+                                                               TextWrapping="Wrap" />
+                                                </StackPanel>
+                                            </Grid>
+                                            <!--  Install Location  -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <FontIcon Grid.Column="0"
+                                                          Margin="0,2,12,0"
+                                                          VerticalAlignment="Top"
+                                                          FontSize="14"
+                                                          Glyph="&#xE8B7;" />
+                                                <StackPanel Grid.Column="1"
+                                                            Orientation="Vertical"
+                                                            Spacing="4">
+                                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="Install location" />
+                                                    <HyperlinkButton x:Name="OpenInstallLocation"
+                                                                     Content="{TemplateBinding InstallLocation}"
+                                                                     Style="{StaticResource TextBlockButtonStyle}" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </dev:UniformGrid>
+                                    </dev:Card>
+                                    <dev:Card x:Name="PresentationMode"
+                                              Title="Settings"
+                                              Margin="0,0,0,8"
+                                              Style="{StaticResource StoreCardStyle}"
+                                              Visibility="Collapsed">
+                                        <!--  Presentation Mode  -->
+                                        <StackPanel>
+                                            <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                       Text="Presentation Mode:" />
+                                            <TextBlock Margin="0,2,0,12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                                       Text="Use Hardware: Independent Flip if you have issues when tabbing out." />
+                                            <ComboBox x:Name="PresentationMode_ComboBox">
+                                                <ComboBoxItem Content="Hardware: Independent Flip" />
+                                                <ComboBoxItem Content="Hardware: Legacy Flip" />
+                                            </ComboBox>
                                         </StackPanel>
                                     </dev:Card>
                                     <Border Height="32"
@@ -707,6 +803,4 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
 </ResourceDictionary>

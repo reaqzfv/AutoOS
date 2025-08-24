@@ -60,10 +60,11 @@ public partial class HeaderCarousel : ItemsControl
     private TextBlock AgeRatingDescriptionText;
     private TextBlock ElementsText;
 
-    private Button OpenInstallLocation;
+    private Grid VersionInfo;
+    private HyperlinkButton OpenInstallLocation;
     
     private bool isInitializingPresentationMode = true;
-    private StackPanel PresentationMode;
+    private Card PresentationMode;
     private ComboBox PresentationMode_ComboBox;
 
     private AutoSuggestBox SearchBox;
@@ -171,10 +172,11 @@ public partial class HeaderCarousel : ItemsControl
         //Screenshots_Gallery = GetTemplateChild("Screenshots_Gallery") as GameGallery;
         //Videos_ScrollViewer = GetTemplateChild("Videos_ScrollViewer") as ScrollViewer;
 
-        OpenInstallLocation = GetTemplateChild("OpenInstallLocation") as Button;
+        VersionInfo = GetTemplateChild("VersionInfo") as Grid;
+        OpenInstallLocation = GetTemplateChild("OpenInstallLocation") as HyperlinkButton;
         OpenInstallLocation.Click += OpenInstallLocation_Click;
 
-        PresentationMode = GetTemplateChild("PresentationMode") as StackPanel;
+        PresentationMode = GetTemplateChild("PresentationMode") as Card;
 
         PresentationMode_ComboBox = GetTemplateChild("PresentationMode_ComboBox") as ComboBox;
         PresentationMode_ComboBox.SelectionChanged += PresentationMode_SelectionChanged;
@@ -467,6 +469,12 @@ public partial class HeaderCarousel : ItemsControl
             LauncherLocation = selectedTile?.LauncherLocation;
             DataLocation = selectedTile?.DataLocation;
             GameLocation = selectedTile?.GameLocation;
+
+            ReleaseDate = selectedTile?.ReleaseDate;
+            Size = selectedTile?.Size;
+            Version = selectedTile?.Version;
+            
+            VersionInfo.Visibility = Version != null ? Visibility.Visible : Visibility.Collapsed;
 
             PresentationMode.Visibility = selectedTile?.Title == "Fortnite" ? Visibility.Visible : Visibility.Collapsed;
 
