@@ -120,13 +120,14 @@ public sealed partial class SchedulingPage : Page
 
     private void GetAffinities()
     {
+        var gpuAffinities = new List<int?>();
+
         foreach (var query in new[]
         {
             "SELECT PNPDeviceID FROM Win32_VideoController",
             "SELECT PNPDeviceID FROM Win32_USBController",
             "SELECT PNPDeviceID FROM Win32_NetworkAdapter"
         })
-
         {
             foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get())
             {
@@ -156,8 +157,7 @@ public sealed partial class SchedulingPage : Page
 
                 if (query.Contains("VideoController"))
                 {
-                    if (affinityCore.HasValue)
-                        GPU.SelectedIndex = affinityCore.Value;
+                    gpuAffinities.Add(affinityCore);
                 }
                 else if (query.Contains("USBController"))
                 {
@@ -182,6 +182,13 @@ public sealed partial class SchedulingPage : Page
                     }
                 }
             }
+        }
+
+        if (gpuAffinities.Count > 0 &&
+            gpuAffinities.All(a => a.HasValue) &&
+            gpuAffinities.Select(a => a.Value).Distinct().Count() == 1)
+        {
+            GPU.SelectedIndex = gpuAffinities[0].Value;
         }
 
         UpdateComboBoxState(GPU, XHCI, NIC);
