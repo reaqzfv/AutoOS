@@ -79,11 +79,54 @@ public sealed partial class GraphicsPage : Page
 
                 NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
 
+                int gpuAffinity = -1;
+
+                foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_VideoController").Get())
+                {
+                    string path = obj["PNPDeviceID"]?.ToString();
+                    if (path?.StartsWith("PCI\\VEN_") != true)
+                        continue;
+
+                    using (var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy"))
+                    {
+                        if (affinityKey?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
+                        {
+                            for (int i = 0; i < value.Length; i++)
+                            {
+                                for (int bit = 0; bit < 8; bit++)
+                                {
+                                    if ((value[i] & (1 << bit)) != 0)
+                                    {
+                                        gpuAffinity = i * 8 + bit;
+                                        break;
+                                    }
+                                }
+                                if (gpuAffinity != -1) break;
+                            }
+                        }
+                    }
+                }
+
                 await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
 
                 await ProcessActions.Sleep(3000);
 
                 Nvidia_SettingsGroup.Description = "Current Version: " + (await Task.Run(() => Process.Start(new ProcessStartInfo("nvidia-smi", "--query-gpu=driver_version --format=csv,noheader") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEndAsync()))?.Trim();
+
+                NvidiaUpdateCheck.CheckedContent = "Reapplying GPU Affinity...";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $@"/c {Path.Combine(PathHelper.GetAppDataFolderPath(), "AutoGpuAffinity", "AutoGpuAffinity.exe")} --apply-affinity {gpuAffinity}",
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync();
 
                 NvidiaUpdateCheck.IsChecked = false;
                 NvidiaUpdateCheck.Content = "Checking for updates";
@@ -91,11 +134,17 @@ public sealed partial class GraphicsPage : Page
             }
             else
             {
-                NvidiaUpdateCheck.CheckedContent = "Please enable Services & Drivers before updating...";
-
-                await Task.Delay(2000);
-
                 NvidiaUpdateCheck.IsChecked = false;
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Services & Drivers are disabled",
+                    Content = "Please enable Services & Drivers before updating.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
             }
         }
         else
