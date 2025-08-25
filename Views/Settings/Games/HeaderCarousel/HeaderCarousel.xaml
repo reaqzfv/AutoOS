@@ -706,9 +706,12 @@
                                                                        Visibility="{Binding IsHyperlink, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}" />
                                                             <HyperlinkButton x:Name="Link"
                                                                              Margin="0,-6"
-                                                                             Content="{Binding Hyperlink}"
                                                                              Style="{StaticResource TextBlockButtonStyle}"
-                                                                             Visibility="{Binding IsHyperlink, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                             Visibility="{Binding IsHyperlink, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                                <TextBlock Text="{Binding Hyperlink}"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           TextWrapping="Wrap" />
+                                                            </HyperlinkButton>
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
