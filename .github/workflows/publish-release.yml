@@ -95,7 +95,9 @@ jobs:
         echo "APP_VERSION_SUFFIX=${{ env.APP_VERSION_SUFFIX }}"
 
     - name: Restore the application
-      run: msbuild $env:AUTOOS_PROJECT_PATH /t:Restore /p:Configuration=Release
+      run: |
+        dotnet nuget add source "https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json" --name CommunityToolkit-Labs
+        msbuild $env:AUTOOS_PROJECT_PATH /t:Restore /p:Configuration=Release
       env:
         Configuration: Release
 
