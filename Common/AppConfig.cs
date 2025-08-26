@@ -3,7 +3,6 @@ using Nucs.JsonSettings.Examples;
 
 namespace AutoOS.Common;
 
-
 [GenerateAutoSaveOnChange]
 public partial class AppConfig : NotifiyingJsonSettings, IVersionable
 {
