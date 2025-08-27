@@ -458,7 +458,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             }
         }
 
-        if (errorOutput.Contains("Warning: Error in writing variable", StringComparison.OrdinalIgnoreCase))
+        if (errorOutput.Contains("WARNING : Cannot update protected variable", StringComparison.OrdinalIgnoreCase) || errorOutput.Contains("WARNING : Error in writing variable", StringComparison.OrdinalIgnoreCase))
         {
             if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
             {
