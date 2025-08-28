@@ -292,6 +292,7 @@ public static class BiosSettingRecommendationsList
 
         // AMD
         new BiosSettingRecommendation { SetupQuestion = "Power Down Enable", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Memory Context Restore", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Fast Boot", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory interleaving", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Gear Down Mode", Type = "Option", RecommendedOption = "Disabled" },
