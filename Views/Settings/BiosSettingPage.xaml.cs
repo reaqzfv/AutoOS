@@ -109,13 +109,9 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             }
         }
 
-        if (output.Contains("AMISCE is not supported on this system.", StringComparison.OrdinalIgnoreCase))
+        if (output.Contains("AMISCE is not supported on this system.", StringComparison.OrdinalIgnoreCase) || errorOutput.Contains("BIOS not compatible", StringComparison.OrdinalIgnoreCase))
         {
             SwitchPresenter.Value = "Unsupported";
-        }
-        else if (errorOutput.Contains("BIOS not compatible", StringComparison.OrdinalIgnoreCase))
-        {
-            SwitchPresenter.Value = "Incompatible";
         }
         else if (errorOutput.Contains("WARNING: HII data does not have setup questions information", StringComparison.OrdinalIgnoreCase))
         {
