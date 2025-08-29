@@ -243,7 +243,7 @@ public sealed partial class DisplayPage : Page
         await Task.Delay(300);
 
         // launch
-        Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "CRU", "restart64.exe")) { Arguments = "/q" }).WaitForExit();
+        Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "CRU", "restart64.exe"))).WaitForExit();
 
         // apply profile
         if (localSettings.Values["MsiProfile"] != null)
