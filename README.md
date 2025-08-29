@@ -127,8 +127,8 @@ bcdboot %TARGETDRIVE%\Windows
 ![ServicesDrivers](https://github.com/user-attachments/assets/afe4f87d-8f0f-4b1a-b06a-6f8a90622bbd)
 ![TrackingLogging](https://github.com/user-attachments/assets/a7682e41-9d0a-429d-bf7c-2ff8a94f08b9)
 ![BiosSetting](https://github.com/user-attachments/assets/28b62d89-1f58-49c1-a796-968e8f0268f8)
-![Security](https://github.com/user-attachments/assets/066b0417-498e-446f-817d-7348f0dd90f1)
-![Update](https://github.com/user-attachments/assets/17d35dd4-cad7-49df-8178-46626fad07e2)
+![Security](https://github.com/user-attachments/assets/45aef605-6e6f-4a9a-9876-37a5ed0cd80b)
+![Update](https://github.com/user-attachments/assets/a1da977d-561c-48ed-8266-07884bbd6a30)
 ![Games](https://github.com/user-attachments/assets/d3f0a05e-a80f-44d1-a89d-8ea48af0a031)
 
 ## 🙏 Credits
