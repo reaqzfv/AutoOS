@@ -38,7 +38,7 @@
                                    Header="Ethernet"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Ethernet.png}">
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Description="Toggle network adapter settings to manage Wake-on-LAN (WOL) functionality. Additional BIOS settings may be required."
+                        <dev:SettingsCard Description="Toggle network adapter settings to manage WOL functionality. Additional BIOS settings may be required."
                                           Header="Wake-on-LAN (WOL)">
                             <StackPanel Orientation="Horizontal">
                                 <ToggleSwitch x:Name="WOL"
