@@ -26,43 +26,51 @@ namespace AutoOS.Views.Settings
         public HomeLandingPage()
         {
             InitializeComponent();
-            GetChangeLog();
+            this.Loaded += GetChangeLog;
         }
 
-        public async void GetChangeLog()
+        private async void GetChangeLog(object sender, RoutedEventArgs e)
         {
             string storedVersion = localSettings.Values["Version"] as string;
             string currentVersion = ProcessInfoHelper.Version;
 
             if (storedVersion != currentVersion)
             {
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AutoOS");
-
-                using var doc = System.Text.Json.JsonDocument.Parse(await httpClient.GetStringAsync($"https://api.github.com/repos/tinodin/AutoOS/releases/tags/v{currentVersion}"));
-
-                string rawChangelog = doc.RootElement.GetProperty("body").GetString()!;
-                string changelog = rawChangelog.Replace("`", "")[rawChangelog.IndexOf("- ")..];
-
-                var contentDialog = new ContentDialog
+                try
                 {
-                    Title = $"What’s new in AutoOS v{currentVersion}",
-                    Content = new MarkdownTextBlock
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("AutoOS");
+
+                    using var doc = System.Text.Json.JsonDocument.Parse(await httpClient.GetStringAsync($"https://api.github.com/repos/tinodin/AutoOS/releases/tags/v{currentVersion}"));
+
+                    if (doc.RootElement.TryGetProperty("body", out var body))
                     {
-                        Text = changelog,
-                        Margin = new Thickness(0, 12, 0, 0),
-                        Config = new MarkdownConfig()
-                    },
-                    CloseButtonText = "Close",
-                    XamlRoot = this.XamlRoot
-                };
+                        string rawChangelog = body.GetString()!;
+                        string changelog = rawChangelog.Replace("`", "")[rawChangelog.IndexOf("- ")..];
 
-                contentDialog.Resources["ContentDialogMaxWidth"] = 1000;
+                        var contentDialog = new ContentDialog
+                        {
+                            Title = $"What’s new in AutoOS v{currentVersion}",
+                            Content = new MarkdownTextBlock
+                            {
+                                Text = changelog,
+                                Margin = new Thickness(0, 12, 0, 0),
+                                Config = new MarkdownConfig()
+                            },
+                            CloseButtonText = "Close",
+                            XamlRoot = this.XamlRoot
+                        };
 
-                await contentDialog.ShowAsync();
+                        contentDialog.Resources["ContentDialogMaxWidth"] = 1000;
+                        await contentDialog.ShowAsync();
 
-                localSettings.Values["Version"] = currentVersion;
+                        localSettings.Values["Version"] = currentVersion;
+                        await Update();
+                    }
+                }
+                catch
+                {
 
-                await Update();
+                }
             }
         }
 
