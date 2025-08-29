@@ -25,7 +25,7 @@ public static class GraphicsStage
         string previousTitle = string.Empty;
         int stagePercentage = 5;
 
-        var (_, _, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
+        string obsVersion = "";
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
@@ -69,7 +69,7 @@ public static class GraphicsStage
             ("Installing the AMD driver", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\Setup.exe"" -install"), () => AMD == true),
 
             // download the latest nvidia driver                                                     
-            ("Downloading the latest NVIDIA Driver", async () => await ProcessActions.RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe"), () => NVIDIA == true),
+            ("Downloading the latest NVIDIA Driver", async () => await ProcessActions.RunDownload((await NvidiaHelper.CheckUpdate()).newestDownloadUrl, Path.GetTempPath(), "driver.exe"), () => NVIDIA == true),
 
             // extract the driver
             ("Extracting the NVIDIA driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver")), () => NVIDIA == true),
@@ -203,6 +203,22 @@ public static class GraphicsStage
 
             // apply msi afterburner profile
             ("Applying MSI Afterburner profile", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe", Arguments = "/Profile1 /q" }))), () => MSI == true),
+        
+            // download obs studio
+            ("Downloading OBS Studio", async () => await ProcessActions.RunDownload(await ProcessActions.GetLatestObsStudioUrl(), Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe"), null),
+            ("Downloading OBS Studio settings", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/gkhuws75qnckr63lnfbzn/obs-studio.zip?rlkey=6ziow6s1a85a7s5snrdi7v1x2&st=db3yzo4m&dl=0", Path.GetTempPath(), "obs-studio.zip"), null),
+
+            // install obs studio
+            ("Installing OBS Studio", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/k8dboxunne9wk5j955n0u/uninstall.exe?rlkey=4egb9y4mbsg7pboczrrulto98&st=xmldubc2&dl=0", @"C:\Program Files\obs-studio"), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe"), @"C:\Program Files\obs-studio"), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "obs-studio.zip"), Path.Combine(Path.GetTempPath(), "obs-studio")), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c move ""C:\Program Files\obs-studio\$APPDATA\obs-studio-hook"" ""%ProgramData%\obs-studio-hook"""), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\obs-studio"" ""%APPDATA%"""), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /S /Q ""C:\Program Files\obs-studio\$PLUGINSDIR"" & rmdir /S /Q ""C:\Program Files\obs-studio\$APPDATA"""), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunCustom(async () => obsVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(@"C:\Program Files\obs-studio\bin\64bit\obs64.exe").ProductVersion)), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OBS Studio"" /v ""DisplayVersion"" /t REG_SZ /d ""{obsVersion}"" /f"), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("CurrentUser", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "obs.reg")}\""), null),
+            ("Installing OBS Studio", async () => await ProcessActions.RunPowerShell(@"$Shell = New-Object -ComObject WScript.Shell; $Shortcut = $Shell.CreateShortcut([System.IO.Path]::Combine($env:ProgramData, 'Microsoft\Windows\Start Menu\Programs\OBS Studio.lnk')); $Shortcut.TargetPath = 'C:\Program Files\obs-studio\bin\64bit\obs64.exe'; $Shortcut.Save()"), null)
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

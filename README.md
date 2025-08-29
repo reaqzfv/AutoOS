@@ -39,13 +39,13 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 🚀 Getting Started
 
 > [!NOTE]
-> You must be logged into GitHub in order to be able to download the artifact (Windows ISO)
+> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 8!
 
 **Step 1:** Open CMD as Admin and don't close it until the installation is done.
 
 **Step 2:** Open Disk Management.
 
-**Step 3:** Find your your C: partition.
+**Step 3:** Find your your C: partition / biggest partition.
 
 **Step 4:** Right click on it and select "Shrink Volume".
 

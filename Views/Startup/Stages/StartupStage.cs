@@ -36,6 +36,9 @@ public static class StartupStage
             // apply msi afterburner profile
             ("Applying MSI Afterburner profile", async () => await StartupActions.RunCustom(async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe", Arguments = "/Profile1 /q" }))), () => MSI == true),
 
+            // launch obs studio
+            ("Launching OBS Studio", async () => await StartupActions.RunCustom(async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }))), null),
+
             // disable device power management
             ("Disabling device power management", async () => await StartupActions.RunPowerShellScript("devicepowermanagement.ps1", ""), null),
 

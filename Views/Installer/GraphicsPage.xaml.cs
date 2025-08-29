@@ -16,6 +16,7 @@ public sealed partial class GraphicsPage : Page
         GetBrand();
         GetHDCPState();
         GetMsiProfile();
+        MainShortcutWithTextLabel.Keys = new List<object>() { "Alt", "F10" };
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

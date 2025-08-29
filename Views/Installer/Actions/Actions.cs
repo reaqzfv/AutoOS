@@ -228,7 +228,7 @@ public static class ProcessActions
 
     public static async Task RunExtract(string inputPath, string outputPath)
     {
-        await Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "7-Zip", "7za.exe"), Arguments = $"x \"{inputPath}\" -y -o\"{outputPath}\"", CreateNoWindow = true })!.WaitForExitAsync();
+        await Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "7-Zip", "7z.exe"), Arguments = $"x \"{inputPath}\" -y -o\"{outputPath}\"", CreateNoWindow = true })!.WaitForExitAsync();
     }
 
     public static async Task RunNvidiaStrip()
@@ -317,6 +317,22 @@ public static class ProcessActions
     public static async Task ImportProfile(string file)
     {
         await Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NvidiaProfileInspector", "nvidiaProfileInspector.exe"), Arguments = $"-silentimport \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NvidiaProfileInspector", file)}\"", CreateNoWindow = true })!.WaitForExitAsync();
+    }
+
+    public static async Task<string> GetLatestObsStudioUrl()
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.UserAgent.ParseAdd("AutoOS");
+
+        string json = await client.GetStringAsync("https://api.github.com/repos/obsproject/obs-studio/releases/latest");
+        using var doc = JsonDocument.Parse(json);
+
+        return doc.RootElement
+            .GetProperty("assets")
+            .EnumerateArray()
+            .First(a => a.GetProperty("name").GetString().Contains("Windows-x64-Installer.exe"))
+            .GetProperty("browser_download_url")
+            .GetString();
     }
 
     public static async Task RemoveAppx(string appx)
