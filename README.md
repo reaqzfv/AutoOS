@@ -15,13 +15,13 @@
 
 AutoOS is a WinUI3 application focused on automation to improve performance while ensuring privacy and compatibility.
 
-
 ## ✨ Features
 - Automatically set every monitor to their highest supported refresh rate
 - Automatically benchmark and apply GPU, XHCI Controller and NIC affinities and reserve them if enough cores
 - Easily update GPU driver with one click
 - Toggle XHCI Interrupt Moderation without having to restart your PC
 - Toggle between service states with configured functionality
+- Apply all hidden BIOS Settings in one click
 - Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Automatically import Epic Games and Steam titles from old install
 - Stop processes when running your game to automatically stop all unnecessary services and executables
@@ -102,6 +102,34 @@ bcdboot %TARGETDRIVE%\Windows
 **Step 16:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
 **Step 17:** Select your settings and click "Install AutoOS".
+
+## 📷Screenshots
+### Installer
+![Personalization](https://github.com/user-attachments/assets/e5ba6cc4-ac51-443c-aca7-e611ebd8b6c2)
+![Browser](https://github.com/user-attachments/assets/0d8f19d9-78a0-4c83-bd1e-f448fa1ebb48)
+![Applications](https://github.com/user-attachments/assets/d4dd631e-d060-453f-bf80-9929a87ea602)
+![Display](https://github.com/user-attachments/assets/9930c3df-2589-439e-b6ff-6a7106f6e79c)
+![GraphicsCard](https://github.com/user-attachments/assets/9d9ad181-0099-4354-8404-254be95c99bd)
+![PerCpuScheduling](https://github.com/user-attachments/assets/6ab3d48d-482a-4a57-a844-38782c0f941b)
+![BluetoothDevices](https://github.com/user-attachments/assets/b5c80154-a4d4-4b13-b567-c065da1e1850)
+![NetworkInternet](https://github.com/user-attachments/assets/53f698b5-3aed-4d87-b741-1f256ee8d712)
+![EnergyPower](https://github.com/user-attachments/assets/78b47508-4b84-4ba9-b077-81517739515b)
+![ServicesDrivers](https://github.com/user-attachments/assets/696a1a01-8e2a-480c-8fe0-c312b1ab0088)
+![Security](https://github.com/user-attachments/assets/74e57cfc-caf9-4e21-95cb-c798532fa91a)
+
+### Settings
+![Display](https://github.com/user-attachments/assets/1ed850b1-0b89-480c-ae4f-0eddb1771825)
+![GraphicsCard](https://github.com/user-attachments/assets/0b58a9ef-1f63-451f-9a8c-5b7f39c5f6e5)
+![PerCpuScheduling](https://github.com/user-attachments/assets/43abedb5-cc73-4eaf-a19c-a52343ccbbb2)
+![BluetoothDevices](https://github.com/user-attachments/assets/db217f08-b285-4dcf-a22f-5c2f41f971c8)
+![NetworkInternet](https://github.com/user-attachments/assets/b8bd340e-e9a1-4e22-9c21-d1d1d2b5bbe2)
+![EnergyPower](https://github.com/user-attachments/assets/945a7428-e84d-4bf6-929e-3053667bc167)
+![ServicesDrivers](https://github.com/user-attachments/assets/afe4f87d-8f0f-4b1a-b06a-6f8a90622bbd)
+![TrackingLogging](https://github.com/user-attachments/assets/a7682e41-9d0a-429d-bf7c-2ff8a94f08b9)
+![BiosSetting](https://github.com/user-attachments/assets/28b62d89-1f58-49c1-a796-968e8f0268f8)
+![Security](https://github.com/user-attachments/assets/066b0417-498e-446f-817d-7348f0dd90f1)
+![Update](https://github.com/user-attachments/assets/17d35dd4-cad7-49df-8178-46626fad07e2)
+![Games](https://github.com/user-attachments/assets/d3f0a05e-a80f-44d1-a89d-8ea48af0a031)
 
 ## 🙏 Credits
 
