@@ -112,7 +112,7 @@ public sealed partial class PersonalizationPage : Page
         using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes");
         string currentTheme = key?.GetValue("CurrentTheme") as string ?? string.Empty;
 
-        if (currentTheme == @"C:\Windows\Resources\Themes\aero.theme" || currentTheme == @"C:\Windows\Resources\Themes\dark.theme")
+        if (currentTheme == @"C:\Windows\resources\Themes\aero.theme" || currentTheme == @"C:\Windows\resources\Themes\dark.theme")
         {
             Themes.SelectedIndex = 0;
         }
