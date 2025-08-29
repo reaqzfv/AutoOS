@@ -49,7 +49,7 @@ public static partial class GamesStage
 
             // install easyanticheat
             ("Installing EasyAntiCheat", async () => await ProcessActions.RunNsudo("CurrentUser", $@"""{fortnitePath}\FortniteGame\Binaries\Win64\EasyAntiCheat\EasyAntiCheat_EOS_Setup.exe"" install 4fe75bbc5a674f4f9b356b5c90567da5"), () => Fortnite == true),
-            ("Disabling EasyAntiCheat startup entry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\EasyAntiCheat_EOS"" /v ""Start"" /t REG_DWORD /d 4 /f"), () => Fortnite == true),
+            ("Disabling EasyAntiCheat startup entry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\EasyAntiCheat_EOS"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop EasyAntiCheat_EOS"), () => Fortnite == true),
 
             // create fortnite qos policy
             ("Creating Fortnite QoS Policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\QoS\FortniteClient-Win64-Shipping.exe"" /v ""Application Name"" /t REG_SZ /d ""FortniteClient-Win64-Shipping.exe"" /f"), () => Fortnite == true),
