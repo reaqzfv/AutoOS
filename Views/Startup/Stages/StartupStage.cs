@@ -21,7 +21,6 @@ public static class StartupStage
         string discordVersion = "";
 
         string previousTitle = string.Empty;
-        int stagePercentage = 100;
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
@@ -107,7 +106,7 @@ public static class StartupStage
             }
         }
 
-        double incrementPerTitle = groupedTitleCount > 0 ? stagePercentage / (double)groupedTitleCount : 0;
+        double incrementPerTitle = groupedTitleCount > 0 ? 100 / (double)groupedTitleCount : 0;
 
         foreach (var (title, action, condition) in filteredActions)
         {
