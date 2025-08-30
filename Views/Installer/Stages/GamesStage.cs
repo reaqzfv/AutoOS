@@ -33,11 +33,13 @@ public static partial class GamesStage
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
-            // adjust fortnite settings
-            ("Adjusting Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
-            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini")))), () => Fortnite == true),
-            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings"))), () => Fortnite == true),
-            ("Adjusting Fortnite settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference"))), () => Fortnite == true && NVIDIA == true),
+            // setting fortnite frame rate
+            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
+            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini")))), () => Fortnite == true),
+            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings"))), () => Fortnite == true),
+            
+            // setting fortnite rendering mode
+            ("Setting Fortnite Rendering Mode", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference"))), () => Fortnite == true && NVIDIA == true),
             
             // import fortnite settings
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient"""), () => Fortnite == true),
