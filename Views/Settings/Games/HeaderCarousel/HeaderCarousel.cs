@@ -1656,6 +1656,8 @@ public partial class HeaderCarousel : ItemsControl
             "ClipSvc",
             "CryptSvc",
             "DevicesFlowUserSvc",
+            "DeviceAssociationService",
+            "Dhcp",
             //"DispBrokerDesktopSvc",
             //"Dnscache",
             "DoSvc",
@@ -1663,6 +1665,8 @@ public partial class HeaderCarousel : ItemsControl
             "InstallService",
             "lfsvc",
             "msiserver",
+            "Netman",
+            "NetSetupSvc",
             "netprofm",
             "nsi",
             "ProfSvc",
@@ -1673,7 +1677,9 @@ public partial class HeaderCarousel : ItemsControl
             "UserManager",
             "WFDSConMgrSvc",
             "Windhawk",
-            "Winmgmt"
+            "WinHttpAutoProxySvc",
+            "Winmgmt",
+            "Wcmsvc"
         };
 
         foreach (var serviceName in serviceNames)

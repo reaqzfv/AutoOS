@@ -22,7 +22,7 @@ public sealed partial class InternetPage : Page
         // declare services and drivers
         var groups = new[]
         {
-            (new[] { "WlanSvc", "Dhcp", "EventLog", "Wcmsvc" }, 2),
+            (new[] { "WlanSvc", "Dhcp", "Wcmsvc" }, 2),
             (new[] { "NlaSvc", "WinHttpAutoProxySvc", "Netwtw10", "Netwtw14" }, 3),
             (new[] { "tdx", "vwififlt"}, 1)
         };
