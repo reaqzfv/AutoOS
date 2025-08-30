@@ -236,12 +236,6 @@ public static class BrowserStage
             // install zen
             ("Installing Zen", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\zen.installer.exe"" /S /MaintenanceService=false /DesktopShortcut=false /StartMenuShortcut=true"), () => Zen == true),
 
-            // debloat zen
-            ("Debloating Zen", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Zen Browser\pingsender.exe"""), () => Zen == true),
-            ("Debloating Zen", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Zen Browser\updater.exe"""), () => Zen == true),
-            ("Debloating Zen", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Zen Browser\updater.ini"""), () => Zen == true),
-            ("Debloating Zen", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Zen Browser\update-settings.ini"""), () => Zen == true),
-
             // optimize zen settings
             ("Optimizing Zen settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""C:\Program Files\Zen Browser\distribution"""), () => Zen == true),
             ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => { string installDir = @"C:\Program Files\Zen Browser"; string autoconfigPath = Path.Combine(installDir, "defaults", "pref", "autoconfig.js"); string autoconfigContent = "pref(\"general.config.filename\", \"zen.cfg\");\npref(\"general.config.obscure_value\", 0);"; File.WriteAllText(autoconfigPath, autoconfigContent); })), () => Zen == true),
