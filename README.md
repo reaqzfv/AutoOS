@@ -63,7 +63,7 @@ set TARGETDRIVE=
 set DRIVERDIR=
 ```
 
-**Step 8:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17014785924). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
+**Step 8:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17345528021). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
 
 **Step 9:** Extract the downloaded zip file.
 
@@ -94,7 +94,7 @@ DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
 **Step 14:** Create the boot entry.
 
 ```bat
-bcdboot %TARGETDRIVE%\Windows
+bcdboot %TARGETDRIVE%\Windows & bcdedit /set {default} description "AutoOS" & label %TARGETDRIVE% AutoOS
 ```
 
 **Step 15:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
