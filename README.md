@@ -26,11 +26,6 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Automatically import Epic Games and Steam titles from old install
 - Stop processes when running your game to automatically stop all unnecessary services and executables
 
-## ⚠️ Current Issues
-- **System Settings:** `Account -> Sign-in options` may not load after installing AutoOS.
-   - **Workaround:** If you want to set a password or PIN, do so *before* installing AutoOS.
-   - **Status:** The cause of this bug is currently unknown and it isn't easy to troubleshoot (sometimes it just starts working again).
-
 ## 💻 System Requirements
 
 - AutoOS is currently only supported on x64 builds of Windows 11 23H2 `22631`
