@@ -64,7 +64,6 @@ namespace AutoOS.Views.Settings
                         await contentDialog.ShowAsync();
 
                         localSettings.Values["Version"] = currentVersion;
-                        await Update();
                     }
                 }
                 catch
@@ -72,6 +71,7 @@ namespace AutoOS.Views.Settings
 
                 }
             }
+            await Update();
         }
 
         private async Task Update()
