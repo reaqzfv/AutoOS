@@ -198,7 +198,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Smart Response Technology", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Advanced Error Reporting", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "HW Notification", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Enable Hibernation", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "HDCP Support", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "WDT Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PECI", Type = "Option", RecommendedOption = "Disabled" },
@@ -349,6 +348,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Download & Install ARMOURY CRATE app", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Download & Install MyASUS service & app", Type = "Option", RecommendedOption = "Disabled" },
 
+        //new BiosSettingRecommendation { SetupQuestion = "Enable Hibernation", Type = "Value", RecommendedOption = "0" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Tcc Activation Offset", Type = "Value", RecommendedOption = "0" }, // exists both as Auto Setting and as value setting i think only the value setting should be changed to 0 (default is 0 anyway)
         //new BiosSettingRecommendation { SetupQuestion = "LAN Wake From DeepSx", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Wake on LAN Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
