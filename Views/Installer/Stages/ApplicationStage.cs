@@ -238,6 +238,9 @@ public static class ApplicationStage
             // install apple music
             ("Installing Apple Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\AppleInc.AppleMusicWin (Package)\"" | Select-Object -First 1).FullName"), () => AppleMusic == true),
             ("Installing Apple Music", async () => await ProcessActions.RunCustom(async () => appleMusicVersion =(await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"AppleInc.AppleMusicWin\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }))), () => AppleMusic == true),
+            
+            // enable keep miniplayer on top of all other windows
+            ("Enabling Keep Miniplayer on top of all other windows", async () => await ProcessActions.RunPowerShellScript("applemusic.ps1", ""), null),
 
             // log in to apple music
             ("Please log in to your Apple Music account", async () => await ProcessActions.Sleep(1000), () => AppleMusic == true),
