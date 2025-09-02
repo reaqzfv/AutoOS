@@ -454,7 +454,9 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             }
         }
 
-        if (errorOutput.Contains("WARNING : Cannot update protected variable", StringComparison.OrdinalIgnoreCase) || errorOutput.Contains("WARNING : Error in writing variable", StringComparison.OrdinalIgnoreCase))
+        if ((errorOutput.Contains("WARNING : Cannot update protected variable", StringComparison.OrdinalIgnoreCase) ||
+             errorOutput.Contains("WARNING : Error in writing variable", StringComparison.OrdinalIgnoreCase)) &&
+            !errorOutput.Contains("Script file imported successfully.", StringComparison.OrdinalIgnoreCase))
         {
             if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
             {
@@ -469,7 +471,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 SwitchPresenter.Value = "Write Protected (Other)";
             }
         }
-        else if (errorOutput.Contains("Script file imported successfully.", StringComparison.OrdinalIgnoreCase))
+        else
         {
             await LoadAsync();
         }
