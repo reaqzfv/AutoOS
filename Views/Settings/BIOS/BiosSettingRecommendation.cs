@@ -356,14 +356,14 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "Power On By PCI-E", Type = "Option", RecommendedOption = "Enabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN", Type = "Option", RecommendedOption = "Disabled" }, // required for wlan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN Device", Type = "Option", RecommendedOption = "Disabled" }, // required for wlan and bt
-        //new BiosSettingRecommendation { SetupQuestion = "WWAN participant (WIFI)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "WWAN participant", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "WWAN (WIFI)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi
         //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Core", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "BT Core", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
-        //new BiosSettingRecommendation { SetupQuestion = "Onboard CNVi Module Control (wifi & bt)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "Onboard CNVi Module Control", Type = "Option", RecommendedOption = "Disable Integrated" },
         //new BiosSettingRecommendation { SetupQuestion = "Connectivity mode (Wi-Fi & Bluetooth)", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi and bt
         //new BiosSettingRecommendation { SetupQuestion = "CS PL1 Value", Type = "Option", RecommendedOption = "Max" }, // need smth for max value fields
         //new BiosSettingRecommendation { SetupQuestion = "PCIe Speed", Type = "Option", RecommendedOption = "Max" }, // need smth for max value fields here though auto will be better
@@ -373,7 +373,7 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "Touch Pad", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Touch Panel", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Finger Print Sensor", Type = "Option", RecommendedOption = "Disabled" },
-        //new BiosSettingRecommendation { SetupQuestion = "Type C Support", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "Type C Support", Type = "Option", RecommendedOption = "Disabled" },
     ];
 }
 

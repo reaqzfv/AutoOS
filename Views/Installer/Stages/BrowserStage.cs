@@ -168,17 +168,17 @@ public static class BrowserStage
             ("Installing Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\FirefoxSetup.exe"" /S /MaintenanceService=false /DesktopShortcut=false /StartMenuShortcut=true"), () => Firefox == true),
 
             // debloat firefox
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\crashreporter.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\crashreporter.ini"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\defaultagent.ini"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\defaultagent_localized.ini"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\default-browser-agent.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\maintenanceservice.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\maintenanceservice_installer.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\pingsender.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\updater.exe"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\updater.ini"""), () => Firefox == true),
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\update-settings.ini"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\crashreporter.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\crashreporter.ini"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\defaultagent.ini"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\defaultagent_localized.ini"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\default-browser-agent.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\maintenanceservice.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\maintenanceservice_installer.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\pingsender.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\updater.exe"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\updater.ini"""), () => Firefox == true),
+            //("Debloating Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Program Files\Mozilla Firefox\update-settings.ini"""), () => Firefox == true),
             ("Debloating Firefox", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"SCHTASKS /Change /TN ""\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"" /Disable"), () => Firefox == true),
 
             // optimize firefox settings
