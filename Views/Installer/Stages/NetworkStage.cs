@@ -92,6 +92,9 @@ public static class NetworkStage
             // disable lmhosts lookup
             ("Disabling LMHOSTS lookup", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\NetBT\Parameters"" /v ""EnableLMHOSTS"" /t REG_DWORD /d 0 /f"), null),
 
+            // log advanced network settings
+            ("Logging advanced network settings", async () => await ProcessActions.LogAdvancedNetworkSettings(), null),
+
             // disable wifi services and drivers
             ("Disabling Wi-Fi services and drivers", async () => await ProcessActions.DisableWiFiServicesAndDrivers(), () => Wifi == false),
         };

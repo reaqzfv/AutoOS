@@ -74,6 +74,7 @@ namespace AutoOS.Views.Settings
 
                 }
             }
+
             await Update();
         }
 
