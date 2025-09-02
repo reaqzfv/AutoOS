@@ -50,11 +50,14 @@ namespace AutoOS.Views.Settings
                         var contentDialog = new ContentDialog
                         {
                             Title = $"What’s new in AutoOS v{currentVersion}",
-                            Content = new MarkdownTextBlock
+                            Content = new ScrollViewer
                             {
-                                Text = changelog,
-                                Margin = new Thickness(0, 12, 0, 0),
-                                Config = new MarkdownConfig()
+                                Content = new MarkdownTextBlock
+                                {
+                                    Text = changelog,
+                                    Config = new MarkdownConfig()
+                                },
+                                Padding = new Thickness(0, 0, 36, 0)
                             },
                             CloseButtonText = "Close",
                             XamlRoot = this.XamlRoot
