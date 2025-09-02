@@ -1663,6 +1663,7 @@ public partial class HeaderCarousel : ItemsControl
             "DoSvc",
             "gpsvc",
             "InstallService",
+            "KeyIso",
             "lfsvc",
             "msiserver",
             "Netman",
