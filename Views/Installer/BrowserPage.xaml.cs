@@ -33,28 +33,28 @@ public sealed partial class BrowserPage : Page
     private void GetItems()
     {
         Browsers.ItemsSource = new List<GridViewItem>
-    {
-        new GridViewItem { Text = "Chrome", ImageSource = "ms-appx:///Assets/Fluent/Chrome.png" },
-        new GridViewItem { Text = "Brave", ImageSource = "ms-appx:///Assets/Fluent/Brave.png" },
-        new GridViewItem { Text = "Firefox", ImageSource = "ms-appx:///Assets/Fluent/Firefox.png" },
-        new GridViewItem { Text = "Zen", ImageSource = "ms-appx:///Assets/Fluent/Zen.png" },
-        new GridViewItem { Text = "Arc", ImageSource = "ms-appx:///Assets/Fluent/Arc.png" }
-    };
+        {
+            new() { Text = "Chrome", ImageSource = "ms-appx:///Assets/Fluent/Chrome.png" },
+            new() { Text = "Brave", ImageSource = "ms-appx:///Assets/Fluent/Brave.png" },
+            new() { Text = "Arc", ImageSource = "ms-appx:///Assets/Fluent/Arc.png" },
+            new() { Text = "Firefox", ImageSource = "ms-appx:///Assets/Fluent/Firefox.png" },
+            new() { Text = "Zen", ImageSource = "ms-appx:///Assets/Fluent/Zen.png" }
+        };
 
         Extensions.ItemsSource = new List<GridViewItem>
-    {
-        new GridViewItem { Text = "uBlock Origin", ImageSource = "ms-appx:///Assets/Fluent/UBlockorigin.png" },
-        new GridViewItem { Text = "SponsorBlock", ImageSource = "ms-appx:///Assets/Fluent/Sponsorblock.png" },
-        new GridViewItem { Text = "Return YouTube Dislike", ImageSource = "ms-appx:///Assets/Fluent/ReturnYouTubeDislike.png" },
-        new GridViewItem { Text = "I still don't care about cookies", ImageSource = "ms-appx:///Assets/Fluent/IStillDontCareAboutCookies.png" },
-        new GridViewItem { Text = "Dark Reader", ImageSource = "ms-appx:///Assets/Fluent/Darkreader.png" },
-        new GridViewItem { Text = "Violentmonkey", ImageSource = "ms-appx:///Assets/Fluent/Violentmonkey.png" },
-        new GridViewItem { Text = "Tampermonkey", ImageSource = "ms-appx:///Assets/Fluent/Tampermonkey.png" },
-        new GridViewItem { Text = "Shazam", ImageSource = "ms-appx:///Assets/Fluent/Shazam.png" },
-        new GridViewItem { Text = "iCloud Passwords", ImageSource = "ms-appx:///Assets/Fluent/IcloudPasswords.png" },
-        new GridViewItem { Text = "Bitwarden", ImageSource = "ms-appx:///Assets/Fluent/Bitwarden.png" },
-        new GridViewItem { Text = "1Password", ImageSource = "ms-appx:///Assets/Fluent/1Password.png" }
-    };
+        {
+            new() { Text = "uBlock Origin", ImageSource = "ms-appx:///Assets/Fluent/UBlockorigin.png" },
+            new() { Text = "SponsorBlock", ImageSource = "ms-appx:///Assets/Fluent/Sponsorblock.png" },
+            new() { Text = "Return YouTube Dislike", ImageSource = "ms-appx:///Assets/Fluent/ReturnYouTubeDislike.png" },
+            new() { Text = "I still don't care about cookies", ImageSource = "ms-appx:///Assets/Fluent/IStillDontCareAboutCookies.png" },
+            new() { Text = "Dark Reader", ImageSource = "ms-appx:///Assets/Fluent/Darkreader.png" },
+            new() { Text = "Violentmonkey", ImageSource = "ms-appx:///Assets/Fluent/Violentmonkey.png" },
+            new() { Text = "Tampermonkey", ImageSource = "ms-appx:///Assets/Fluent/Tampermonkey.png" },
+            new() { Text = "Shazam", ImageSource = "ms-appx:///Assets/Fluent/Shazam.png" },
+            new() { Text = "iCloud Passwords", ImageSource = "ms-appx:///Assets/Fluent/IcloudPasswords.png" },
+            new() { Text = "Bitwarden", ImageSource = "ms-appx:///Assets/Fluent/Bitwarden.png" },
+            new() { Text = "1Password", ImageSource = "ms-appx:///Assets/Fluent/1Password.png" }
+        };
     }
 
     private void GetBrowser()

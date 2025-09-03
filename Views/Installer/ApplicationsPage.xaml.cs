@@ -36,22 +36,22 @@ public sealed partial class ApplicationsPage : Page
     {
         Music.ItemsSource = new List<GridViewItem>
         {
-            new GridViewItem { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" },
-            new GridViewItem { Text = "Apple Music", ImageSource = "ms-appx:///Assets/Fluent/AppleMusic.png" },
-            new GridViewItem { Text = "Amazon Music", ImageSource = "ms-appx:///Assets/Fluent/AmazonMusic.png" },
-            new GridViewItem { Text = "Deezer Music", ImageSource = "ms-appx:///Assets/Fluent/DeezerMusic.png" }
+            new() { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" },
+            new() { Text = "Apple Music", ImageSource = "ms-appx:///Assets/Fluent/AppleMusic.png" },
+            new() { Text = "Amazon Music", ImageSource = "ms-appx:///Assets/Fluent/AmazonMusic.png" },
+            new() { Text = "Deezer Music", ImageSource = "ms-appx:///Assets/Fluent/DeezerMusic.png" }
         };
 
         Messaging.ItemsSource = new List<GridViewItem>
         {
-            new GridViewItem { Text = "WhatsApp", ImageSource = "ms-appx:///Assets/Fluent/Whatsapp.png" },
-            new GridViewItem { Text = "Discord", ImageSource = "ms-appx:///Assets/Fluent/Discord.png" }
+            new() { Text = "WhatsApp", ImageSource = "ms-appx:///Assets/Fluent/Whatsapp.png" },
+            new() { Text = "Discord", ImageSource = "ms-appx:///Assets/Fluent/Discord.png" }
         };
 
         Launchers.ItemsSource = new List<GridViewItem>
         {
-            new GridViewItem { Text = "Epic Games", ImageSource = "ms-appx:///Assets/Fluent/EpicGames.png" },
-            new GridViewItem { Text = "Steam", ImageSource = "ms-appx:///Assets/Fluent/Steam.png" }
+            new() { Text = "Epic Games", ImageSource = "ms-appx:///Assets/Fluent/EpicGames.png" },
+            new() { Text = "Steam", ImageSource = "ms-appx:///Assets/Fluent/Steam.png" }
         };
     }
 

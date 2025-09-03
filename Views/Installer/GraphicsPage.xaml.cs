@@ -36,10 +36,10 @@ public sealed partial class GraphicsPage : Page
     {
         Brands.ItemsSource = new List<GridViewItem>
         {
-            new GridViewItem { Text = "Intel® 7th-10th Gen Processor Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
-            new GridViewItem { Text = "Intel® Arc™ & Iris® Xe Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
-            new GridViewItem { Text = "NVIDIA", ImageSource = "ms-appx:///Assets/Fluent/Nvidia.png" },
-            new GridViewItem { Text = "AMD", ImageSource = "ms-appx:///Assets/Fluent/Amd.png" }
+            new() { Text = "Intel® 7th-10th Gen Processor Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
+            new() { Text = "Intel® Arc™ & Iris® Xe Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
+            new() { Text = "NVIDIA", ImageSource = "ms-appx:///Assets/Fluent/Nvidia.png" },
+            new() { Text = "AMD", ImageSource = "ms-appx:///Assets/Fluent/Amd.png" }
         };
     }
 
