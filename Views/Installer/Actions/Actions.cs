@@ -174,6 +174,13 @@ public static class ProcessActions
 
         var uiContext = SynchronizationContext.Current;
 
+        if (url.Contains("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase))
+        {
+            using var client = new HttpClient();
+            await File.WriteAllTextAsync(string.IsNullOrWhiteSpace(file) ? path : Path.Combine(path, file), await client.GetStringAsync(url), Encoding.UTF8);
+            return;
+        }
+
         var downloadBuilder = DownloadBuilder.New()
         .WithUrl(url)
         .WithDirectory(path)

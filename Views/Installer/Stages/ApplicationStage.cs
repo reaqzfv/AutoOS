@@ -207,12 +207,11 @@ public static class ApplicationStage
             // disable spotify hardware acceleration
             ("Disabling Spotify hardware acceleration", async () => await ProcessActions.RunCustom(async () => await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "prefs"), "ui.hardware_acceleration=false")), () => Spotify == true),
 
-            // download block the spot
-            ("Downloading BlockTheSpot", async () => await ProcessActions.RunDownload("https://github.com/mrpond/BlockTheSpot/releases/latest/download/chrome_elf.zip", Path.GetTempPath(), "chrome-elf.zip"), () => Spotify == true),
+            // download spotx
+            ("Downloading SpotX", async () => await ProcessActions.RunDownload("https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1", Path.GetTempPath(), "run.ps1"), () => Spotify == true),
 
-            // extract block the spot
-            ("Installing BlockTheSpot", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "chrome-elf.zip"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify")), () => Spotify == true),
-            ("Installing BlockTheSpot", async () => await ProcessActions.Sleep(200), () => Spotify == true),
+            // install spotx
+            ("Installing SpotX", async () => await ProcessActions.RunPowerShell($@"& $env:TEMP\run.ps1 -new_theme -adsections_off -podcasts_off -block_update_off -version {spotifyVersion}-1234"), () => Spotify == true),
 
             // log in to spotify
             ("Please log in to your Spotify account", async () => await ProcessActions.Sleep(1000), () => Spotify == true),
