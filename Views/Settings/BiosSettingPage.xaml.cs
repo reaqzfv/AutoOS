@@ -117,9 +117,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         {
             if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
             {
-                var protectedChipsets = new[] {
-                    "Z790", "B760", "H770", "X870", "X670", "B650", "A620"
-                };
+                var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
 
                 if (protectedChipsets.Any(c => product.Contains(c)))
                 {
@@ -135,7 +133,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 SwitchPresenter.Value = "HII Resources (Other)";
             }
         }
-        else if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
+        else if (errorOutput.Contains("Platform identification failed.", StringComparison.OrdinalIgnoreCase))
         {
             // export nvram
             using var process2 = new Process
@@ -159,122 +157,145 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 
         if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
         {
-            // backup nvram.txt
-            string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
-
-            if (!Directory.Exists(backupRoot))
-                await LogBiosSettings();
-
-            string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-            string backupDir = Path.Combine(backupRoot, timestamp);
-
-            Directory.CreateDirectory(backupDir);
-            File.Copy(nvram, Path.Combine(backupDir, "nvram.txt"), false);
-
-            var backupFolders = Directory.GetDirectories(backupRoot)
-                .OrderByDescending(dir => dir)
-                .Skip(10)
-                .ToList();
-
-            foreach (var folder in backupFolders)
-                Directory.Delete(folder, true);
-
-            // parse nvram.txt
-            List<BiosSettingModel> parsedList;
-
-            using var stream = File.OpenRead(nvram);
-            parsedList = await Task.Run(() =>
+            if (new FileInfo(nvram).Length > 100 * 1024)
             {
-                var settings = BiosSettingParser.ParseFromStream(stream).ToList();
+                // backup nvram.txt
+                string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
 
-                foreach (var setting in settings)
+                if (!Directory.Exists(backupRoot))
+                    await LogBiosSettings();
+
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                string backupDir = Path.Combine(backupRoot, timestamp);
+
+                Directory.CreateDirectory(backupDir);
+                File.Copy(nvram, Path.Combine(backupDir, "nvram.txt"), false);
+
+                var backupFolders = Directory.GetDirectories(backupRoot)
+                    .OrderByDescending(dir => dir)
+                    .Skip(10)
+                    .ToList();
+
+                foreach (var folder in backupFolders)
+                    Directory.Delete(folder, true);
+
+                // parse nvram.txt
+                List<BiosSettingModel> parsedList;
+
+                using var stream = File.OpenRead(nvram);
+                parsedList = await Task.Run(() =>
                 {
-                    foreach (var option in setting.Options)
-                        option.Parent = setting;
+                    var settings = BiosSettingParser.ParseFromStream(stream).ToList();
 
-                    setting.InitializeSelectedOption();
-
-                    if (setting.HasValueField)
-                        setting.OriginalValue = setting.Value;
-
-                    if (setting.HasOptions)
-                        setting.OriginalSelectedOption = setting.SelectedOption;
-
-                    var rule = BiosSettingRecommendationsList.Rules
-                        .FirstOrDefault(r =>
-                            string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
-
-                    if (rule != null)
+                    foreach (var setting in settings)
                     {
-                        string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
+                        foreach (var option in setting.Options)
+                            option.Parent = setting;
 
-                        if ((rule.Type?.Equals("Option", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasOptions)
+                        setting.InitializeSelectedOption();
+
+                        if (setting.HasValueField)
+                            setting.OriginalValue = setting.Value;
+
+                        if (setting.HasOptions)
+                            setting.OriginalSelectedOption = setting.SelectedOption;
+
+                        var rule = BiosSettingRecommendationsList.Rules
+                            .FirstOrDefault(r =>
+                                string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+                        if (rule != null)
                         {
-                            string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
+                            string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
 
-                            var recommended = setting.Options
-                                .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
-
-                            if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
+                            if ((rule.Type?.Equals("Option", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasOptions)
                             {
-                                setting.RecommendedOption = recommended;
-                                setting.IsRecommended = true;
+                                string selectedLabel = setting.SelectedOption?.Label?.Trim().ToLowerInvariant();
+
+                                var recommended = setting.Options
+                                    .FirstOrDefault(o => o.Label?.Trim().ToLowerInvariant() == recommendedLabel);
+
+                                if (recommended != null && selectedLabel != recommended.Label?.ToLowerInvariant())
+                                {
+                                    setting.RecommendedOption = recommended;
+                                    setting.IsRecommended = true;
+                                }
+                            }
+
+                            if ((rule.Type?.Equals("Value", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasValueField)
+                            {
+                                string currentValue = setting.Value?.Trim().ToLowerInvariant();
+                                if (!string.IsNullOrEmpty(currentValue) && currentValue != recommendedLabel)
+                                {
+                                    setting.IsRecommended = true;
+                                    setting.RecommendedValue = rule.RecommendedOption;
+                                }
                             }
                         }
 
-                        if ((rule.Type?.Equals("Value", StringComparison.OrdinalIgnoreCase) ?? false) && setting.HasValueField)
-                        {
-                            string currentValue = setting.Value?.Trim().ToLowerInvariant();
-                            if (!string.IsNullOrEmpty(currentValue) && currentValue != recommendedLabel)
-                            {
-                                setting.IsRecommended = true;
-                                setting.RecommendedValue = rule.RecommendedOption;
-                            }
-                        }
+                        setting.MarkLoaded();
                     }
 
-                    setting.MarkLoaded();
+                    return settings;
+                });
+
+                var ruleOrder = BiosSettingRecommendationsList.Rules
+                 .Select((r, i) => new { r.SetupQuestion, Index = i })
+                 .ToDictionary(x => x.SetupQuestion.ToLowerInvariant(), x => x.Index);
+
+                var sortedRecommended = parsedList
+                    .Where(s => s.IsRecommended)
+                    .OrderBy(s => ruleOrder.TryGetValue(s.SetupQuestion.ToLowerInvariant(), out var index) ? index : int.MaxValue)
+                    .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                biosSettings.Clear();
+                recommendedSettings.Clear();
+                allSettings.Clear();
+
+                foreach (var setting in parsedList)
+                {
+                    biosSettings.Add(setting);
+                    allSettings.Add(setting);
+
+                    setting.ModifiedChanged += (s, e) =>
+                    {
+                        IsAnyModified = allSettings.Any(x => x.IsModified);
+                    };
                 }
 
-                return settings;
-            });
-
-            var ruleOrder = BiosSettingRecommendationsList.Rules
-             .Select((r, i) => new { r.SetupQuestion, Index = i })
-             .ToDictionary(x => x.SetupQuestion.ToLowerInvariant(), x => x.Index);
-
-            var sortedRecommended = parsedList
-                .Where(s => s.IsRecommended)
-                .OrderBy(s => ruleOrder.TryGetValue(s.SetupQuestion.ToLowerInvariant(), out var index) ? index : int.MaxValue)
-                .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            biosSettings.Clear();
-            recommendedSettings.Clear();
-            allSettings.Clear();
-
-            foreach (var setting in parsedList)
-            {
-                biosSettings.Add(setting);
-                allSettings.Add(setting);
-
-                setting.ModifiedChanged += (s, e) =>
+                foreach (var setting in sortedRecommended)
                 {
-                    IsAnyModified = allSettings.Any(x => x.IsModified);
-                };
-            }
+                    recommendedSettings.Add(setting);
+                }
 
-            foreach (var setting in sortedRecommended)
+                HasRecommendations = false;
+                HasRecommendations = parsedList.Any(s => s.IsRecommended);
+
+                // show settings
+                SwitchPresenter.Value = "Loaded";
+                Backup.IsEnabled = true;
+            }
+            else
             {
-                recommendedSettings.Add(setting);
+                if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+                {
+                    var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
+
+                    if (protectedChipsets.Any(c => product.Contains(c)))
+                    {
+                        SwitchPresenter.Value = "HII Resources (Protected)";
+                    }
+                    else
+                    {
+                        SwitchPresenter.Value = "HII Resources (Regular)";
+                    }
+                }
+                else
+                {
+                    SwitchPresenter.Value = "HII Resources (Other)";
+                }
             }
-
-            HasRecommendations = false;
-            HasRecommendations = parsedList.Any(s => s.IsRecommended);
-
-            // show settings
-            SwitchPresenter.Value = "Loaded";
-            Backup.IsEnabled = true;
         }
     }
 
