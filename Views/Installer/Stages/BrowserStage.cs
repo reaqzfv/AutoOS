@@ -161,19 +161,32 @@ public static class BrowserStage
             // install 1password extension
             ("Installing 1Password Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'aeblfdkhhhdcdjpifhhbdiojplfjncoa' /f"), () => Brave == true && OnePassword == true),
 
+            // install arc dependency
+            ("Installing Arc Dependency", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"""), () => Arc == true),
+
+            // download arc
+            ("Downloading Arc", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/prod/1.56.0.351/Arc.x64.msix", Path.GetTempPath(), "Arc.x64.msix"), () => Arc == true),
+
+            // install arc
+            ("Installing Arc", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Arc.x64.msix"""), () => Arc == true),
+            ("Installing Arc", async () => await ProcessActions.RunCustom(async () => arcVersion =(await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"TheBrowserCompany.Arc\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }))), () => Arc == true),
+
+            // log in
+            ("Please log in to your Arc account", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\TheBrowserCompany.Arc_" + arcVersion + @"_x64__ttt1ap7aakyb4", "Arc.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync())), () => Arc == true),
+
             // download firefox
             ("Downloading Firefox", async () => await ProcessActions.RunDownload($"https://releases.mozilla.org/pub/firefox/releases/{firefoxVersion}/win64/en-US/Firefox%20Setup%20{firefoxVersion}.exe", Path.GetTempPath(), "FirefoxSetup.exe"), () => Firefox == true),
 
             // install firefox
             ("Installing Firefox", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\FirefoxSetup.exe"" /S /MaintenanceService=false /DesktopShortcut=false /StartMenuShortcut=true"), () => Firefox == true),
 
-            // debloat firefox
-            ("Debloating Firefox", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"SCHTASKS /Change /TN ""\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"" /Disable"), () => Firefox == true),
+            // disable firefox startup entry
+            ("Disabling Firefox startup entry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"SCHTASKS /Change /TN ""\Mozilla\Firefox Default Browser Agent 308046B0AF4A39CB"" /Disable"), () => Firefox == true),
 
             // optimize firefox settings
             ("Optimizing Firefox settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""C:\Program Files\Mozilla Firefox\distribution"""), () => Firefox == true),
             ("Optimizing Firefox settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Mozilla Firefox", "defaults", "pref", "autoconfig.js"), "pref(\"general.config.filename\", \"firefox.cfg\");\npref(\"general.config.obscure_value\", 0);"))), () => Firefox == true),
-            ("Optimizing Firefox settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Mozilla Firefox", "firefox.cfg"), "\ndefaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Firefox == true),
+            ("Optimizing Firefox settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Mozilla Firefox", "firefox.cfg"), "defaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Firefox == true),
             ("Optimizing Firefox settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Mozilla Firefox", "distribution", "policies.json"), JsonSerializer.Serialize(new { policies = new { } }, new JsonSerializerOptions { WriteIndented = true })))), () => Firefox == true),
 
             // download arkenfox user.js
@@ -228,7 +241,7 @@ public static class BrowserStage
             // optimize zen settings
             ("Optimizing Zen settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""C:\Program Files\Zen Browser\distribution"""), () => Zen == true),
             ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Zen Browser", "defaults", "pref", "autoconfig.js"), "pref(\"general.config.filename\", \"zen.cfg\");\npref(\"general.config.obscure_value\", 0);"))), () => Zen == true),
-            ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Zen Browser", "zen.cfg"), "\ndefaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"zen.theme.accent-color\", \"#2c34fb\");\ndefaultPref(\"zen.urlbar.behavior\", \"float\");\ndefaultPref(\"zen.view.grey-out-inactive-windows\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Zen == true),
+            ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Zen Browser", "zen.cfg"), "defaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"zen.theme.accent-color\", \"#2c34fb\");\ndefaultPref(\"zen.urlbar.behavior\", \"float\");\ndefaultPref(\"zen.view.grey-out-inactive-windows\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Zen == true),
             ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Zen Browser", "distribution", "policies.json"), JsonSerializer.Serialize(new { policies = new { } }, new JsonSerializerOptions { WriteIndented = true })))), () => Zen == true),
 
             // download arkenfox user.js
@@ -275,20 +288,7 @@ public static class BrowserStage
             ("Installing 1Password Extension", async () => await ProcessActions.Sleep(500), () => Zen == true && OnePassword == true),
 
             // download arc dependency
-            ("Downloading Arc Dependency", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/dependencies/x64/Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx", Path.GetTempPath(), "Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"), () => Arc == true),
-
-            // install arc dependency
-            ("Installing Arc Dependency", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"""), () => Arc == true),
-
-            // download arc
-            ("Downloading Arc", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/prod/1.56.0.351/Arc.x64.msix", Path.GetTempPath(), "Arc.x64.msix"), () => Arc == true),
-
-            // install arc
-            ("Installing Arc", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Arc.x64.msix"""), () => Arc == true),
-            ("Installing Arc", async () => await ProcessActions.RunCustom(async () => arcVersion =(await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"TheBrowserCompany.Arc\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }))), () => Arc == true),
-
-            // log in
-            ("Please log in to your Arc account", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\TheBrowserCompany.Arc_" + arcVersion + @"_x64__ttt1ap7aakyb4", "Arc.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync())), () => Arc == true),
+            ("Downloading Arc Dependency", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/dependencies/x64/Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx", Path.GetTempPath(), "Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"), () => Arc == true)
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
