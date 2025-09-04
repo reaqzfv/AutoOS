@@ -28,27 +28,13 @@
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Nvidia.png}"
                                    Visibility="Collapsed">
                     <dev:SettingsGroup.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <dev:ProgressButton x:Name="NvidiaUpdateCheck"
-                                                Checked="NvidiaUpdateCheck_Checked"
-                                                CheckedContent="Checking for updates..."
-                                                Content="Done"
-                                                IsIndeterminate="True"
-                                                Loaded="NvidiaUpdateCheck_Checked"
-                                                Style="{StaticResource AccentProgressButtonStyle}" />
-                            <Button x:Name="NvidiaUpdateCheckButton"
-                                    HorizontalAlignment="Left"
-                                    Content="Checking for updates..."
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Visibility="Collapsed" />
-                            <ProgressRing x:Name="NvidiaiUpdateCheckProgress"
-                                          Width="25"
-                                          Height="25"
-                                          Margin="10,0,0,0"
-                                          Background="Transparent"
-                                          IsActive="True"
-                                          Visibility="Collapsed" />
-                        </StackPanel>
+                        <dev:ProgressButton x:Name="NvidiaUpdateCheck"
+                                            Checked="NvidiaUpdateCheck_Checked"
+                                            CheckedContent="Checking for updates..."
+                                            Content="Done"
+                                            IsIndeterminate="True"
+                                            Loaded="NvidiaUpdateCheck_Checked"
+                                            Style="{StaticResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard Description="Disabling HDCP breaks Netflix and other protected video streaming services."
@@ -63,27 +49,13 @@
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Amd.png}"
                                    Visibility="Collapsed">
                     <dev:SettingsGroup.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <dev:ProgressButton x:Name="AmdUpdateCheck"
-                                                Checked="AmdUpdateCheck_Checked"
-                                                CheckedContent="Checking for updates..."
-                                                Content="Done"
-                                                IsIndeterminate="True"
-                                                Loaded="AmdUpdateCheck_Checked"
-                                                Style="{StaticResource AccentProgressButtonStyle}" />
-                            <Button x:Name="AmdUpdateCheckButton"
-                                    HorizontalAlignment="Left"
-                                    Content="Checking for updates..."
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Visibility="Collapsed" />
-                            <ProgressRing x:Name="AmdUpdateCheckProgress"
-                                          Width="25"
-                                          Height="25"
-                                          Margin="10,0,0,0"
-                                          Background="Transparent"
-                                          IsActive="True"
-                                          Visibility="Collapsed" />
-                        </StackPanel>
+                        <dev:ProgressButton x:Name="AmdUpdateCheck"
+                                            Checked="AmdUpdateCheck_Checked"
+                                            CheckedContent="Checking for updates..."
+                                            Content="Done"
+                                            IsIndeterminate="True"
+                                            Loaded="AmdUpdateCheck_Checked"
+                                            Style="{StaticResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Intel_SettingsGroup"
@@ -91,27 +63,13 @@
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Intel.png}"
                                    Visibility="Collapsed">
                     <dev:SettingsGroup.Content>
-                        <StackPanel Orientation="Horizontal">
-                            <dev:ProgressButton x:Name="IntelUpdateCheck"
-                                                Checked="IntelUpdateCheck_Checked"
-                                                CheckedContent="Checking for updates..."
-                                                Content="Done"
-                                                IsIndeterminate="True"
-                                                Loaded="IntelUpdateCheck_Checked"
-                                                Style="{StaticResource AccentProgressButtonStyle}" />
-                            <Button x:Name="IntelUpdateCheckButton"
-                                    HorizontalAlignment="Left"
-                                    Content="Checking for updates..."
-                                    Style="{StaticResource AccentButtonStyle}"
-                                    Visibility="Collapsed" />
-                            <ProgressRing x:Name="IntelUpdateCheckProgress"
-                                          Width="25"
-                                          Height="25"
-                                          Margin="10,0,0,0"
-                                          Background="Transparent"
-                                          IsActive="True"
-                                          Visibility="Collapsed" />
-                        </StackPanel>
+                        <dev:ProgressButton x:Name="IntelUpdateCheck"
+                                            Checked="IntelUpdateCheck_Checked"
+                                            CheckedContent="Checking for updates..."
+                                            Content="Done"
+                                            IsIndeterminate="True"
+                                            Loaded="IntelUpdateCheck_Checked"
+                                            Style="{StaticResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="GpuInfo" />
