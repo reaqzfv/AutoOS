@@ -75,9 +75,9 @@ namespace AutoOS.Views.Settings
                 {
 
                 }
-            }
 
-            await Update();
+                await Update();
+            }
         }
 
         private async Task Update()

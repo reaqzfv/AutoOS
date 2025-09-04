@@ -2,11 +2,13 @@
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Windows.Storage;
 
 namespace AutoOS.Views.Installer.Stages;
 
 public static class CleanupStage
 {
+    private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
     public static async Task Run()
     {
         InstallPage.Status.Text = "Cleaning up...";
@@ -172,6 +174,7 @@ public static class CleanupStage
         InstallPage.Info.Severity = InfoBarSeverity.Success;
         InstallPage.Progress.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
         InstallPage.ProgressRingControl.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
+        localSettings.Values["Version"] = ProcessInfoHelper.Version;
         await ProcessActions.RunRestart();
     }
 }
