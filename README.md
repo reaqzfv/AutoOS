@@ -191,27 +191,33 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Licensed under the **MIT License**.
    - Source: [Orbmu2k/nvidiaProfileInspector](https://github.com/Orbmu2k/nvidiaProfileInspector)
 
-3. **TimerResolution**
+3. **RadeonSoftwareSlimmer**
+   - Licensed under the **MIT License**.
+   - Source: [GSDragoon/RadeonSoftwareSlimmer](https://github.com/GSDragoon/RadeonSoftwareSlimmer)
+   - Changes: Added command line options for preinstall
+   - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/RadeonSoftwareSlimmer)
+
+4. **TimerResolution**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/TimerResolution](https://github.com/valleyofdoom/TimerResolution)
 
-4. **AutoGpuAffinity**
+5. **AutoGpuAffinity**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)
    - Changes: Added functionality to also apply the affinity to the parent of the GPU and output the 3 best performing CPUs
    - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/AutoGpuAffinity)
 
-5. **Service List Builder**
+6. **Service List Builder**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/service-list-builder](https://github.com/valleyofdoom/service-list-builder)
    - Changes: Removed `shutdown /r /t 0` from created lists, added `--output-dir` switch because of MSIX restrictions.
    - Fork: [tinodin/service-list-builder](https://github.com/tinodin/service-list-builder)
 
-6. **LowAudioLatency**
+7. **LowAudioLatency**
     - Have to ask for explicit permission from [sppdl](https://github.com/spddl)
     - Source: [sppdl/LowAudioLatency](https://github.com/spddl/LowAudioLatency)
 
-7. **7-Zip**
+8. **7-Zip**
 ```
   7-Zip
   ~~~~~
@@ -362,7 +368,7 @@ The license for original unRAR code has the following restriction:
 ```
 - Source: [7-Zip](https://www.7-zip.org)
  
-8. **Custom Resolution Utility (CRU)**
+9. **Custom Resolution Utility (CRU)**
 ```
 Copyright (C) 2012-2022 ToastyX
 https://monitortests.com/custom-resolution-utility
@@ -380,7 +386,7 @@ OTHER LIABILITY IN CONNECTION WITH THE USE OF THE SOFTWARE.
 ```
 - Source: [Custom Resolution Utility (CRU)](https://monitortests.com/custom-resolution-utility)
 
-9. **DeviceCleanup**
+10. **DeviceCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -393,7 +399,7 @@ Not allowed:
 ```
 - Source: [DeviceCleanup](https://www.uwe-sieber.de/misc_tools.html#devicecleanup)
 
-10. **DriveCleanup**
+11. **DriveCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -406,7 +412,7 @@ Not allowed:
 ```
 - Source: [DriveCleanup](https://www.uwe-sieber.de/drivetools.html#drivecleanup)
 
-11. **RwEverything**
+12. **RwEverything**
 - Have to ask for permission ._.
 ```
 This utility should not be bundled (in any form) in commercial or consumer products.
