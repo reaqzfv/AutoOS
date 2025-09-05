@@ -261,6 +261,17 @@ public static class ProcessActions
         await Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "7-Zip", "7z.exe"), Arguments = $"x \"{inputPath}\" -y -o\"{outputPath}\"", CreateNoWindow = true })!.WaitForExitAsync();
     }
 
+    public static async Task<string> GetLatestAmdDriverUrl()
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Referrer = new Uri("http://support.amd.com");
+
+        string json = await client.GetStringAsync("https://drivers.amd.com/drivers/installer/json/DrvDldDetails_Consumer_WHQL_Win10.json");
+        using var doc = JsonDocument.Parse(json);
+
+        return doc.RootElement[0].GetProperty("fullbuild").GetString().Replace("www2.ati.com", "drivers.amd.com").Replace("-combined", "");
+    }
+
     public static async Task RunNvidiaStrip()
     {
         var directories = Directory.GetDirectories(Path.Combine(Path.GetTempPath(), "driver"));

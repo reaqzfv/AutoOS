@@ -60,7 +60,7 @@ public static class GraphicsStage
             ("Installing the Intel driver", async () => await ProcessActions.RefreshUI(), () => Intel11th == true),
 
             // download the latest amd driver
-            ("Downloading the latest AMD Driver", async () => await ProcessActions.RunDownload("https://drivers.amd.com/drivers/whql-amd-software-adrenalin-edition-25.8.1-win10-win11-aug-rdna.exe", Path.GetTempPath(), "driver.exe"), () => AMD == true),
+            ("Downloading the latest AMD Driver", async () => await ProcessActions.RunDownload(await ProcessActions.GetLatestAmdDriverUrl(), Path.GetTempPath(), "driver.exe"), () => AMD == true),
 
             // extract the driver
             ("Extracting the AMD driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver")), () => AMD == true),
