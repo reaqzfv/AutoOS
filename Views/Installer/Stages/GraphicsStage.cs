@@ -60,10 +60,13 @@ public static class GraphicsStage
             ("Installing the Intel driver", async () => await ProcessActions.RefreshUI(), () => Intel11th == true),
 
             // download the latest amd driver
-            ("Downloading the latest AMD Driver", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/pa7ifyh2d1y9fifhp95w3/AMD-Driver.zip?rlkey=65b49zip2e8i7m26eqw8uaxcx&st=9vhf0xo6&dl=0", Path.GetTempPath(), "driver.zip"), () => AMD == true),
+            ("Downloading the latest AMD Driver", async () => await ProcessActions.RunDownload("https://drivers.amd.com/drivers/whql-amd-software-adrenalin-edition-25.8.1-win10-win11-aug-rdna.exe", Path.GetTempPath(), "driver.exe"), () => AMD == true),
 
             // extract the driver
-            ("Extracting the AMD driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.zip"), Path.Combine(Path.GetTempPath(), "driver")), () => AMD == true),
+            ("Extracting the AMD driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver")), () => AMD == true),
+
+            // strip the amd driver
+            ("Stripping the AMD driver", async () => await ProcessActions.RunApplication("RadeonSoftwareSlimmer", "RadeonSoftwareSlimmer.exe", $@"--extracted-installer ""{Path.Combine(Path.GetTempPath(), "driver")}"" --config ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RadeonSoftwareSlimmer", "config.ini")}"""), () => AMD == true),
 
             // install the driver
             ("Installing the AMD driver", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\Setup.exe"" -install"), () => AMD == true),
@@ -71,7 +74,7 @@ public static class GraphicsStage
             // download the latest nvidia driver                                                     
             ("Downloading the latest NVIDIA Driver", async () => await ProcessActions.RunDownload((await NvidiaHelper.CheckUpdate()).newestDownloadUrl, Path.GetTempPath(), "driver.exe"), () => NVIDIA == true),
 
-            // extract the driver
+            // extract the nvidia driver
             ("Extracting the NVIDIA driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver")), () => NVIDIA == true),
 
             // strip the driver

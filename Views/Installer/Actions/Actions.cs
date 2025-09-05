@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -174,17 +175,39 @@ public static class ProcessActions
 
         var uiContext = SynchronizationContext.Current;
 
+        DownloadBuilder downloadBuilder;
+
         if (url.Contains("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase))
         {
             using var client = new HttpClient();
             await File.WriteAllTextAsync(string.IsNullOrWhiteSpace(file) ? path : Path.Combine(path, file), await client.GetStringAsync(url), Encoding.UTF8);
             return;
         }
+        else if (url.Contains("drivers.amd.com", StringComparison.OrdinalIgnoreCase))
+        {
+            var config = new DownloadConfiguration
+            {
+                RequestConfiguration = new RequestConfiguration
+                {
+                    Headers = new WebHeaderCollection
+                    {
+                        { "Referer", "https://www.amd.com/en/support/downloads/drivers.html" }
+                    }
+                }
+            };
 
-        var downloadBuilder = DownloadBuilder.New()
-        .WithUrl(url)
-        .WithDirectory(path)
-        .WithConfiguration(new DownloadConfiguration());
+            downloadBuilder = DownloadBuilder.New()
+                .WithUrl(url)
+                .WithDirectory(path)
+                .WithConfiguration(config);
+        }
+        else
+        {
+            downloadBuilder = DownloadBuilder.New()
+                .WithUrl(url)
+                .WithDirectory(path)
+                .WithConfiguration(new DownloadConfiguration());
+        }
 
         if (!string.IsNullOrWhiteSpace(file))
         {
@@ -640,7 +663,7 @@ public static class ProcessActions
 
                     // update refresh token
                     await EpicGamesHelper.UpdateEpicGamesToken(EpicGamesHelper.ActiveEpicGamesAccountPath);
-                   
+
                     // update the backed up config
                     File.Copy(file.FullName, Path.Combine(EpicGamesHelper.EpicGamesAccountDir, accountId, "GameUserSettings.ini"), true);
 
