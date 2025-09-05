@@ -80,6 +80,13 @@
           "HideItem": true
         },
         {
+          "UniqueId": "AutoOS.Views.Settings.DiskCleanupPage",
+          "Title": "Disk Cleanup",
+          "Subtitle": "Disk Cleanup",
+          "ImagePath": "ms-appx:///Assets/Fluent/DiskCleanup.png",
+          "HideItem": true
+        },
+        {
           "UniqueId": "AutoOS.Views.Settings.SecurityPage",
           "Title": "Windows Security",
           "Subtitle": "Windows Security",

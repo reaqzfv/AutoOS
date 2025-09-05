@@ -30,7 +30,7 @@
                         <Button HorizontalAlignment="Left"
                                 Click="BrowseCru_Click"
                                 Content="Import profile"
-                                Style="{StaticResource AccentButtonStyle}" />
+                                Style="{ThemeResource AccentButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard Header="Create a custom resolution"

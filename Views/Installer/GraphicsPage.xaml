@@ -75,7 +75,7 @@
                         <Button HorizontalAlignment="Left"
                                 Click="BrowseMsi_Click"
                                 Content="Import profile"
-                                Style="{StaticResource AccentButtonStyle}" />
+                                Style="{ThemeResource AccentButtonStyle}" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="MsiAfterburnerInfo" />

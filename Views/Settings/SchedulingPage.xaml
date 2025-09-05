@@ -33,7 +33,7 @@
                                             CheckedContent="Benchmarking..."
                                             Content="Benchmark"
                                             IsIndeterminate="True"
-                                            Style="{StaticResource AccentProgressButtonStyle}"
+                                            Style="{ThemeResource AccentProgressButtonStyle}"
                                             Unchecked="Benchmark_Unchecked" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>

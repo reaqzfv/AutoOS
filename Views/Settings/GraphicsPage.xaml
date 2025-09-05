@@ -34,7 +34,7 @@
                                             Content="Done"
                                             IsIndeterminate="True"
                                             Loaded="NvidiaUpdateCheck_Checked"
-                                            Style="{StaticResource AccentProgressButtonStyle}" />
+                                            Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard Description="Disabling HDCP breaks Netflix and other protected video streaming services."
@@ -55,7 +55,7 @@
                                             Content="Done"
                                             IsIndeterminate="True"
                                             Loaded="AmdUpdateCheck_Checked"
-                                            Style="{StaticResource AccentProgressButtonStyle}" />
+                                            Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Intel_SettingsGroup"
@@ -69,7 +69,7 @@
                                             Content="Done"
                                             IsIndeterminate="True"
                                             Loaded="IntelUpdateCheck_Checked"
-                                            Style="{StaticResource AccentProgressButtonStyle}" />
+                                            Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="GpuInfo" />
@@ -80,7 +80,7 @@
                         <Button HorizontalAlignment="Left"
                                 Click="BrowseMsi_Click"
                                 Content="Import profile"
-                                Style="{StaticResource AccentButtonStyle}" />
+                                Style="{ThemeResource AccentButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard Header="Create an overclock"
