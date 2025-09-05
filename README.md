@@ -192,10 +192,10 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Source: [Orbmu2k/nvidiaProfileInspector](https://github.com/Orbmu2k/nvidiaProfileInspector)
 
 3. **RadeonSoftwareSlimmer**
-   - Licensed under the **MIT License**.
+   - Licensed under the **GNU General Public License v3.0**.
    - Source: [GSDragoon/RadeonSoftwareSlimmer](https://github.com/GSDragoon/RadeonSoftwareSlimmer)
    - Changes: Added command line options for preinstall
-   - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/RadeonSoftwareSlimmer)
+   - Fork: [tinodin/RadeonSoftwareSlimmer](https://github.com/tinodin/RadeonSoftwareSlimmer)
 
 4. **TimerResolution**
    - Licensed under the **GNU General Public License v3.0**.
