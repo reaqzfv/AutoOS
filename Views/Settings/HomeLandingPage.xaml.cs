@@ -4,6 +4,7 @@ using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
@@ -112,18 +113,17 @@ namespace AutoOS.Views.Settings
 
                 _ = updater.ShowAsync();
 
-                string previousTitle = string.Empty;
-                double incrementPerTitle = 0;
-
                 string obsVersion = "";
                 string spotifyVersion = "";
+
+                string previousTitle = string.Empty;
 
                 var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
                 {
                     // download obs studio
-                    ("Downloading OBS Studio", async () => await RunDownload(await ProcessActions.GetLatestObsStudioUrl(), Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe", incrementPerTitle), () => OBS == true),
-                    ("Downloading OBS Studio settings", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/gkhuws75qnckr63lnfbzn/obs-studio.zip?rlkey=6ziow6s1a85a7s5snrdi7v1x2&st=db3yzo4m&dl=0", Path.GetTempPath(), "obs-studio.zip", incrementPerTitle), () => OBS == true),
-                    ("Downloading OBS Studio uninstaller", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/k8dboxunne9wk5j955n0u/uninstall.exe?rlkey=4egb9y4mbsg7pboczrrulto98&st=xmldubc2&dl=0", @"C:\Program Files\obs-studio", "uninstall.exe", incrementPerTitle), () => OBS == true),
+                    ("Downloading OBS Studio", async () => await RunDownload(await ProcessActions.GetLatestObsStudioUrl(), Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe"), () => OBS == true),
+                    ("Downloading OBS Studio settings", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/gkhuws75qnckr63lnfbzn/obs-studio.zip?rlkey=6ziow6s1a85a7s5snrdi7v1x2&st=db3yzo4m&dl=0", Path.GetTempPath(), "obs-studio.zip"), () => OBS == true),
+                    ("Downloading OBS Studio uninstaller", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/k8dboxunne9wk5j955n0u/uninstall.exe?rlkey=4egb9y4mbsg7pboczrrulto98&st=xmldubc2&dl=0", @"C:\Program Files\obs-studio", "uninstall.exe"), () => OBS == true),
 
                     // install obs studio
                     ("Installing OBS Studio", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe"), @"C:\Program Files\obs-studio"), () => OBS == true),
@@ -140,19 +140,19 @@ namespace AutoOS.Views.Settings
                     ("Optimizing Firefox settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Mozilla Firefox", "firefox.cfg"), "defaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Firefox == true),
 
                     // download arkenfox user.js
-                    ("Downloading Arkenfox user.js", async () => await RunDownload("https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js", @"C:\Program Files\Mozilla Firefox", "user.js", incrementPerTitle), () => Firefox == true),
+                    ("Downloading Arkenfox user.js", async () => await RunDownload("https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js", @"C:\Program Files\Mozilla Firefox", "user.js"), () => Firefox == true),
 
                     // optimize zen settings
                     ("Optimizing Zen settings", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.WriteAllText(Path.Combine(@"C:\Program Files\Zen Browser", "zen.cfg"), "defaultPref(\"app.shield.optoutstudies.enabled\", false);\ndefaultPref(\"browser.search.serpEventTelemetryCategorization.enabled\", false);\ndefaultPref(\"dom.security.unexpected_system_load_telemetry_enabled\", false);\ndefaultPref(\"identity.fxaccounts.telemetry.clientAssociationPing.enabled\", false);\ndefaultPref(\"network.trr.confirmation_telemetry_enabled\", false);\ndefaultPref(\"nimbus.telemetry.targetingContextEnabled\", false);\ndefaultPref(\"reader.parse-on-load.enabled\", false);\ndefaultPref(\"telemetry.fog.init_on_shutdown\", false);\ndefaultPref(\"zen.theme.accent-color\", \"#2c34fb\");\ndefaultPref(\"zen.urlbar.behavior\", \"float\");\ndefaultPref(\"zen.view.grey-out-inactive-windows\", false);\ndefaultPref(\"widget.windows.mica.popups\", 1);\ndefaultPref(\"widget.windows.mica.toplevel-backdrop\", 0);"))), () => Zen == true),
 
                     // download arkenfox user.js
-                    ("Downloading Arkenfox user.js", async () => await RunDownload("https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js", @"C:\Program Files\Zen Browser", "user.js", incrementPerTitle), () => Zen == true),
+                    ("Downloading Arkenfox user.js", async () => await RunDownload("https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js", @"C:\Program Files\Zen Browser", "user.js"), () => Zen == true),
 
                     // removing blockthespot
                     ("Removing BlockTheSpot", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%APPDATA%\Spotify\dpapi.dll"" ""%APPDATA%\Spotify\config.ini"""), () => Spotify == true),
 
                     // download spotify
-                    ("Downloading Spotify", async () => await RunDownload("https://download.scdn.co/SpotifyFullSetupX64.exe", Path.GetTempPath(), "SpotifyFullSetupX64.exe", incrementPerTitle), () => Spotify == true),
+                    ("Downloading Spotify", async () => await RunDownload("https://download.scdn.co/SpotifyFullSetupX64.exe", Path.GetTempPath(), "SpotifyFullSetupX64.exe"), () => Spotify == true),
 
                     // install spotify
                     ("Installing Spotify", async () => await ProcessActions.RunCustom(async () => spotifyVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"%TEMP%\SpotifyFullSetupX64.exe")).ProductVersion)), () => Spotify == true),
@@ -173,7 +173,7 @@ namespace AutoOS.Views.Settings
                     ("Disabling Spotify hardware acceleration", async () => await ProcessActions.RunCustom(async () => await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "prefs"), "ui.hardware_acceleration=false")), () => Spotify == true),
 
                     // download spotx
-                    ("Downloading SpotX", async () => await RunDownload("https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1", Path.GetTempPath(), "run.ps1", incrementPerTitle), () => Spotify == true),
+                    ("Downloading SpotX", async () => await RunDownload("https://raw.githubusercontent.com/SpotX-Official/SpotX/main/run.ps1", Path.GetTempPath(), "run.ps1"), () => Spotify == true),
 
                     // install spotx
                     ("Installing SpotX", async () => await ProcessActions.RunPowerShell($@"& $env:TEMP\run.ps1 -new_theme -adsections_off -podcasts_off -block_update_off -version {spotifyVersion}-1234"), () => Spotify == true),
@@ -192,9 +192,7 @@ namespace AutoOS.Views.Settings
                     }
                 }
 
-                incrementPerTitle = groupedTitleCount > 0 ? 100 / (double)groupedTitleCount : 0;
-
-                double previousValue = ProgressBar.Value;
+                double incrementPerTitle = groupedTitleCount > 0 ? 100 / (double)groupedTitleCount : 0;
 
                 foreach (var (title, action, condition) in filteredActions)
                 {
@@ -213,9 +211,8 @@ namespace AutoOS.Views.Settings
                             }
                         }
 
-                        ProgressBar.Value = previousValue + incrementPerTitle;
-                        previousValue = ProgressBar.Value;
-                        await Task.Delay(500);
+                        ProgressBar.Value += incrementPerTitle;
+                        await Task.Delay(150);
                         currentGroup.Clear();
                     }
 
@@ -238,9 +235,7 @@ namespace AutoOS.Views.Settings
                             ProgressBar.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
                         }
                     }
-
-                    ProgressBar.Value = previousValue + incrementPerTitle;
-                    previousValue = ProgressBar.Value;
+                    ProgressBar.Value += incrementPerTitle;
                 }
 
                 StatusText.Text = "Update complete.";
@@ -249,11 +244,13 @@ namespace AutoOS.Views.Settings
             }
         }
 
-        public async Task RunDownload(string url, string path, string file, double incrementPerTitle)
+        public async Task RunDownload(string url, string path, string file = null)
         {
             string title = StatusText.Text;
 
             var uiContext = SynchronizationContext.Current;
+
+            DownloadBuilder downloadBuilder;
 
             if (url.Contains("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase))
             {
@@ -261,16 +258,36 @@ namespace AutoOS.Views.Settings
                 await File.WriteAllTextAsync(string.IsNullOrWhiteSpace(file) ? path : Path.Combine(path, file), await client.GetStringAsync(url), Encoding.UTF8);
                 return;
             }
+            else if (url.Contains("drivers.amd.com", StringComparison.OrdinalIgnoreCase))
+            {
+                var config = new DownloadConfiguration
+                {
+                    RequestConfiguration = new RequestConfiguration
+                    {
+                        Headers = new WebHeaderCollection
+                        {
+                            { "Referer", "https://www.amd.com/en/support/downloads/drivers.html" }
+                        }
+                    }
+                };
 
-            double stageStartValue = ProgressBar.Value;
-
-            var downloadBuilder = DownloadBuilder.New()
-                .WithUrl(url)
-                .WithDirectory(path)
-                .WithConfiguration(new DownloadConfiguration());
+                downloadBuilder = DownloadBuilder.New()
+                    .WithUrl(url)
+                    .WithDirectory(path)
+                    .WithConfiguration(config);
+            }
+            else
+            {
+                downloadBuilder = DownloadBuilder.New()
+                    .WithUrl(url)
+                    .WithDirectory(path)
+                    .WithConfiguration(new DownloadConfiguration());
+            }
 
             if (!string.IsNullOrWhiteSpace(file))
+            {
                 downloadBuilder.WithFileName(file);
+            }
 
             var download = downloadBuilder.Build();
 
@@ -279,6 +296,7 @@ namespace AutoOS.Views.Settings
             double receivedMB = 0.0;
             double totalMB = 0.0;
             double speedMB = 0.0;
+            double percentage = 0.0;
 
             download.DownloadProgressChanged += (sender, e) =>
             {
@@ -290,14 +308,11 @@ namespace AutoOS.Views.Settings
                 speedMB = e.BytesPerSecondSpeed / (1024.0 * 1024.0);
                 receivedMB = e.ReceivedBytesSize / (1024.0 * 1024.0);
                 totalMB = e.TotalBytesToReceive / (1024.0 * 1024.0);
-
-                double fraction = e.ProgressPercentage / 100.0;
-                double newValue = stageStartValue + (fraction * incrementPerTitle);
+                percentage = e.ProgressPercentage;
 
                 uiContext?.Post(_ =>
                 {
                     StatusText.Text = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
-                    ProgressBar.Value = newValue;
                 }, null);
             };
 
@@ -305,9 +320,7 @@ namespace AutoOS.Views.Settings
             {
                 uiContext?.Post(_ =>
                 {
-                    ProgressBar.Value = stageStartValue + incrementPerTitle;
                     StatusText.Text = $"{title} ({speedMB:F1} MB/s - {totalMB:F2} MB of {totalMB:F2} MB)";
-
                 }, null);
             };
 
