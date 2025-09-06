@@ -177,6 +177,9 @@ namespace AutoOS.Views.Settings
 
                     // install spotx
                     ("Installing SpotX", async () => await ProcessActions.RunPowerShell($@"& $env:TEMP\run.ps1 -new_theme -adsections_off -podcasts_off -block_update_off -version {spotifyVersion}-1234"), () => Spotify == true),
+                
+                    // remove spotify desktop shortcut
+                    ("Removing Spotify desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%HOMEPATH%\Desktop\Spotify.lnk"""), () => Spotify == true),
                 };
 
                 var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
