@@ -38,7 +38,8 @@
                         </dev:ProgressButton>
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
-                <ItemsRepeater x:Name="DrivesRepeater">
+                <ItemsRepeater x:Name="DrivesRepeater"
+                               Margin="0,0,0,32">
                     <ItemsRepeater.Layout>
                         <controls:StaggeredLayout ColumnSpacing="8"
                                                   DesiredColumnWidth="250"
@@ -48,7 +49,9 @@
                     <ItemsRepeater.ItemTemplate>
                         <DataTemplate x:DataType="local:DriveModel">
                             <Border Padding="12"
-                                    Background="{StaticResource SettingsCardBackground}"
+                                    Background="{ThemeResource SettingsCardBackground}"
+                                    BorderBrush="{ThemeResource SettingsCardBorderBrush}"
+                                    BorderThickness="1"
                                     CornerRadius="{StaticResource ControlCornerRadius}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
