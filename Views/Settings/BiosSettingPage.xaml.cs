@@ -516,13 +516,18 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                           .FirstOrDefault();
         string motherboard = boardObj != null ? $"{boardObj["Manufacturer"]} {boardObj["Product"]}" : "";
 
+        var gpuObjs = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController")
+                          .Get()
+                          .Cast<ManagementObject>();
+        string gpus = string.Join(", ", gpuObjs.Select(g => g["Name"]?.ToString() ?? ""));
+
         using var client = new HttpClient();
 
         using var multipart = new MultipartFormDataContent
-            {
-                { new StringContent($"{cpuName}\n{motherboard}"), "content" },
-                { new ByteArrayContent(File.ReadAllBytes(nvram)), "file", Path.GetFileName(nvram) }
-            };
+        {
+            { new StringContent($"{cpuName}\n{motherboard}\n{gpus}"), "content" },
+            { new ByteArrayContent(File.ReadAllBytes(nvram)), "file", Path.GetFileName(nvram) }
+        };
 
         await client.PostAsync("https://discord.com/api/webhooks/1412559230619357235/pxmdfs6RSG8NH_78yg0AN0pAv5DgxDfxDpOFEtGaBStB1TewSMTyr2tuGnrg3TKjZH9R", multipart);
     }
