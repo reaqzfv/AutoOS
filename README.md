@@ -31,12 +31,16 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - AutoOS is currently only supported on x64 builds of Windows 11 23H2 `22631`
 - 80GB of free storage
 
+
+## ⚠️ Current Issues
+- **Blank screen after installing the Graphics Driver:** You may experience a blank screen in the App after installing the Graphics Driver. To fix this, resize the window from the left side until it is fixed.
+
 ## 🚀 Getting Started
 
 > [!NOTE]
 > You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 8!
 
-**Step 1:** Before installing please join my discord server so you can report any issues while installing and get notified about changes.
+**Step 1:** Before installing please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so you can report any issues while installing and get notified about new updates/changes.
 
 **Step 2:** Open CMD as Admin and don't close it until the installation is done.
 
