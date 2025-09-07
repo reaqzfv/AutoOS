@@ -36,67 +36,69 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 > [!NOTE]
 > You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 8!
 
-**Step 1:** Open CMD as Admin and don't close it until the installation is done.
+**Step 1:** Before installing please join my discord server so you can report any issues while installing and get notified about changes.
 
-**Step 2:** Open Disk Management.
+**Step 2:** Open CMD as Admin and don't close it until the installation is done.
 
-**Step 3:** Find your your C: partition / biggest partition.
+**Step 3:** Open Disk Management.
 
-**Step 4:** Right click on it and select "Shrink Volume".
+**Step 4:** Find your your C: partition / biggest partition.
 
-**Step 5:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
+**Step 5:** Right click on it and select "Shrink Volume".
 
-**Step 6:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the CMD window (e.g. E:).
+**Step 6:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
+
+**Step 7:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the CMD window (e.g. E:).
 
 ```bat
 set TARGETDRIVE=
 ```
 
-**Step 7:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all into one folder. Then define this variable in the CMD window.
+**Step 8:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all into one folder. Then define this variable in the CMD window.
 
 ```bat
 set DRIVERDIR=
 ```
 
-**Step 8:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17345528021). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
+**Step 9:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17345528021). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
 
-**Step 9:** Extract the downloaded zip file.
+**Step 10:** Extract the downloaded zip file.
 
-**Step 10:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the CMD window.
+**Step 11:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the CMD window.
 
 ```bat
 set EXTRACTED_ISO=
 ```
 
-**Step 11:** Apply `install.wim` to new partition.
+**Step 12:** Apply `install.wim` to new partition.
 
 ```bat
 DISM /Apply-Image /ImageFile:%EXTRACTED_ISO%\sources\install.wim /Index:1 /ApplyDir:%TARGETDRIVE%
 ```
 
-**Step 12:** Create Panther directory, download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and move it into the folder (THIS IS IMPORTANT!).
+**Step 13:** Create Panther directory, download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and move it into the folder (THIS IS IMPORTANT!).
 
 ```bat
 mkdir %TARGETDRIVE%\Windows\Panther && explorer %TARGETDRIVE%\Windows\Panther
 ```
 
-**Step 13:** Install drivers.
+**Step 14:** Install drivers.
 
 ```bat
 DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
 ```
 
-**Step 14:** Create the boot entry.
+**Step 15:** Create the boot entry.
 
 ```bat
 bcdboot %TARGETDRIVE%\Windows & bcdedit /set {default} description "AutoOS" & label %TARGETDRIVE% AutoOS
 ```
 
-**Step 15:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
+**Step 16:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
 
-**Step 16:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
+**Step 17:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
-**Step 17:** Select your settings and click "Install AutoOS".
+**Step 18:** Select your settings and click "Install AutoOS".
 
 ## 📷Screenshots
 ### Installer
