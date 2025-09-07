@@ -1664,6 +1664,7 @@ public partial class HeaderCarousel : ItemsControl
             "gpsvc",
             "InstallService",
             "KeyIso",
+            "LicenseManager",
             "lfsvc",
             "msiserver",
             "Netman",

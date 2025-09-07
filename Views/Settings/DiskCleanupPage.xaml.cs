@@ -11,18 +11,76 @@ namespace AutoOS.Views.Settings;
 
 public sealed partial class DiskCleanupPage : Page
 {
-    private ObservableCollection<DriveModel> drives = new();
+    private readonly ObservableCollection<DriveModel> drives = [];
 
     public DiskCleanupPage()
     {
         InitializeComponent();
-        Loaded += Page_Loaded;
+        GetDrives();
     }
 
-    private async void Page_Loaded(object sender, RoutedEventArgs e)
+    private static string FormatSize(double sizeGiB)
     {
-        drives = await GetDrivesAsync();
+        if (sizeGiB < 1) return $"{sizeGiB * 1024:N2} MiB";
+        if (sizeGiB >= 1024) return $"{sizeGiB / 1024:N2} TiB";
+        return $"{sizeGiB:N2} GiB";
+    }
+
+    private void GetDrives()
+    {
+        foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
+        {
+            double totalGiB = drive.TotalSize / 1073741824d;
+            double freeGiB = drive.TotalFreeSpace / 1073741824d;
+
+            var model = new DriveModel
+            {
+                Name = drive.Name.TrimEnd('\\'),
+                Label = string.IsNullOrWhiteSpace(drive.VolumeLabel)
+                    ? $"Local Disk ({drive.Name.TrimEnd('\\')})"
+                    : $"{drive.VolumeLabel} ({drive.Name.TrimEnd('\\')})",
+                Total = totalGiB,
+                Free = $"{FormatSize(freeGiB)} free of {FormatSize(totalGiB)}",
+                Used = totalGiB - freeGiB
+            };
+
+            drives.Add(model);
+            LoadDriveThumbnailAsync(model);
+        }
+
         DrivesRepeater.ItemsSource = drives;
+    }
+
+    private static async void LoadDriveThumbnailAsync(DriveModel model)
+    {
+        try
+        {
+            var folder = await StorageFolder.GetFolderFromPathAsync(model.Name + "\\");
+            using var thumb = await folder.GetThumbnailAsync(ThumbnailMode.SingleItem, 32, ThumbnailOptions.UseCurrentScale);
+            if (thumb != null)
+            {
+                var bmp = new BitmapImage();
+                await bmp.SetSourceAsync(thumb);
+                model.Icon = bmp;
+            }
+        }
+        catch { }
+    }
+
+    private void UpdateDrives()
+    {
+        foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
+        {
+            var model = drives.FirstOrDefault(d => d.Name == drive.Name.TrimEnd('\\'));
+            if (model == null) continue;
+
+            double totalGiB = drive.TotalSize / 1073741824d;
+            double freeGiB = drive.TotalFreeSpace / 1073741824d;
+
+            model.Total = totalGiB;
+            model.Used = totalGiB - freeGiB;
+            model.Free = $"{FormatSize(freeGiB)} free of {FormatSize(totalGiB)}";
+        }
     }
 
     private async void RunDiskCleanup_Checked(object sender, RoutedEventArgs e)
@@ -51,7 +109,7 @@ public sealed partial class DiskCleanupPage : Page
 
         CleanDisks.IsChecked = false;
 
-        UpdateDrivesAsync();
+        UpdateDrives();
     }
 
     private void RunDiskCleanup_Unchecked(object sender, RoutedEventArgs e)
@@ -59,71 +117,7 @@ public sealed partial class DiskCleanupPage : Page
         foreach (var proc in Process.GetProcessesByName("cleanmgr"))
             proc.Kill(true);
 
-        UpdateDrivesAsync();
-    }
-
-    private static string FormatSize(double sizeGiB)
-    {
-        if (sizeGiB < 1) return $"{sizeGiB * 1024:N2} MiB";
-        if (sizeGiB >= 1024) return $"{sizeGiB / 1024:N2} TiB";
-        return $"{sizeGiB:N2} GiB";
-    }
-
-    private static async Task<ObservableCollection<DriveModel>> GetDrivesAsync()
-    {
-        var result = new ObservableCollection<DriveModel>();
-
-        foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
-        {
-            double totalGiB = drive.TotalSize / 1073741824d;
-            double freeGiB = drive.TotalFreeSpace / 1073741824d;
-
-            var model = new DriveModel
-            {
-                Name = drive.Name.TrimEnd('\\'),
-                Label = string.IsNullOrWhiteSpace(drive.VolumeLabel)
-                    ? $"Local Disk ({drive.Name.TrimEnd('\\')})"
-                    : $"{drive.VolumeLabel} ({drive.Name.TrimEnd('\\')})",
-                Total = totalGiB,
-                Free = $"{FormatSize(freeGiB)} free of {FormatSize(totalGiB)}"
-            };
-
-            // Used = Total - Free in GiB
-            model.Used = totalGiB - freeGiB;
-
-            try
-            {
-                var folder = await StorageFolder.GetFolderFromPathAsync(drive.Name);
-                using var thumb = await folder.GetThumbnailAsync(ThumbnailMode.SingleItem, 32, ThumbnailOptions.UseCurrentScale);
-                if (thumb != null)
-                {
-                    var bmp = new BitmapImage();
-                    await bmp.SetSourceAsync(thumb);
-                    model.Icon = bmp;
-                }
-            }
-            catch { }
-
-            result.Add(model);
-        }
-
-        return result;
-    }
-
-    private void UpdateDrivesAsync()
-    {
-        foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
-        {
-            var model = drives.FirstOrDefault(d => d.Name == drive.Name.TrimEnd('\\'));
-            if (model == null) continue;
-
-            double totalGiB = drive.TotalSize / 1073741824d;
-            double freeGiB = drive.TotalFreeSpace / 1073741824d;
-
-            model.Total = totalGiB;
-            model.Used = totalGiB - freeGiB;
-            model.Free = $"{FormatSize(freeGiB)} free of {FormatSize(totalGiB)}";
-        }
+        UpdateDrives();
     }
 }
 
