@@ -227,4 +227,9 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "WOL & Shutdown Link Speed" }) {
         Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "WOL & Shutdown Link Speed" -DisplayValue "Not Speed Down"
     }
+
+    # Reduce Speed On Power Down
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Reduce Speed On Power Down" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Reduce Speed On Power Down" -DisplayValue "Disabled"
+    }
 }
