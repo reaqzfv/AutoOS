@@ -26,21 +26,15 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Automatically import Epic Games and Steam titles from old install
 - Stop processes when running your game to automatically stop all unnecessary services and executables
 
-## 💻 System Requirements
-
-- AutoOS is currently only supported on x64 builds of Windows 11 23H2 `22631`
-- 80GB of free storage
-
-
 ## ⚠️ Current Issues
-- **Blank screen after installing the Graphics Driver:** You may experience a blank screen in the App after installing the Graphics Driver. To fix this, resize the window from the left side until it is fixed.
+- **Blank screen after installing the Graphics Driver:** You may experience a blank screen in the App after installing the Graphics Driver. To fix this, resize the window from the left side until it rerenders the UI.
 
 ## 🚀 Getting Started
 
 > [!NOTE]
 > You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 8!
 
-**Step 1:** Before installing please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so you can report any issues while installing and get notified about new updates/changes.
+**Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
 
 **Step 2:** Open CMD as Admin and don't close it until the installation is done.
 
@@ -74,25 +68,25 @@ set DRIVERDIR=
 set EXTRACTED_ISO=
 ```
 
-**Step 12:** Apply `install.wim` to new partition.
+**Step 12:** Paste this into the CMD window to apply the `install.wim` to the new partition.
 
 ```bat
 DISM /Apply-Image /ImageFile:%EXTRACTED_ISO%\sources\install.wim /Index:1 /ApplyDir:%TARGETDRIVE%
 ```
 
-**Step 13:** Create Panther directory, download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and move it into the folder (THIS IS IMPORTANT!).
+**Step 13:** Paste this into the CMD window to create the `Panther` folder, then download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and paste it into the folder (THIS IS IMPORTANT!).
 
 ```bat
 mkdir %TARGETDRIVE%\Windows\Panther && explorer %TARGETDRIVE%\Windows\Panther
 ```
 
-**Step 14:** Install drivers.
+**Step 14:** Paste this into the CMD window to install the drivers you downloaded before.
 
 ```bat
 DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
 ```
 
-**Step 15:** Create the boot entry.
+**Step 15:** Paste this into the CMD window to create the boot entry.
 
 ```bat
 bcdboot %TARGETDRIVE%\Windows & bcdedit /set {default} description "AutoOS" & label %TARGETDRIVE% AutoOS
