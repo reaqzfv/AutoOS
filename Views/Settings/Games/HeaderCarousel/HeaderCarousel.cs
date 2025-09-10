@@ -282,6 +282,10 @@ public partial class HeaderCarousel : ItemsControl
         UnsubscribeToEvents();
 
         ElementSoundPlayer.State = ElementSoundPlayerState.Off;
+
+        epicGameStartTimes.TryGetValue(ArtifactId, out var startTime);
+        EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
+        epicGameStartTimes.Remove(ArtifactId);
     }
 
     private void HeaderCarousel_Loaded(object sender, RoutedEventArgs e)
@@ -1663,7 +1667,7 @@ public partial class HeaderCarousel : ItemsControl
             "DoSvc",
             "gpsvc",
             "InstallService",
-            "KeyIso",
+            //"KeyIso",
             "LicenseManager",
             "lfsvc",
             "msiserver",
