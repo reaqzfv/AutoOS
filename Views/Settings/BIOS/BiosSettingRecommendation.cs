@@ -281,6 +281,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", Type = "Option", RecommendedOption = "Standard" },
         new BiosSettingRecommendation { SetupQuestion = "TPM State", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "TCM State", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "AMD fTPM switch", Type = "Option", RecommendedOption = "AMD CPU fTPM" },
         new BiosSettingRecommendation { SetupQuestion = "Me State", Type = "Option", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "PTT", Type = "Option", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", Type = "Option", RecommendedOption = "Enabled" }, // required for TPM
@@ -294,6 +295,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Memory Context Restore", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Fast Boot", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory interleaving", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Channel Interleaving", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Bank Interleaving", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Gear Down Mode", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Global C-state Control", Type = "Option", RecommendedOption = "Disabled" },
@@ -311,6 +314,9 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Prochot VRM Throttling", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Enumeration", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "PCIB Clock Run", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Relaxed EDC throttling", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Aggressive Link PM Capability", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "PM L1 SS", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ACP Power Gating", Type = "Option", RecommendedOption = "Disabled" },
@@ -365,6 +371,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SB C1E Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Remote Display Feature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PSS Support", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 0", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 1", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
