@@ -283,9 +283,11 @@ public partial class HeaderCarousel : ItemsControl
 
         ElementSoundPlayer.State = ElementSoundPlayerState.Off;
 
-        epicGameStartTimes.TryGetValue(ArtifactId, out var startTime);
-        EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
-        epicGameStartTimes.Remove(ArtifactId);
+        if (!string.IsNullOrEmpty(ArtifactId) && epicGameStartTimes.TryGetValue(ArtifactId, out var startTime))
+        {
+            EpicGamesHelper.AddPlaytime(ArtifactId, startTime);
+            epicGameStartTimes.Remove(ArtifactId);
+        }
     }
 
     private void HeaderCarousel_Loaded(object sender, RoutedEventArgs e)

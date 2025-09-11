@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System.Management;
 using System.Text.Json;
 using System.Text.RegularExpressions;
