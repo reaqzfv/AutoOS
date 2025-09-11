@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace AutoOS.Views.Settings;
 
 public sealed partial class LoggingPage : Page
 {
+    private bool initialETSState = false;
     private bool isInitializingETSState = true;
 
     public LoggingPage()
@@ -32,6 +33,7 @@ public sealed partial class LoggingPage : Page
                     var startValue = key.GetValue("Start");
                     if (startValue == null || (int)startValue != group.Item2)
                     {
+                        initialETSState = false;
                         isInitializingETSState = false;
                         return;
                     }
@@ -41,6 +43,7 @@ public sealed partial class LoggingPage : Page
 
         // check registry
         ETS.IsOn = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
+        initialETSState = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
 
         isInitializingETSState = false;
     }
@@ -108,19 +111,35 @@ public sealed partial class LoggingPage : Page
         EventTraceSessionsInfo.Children.Clear();
 
         // add infobar
-        EventTraceSessionsInfo.Children.Add(new InfoBar
+        var infoBar = new InfoBar
         {
             Title = ETS.IsOn ? "Successfully enabled Event Trace Sessions (ETS)." : "Successfully disabled Event Trace Sessions (ETS).",
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
             Margin = new Thickness(5)
-        });
+        };
+        EventTraceSessionsInfo.Children.Add(infoBar);
 
-        // delay
-        await Task.Delay(2000);
+        // add restart button if needed
+        if (ETS.IsOn != initialETSState)
+        {
+            infoBar.Title += " A restart is required to apply the change.";
+            infoBar.ActionButton = new Button
+            {
+                Content = "Restart",
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            ((Button)infoBar.ActionButton).Click += (s, args) =>
+            Process.Start("shutdown", "/r /f /t 0");
+        }
+        else
+        {
+            // delay
+            await Task.Delay(2000);
 
-        // remove infobar
-        EventTraceSessionsInfo.Children.Clear();
+            // remove infobar
+            EventTraceSessionsInfo.Children.Clear();
+        }
     }
 }
