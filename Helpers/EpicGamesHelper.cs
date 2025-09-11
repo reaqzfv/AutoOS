@@ -254,15 +254,10 @@ namespace AutoOS.Helpers
         {
             try
             {
-                string AccessToken = String.Empty;
-                try
-                {
-                    AccessToken = await UpdateEpicGamesToken(ActiveEpicGamesAccountPath);
-                }
-                catch
-                {
+                string AccessToken = await UpdateEpicGamesToken(ActiveEpicGamesAccountPath);
+
+                if (AccessToken == null)
                     return null;
-                }
 
                 loginClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
 
