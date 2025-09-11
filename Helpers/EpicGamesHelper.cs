@@ -419,15 +419,10 @@ namespace AutoOS.Helpers
                     GamesPage.Instance.Games.Items.Remove(item);
 
                 // get access token
-                string AccessToken = String.Empty;
-                try
-                {
-                    AccessToken = await UpdateEpicGamesToken(ActiveEpicGamesAccountPath);
-                }
-                catch
-                {
+                string AccessToken = await UpdateEpicGamesToken(ActiveEpicGamesAccountPath);
+
+                if (AccessToken == null)
                     return;
-                }
 
                 loginClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
 
