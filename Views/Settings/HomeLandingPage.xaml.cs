@@ -116,11 +116,16 @@ namespace AutoOS.Views.Settings
 
             string obsVersion = "";
             string spotifyVersion = "";
-            bool servicesState = false;
-            bool wifiState = false;
-            bool bluetoothState = false;
-            bool laptopState = false;
-            bool apexLegendsState = false;
+
+            bool servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1;
+            bool wifiState = new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# tdx", "# vwififlt", "# Netwtw10", "# Netwtw14" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool bluetoothState = new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# BthA2dp", "# BthEnum", "# BthHFAud", "# BthHFEnum", "# BthLEEnum", "# BthMini", "# BTHMODEM", "# BthPan", "# BTHPORT", "# BTHUSB", "# HidBth", "# ibtusb", "# Microsoft_Bluetooth_AvrcpTransport", "# RFCOMM" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool cameraState = new[] { "# swenum" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool taskManagerState = new[] { "# pcw" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool laptopState = new[] { "# msisadrv" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool apexLegendsState = new[] { "KeyIso" }.All(service => File.ReadAllLines(list).Any(line => line.Contains(service, StringComparison.OrdinalIgnoreCase)));
+            bool gtaState = new[] { "# mssmbios" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver));
+            bool amdVrrState = new[] { "AMD External Events Utility" }.All(service => File.ReadAllLines(list).Any(line => line.Contains(service, StringComparison.OrdinalIgnoreCase)));
                 
             string previousTitle = string.Empty;
 
@@ -187,13 +192,6 @@ namespace AutoOS.Views.Settings
                 // remove spotify desktop shortcut
                 ("Removing Spotify desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%HOMEPATH%\Desktop\Spotify.lnk"""), () => Spotify == true),
 
-                // save services state
-                ("Saving Services & Drivers state ", async () => await Task.Run(() => servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1), null),
-                ("Saving Services & Drivers state ", async () => await Task.Run(() => wifiState = new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# tdx", "# vwififlt", "# Netwtw10", "# Netwtw14" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
-                ("Saving Services & Drivers state ", async () => await Task.Run(() => bluetoothState = new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# BthA2dp", "# BthEnum", "# BthHFAud", "# BthHFEnum", "# BthLEEnum", "# BthMini", "# BTHMODEM", "# BthPan", "# BTHPORT", "# BTHUSB", "# HidBth", "# ibtusb", "# Microsoft_Bluetooth_AvrcpTransport", "# RFCOMM" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
-                ("Saving Services & Drivers state ", async () => await Task.Run(() => laptopState = new[] { "# msisadrv" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
-                ("Saving Services & Drivers state ", async () => await Task.Run(() => apexLegendsState = new[] { "KeyIso" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service))), null),
-
                 // enable services & drivers
                 ("Enabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Enable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
 
@@ -201,8 +199,12 @@ namespace AutoOS.Views.Settings
                 ("Updating lists.ini", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "lists.ini"), Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini"), true)), null),
                 ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "tdx", "vwififlt", "Netwtw10", "Netwtw14" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => wifiState == true),
                 ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "BthA2dp", "BthEnum", "BthHFAud", "BthHFEnum", "BthLEEnum", "BthMini", "BTHMODEM", "BthPan", "BTHPORT", "BTHUSB", "HidBth", "ibtusb", "Microsoft_Bluetooth_AvrcpTransport", "RFCOMM" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => bluetoothState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "swenum" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => cameraState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "pcw" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => taskManagerState == true),
                 ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "msisadrv" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => laptopState == true),
-                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "KeyIso" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#') : line)]), () => apexLegendsState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "KeyIso" }.Contains(line.TrimStart('#', ' ').Trim()) ? line.TrimStart('#', ' ') : line)]), () => apexLegendsState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "mssmbios" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => gtaState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "AMD External Events Utility" }.Contains(line.TrimStart('#', ' ').Trim()) ? line.TrimStart('#', ' ') : line)]), () => amdVrrState == true),
 
                 // build service list
                 ("Building service list", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $@"-U:T -P:E -Wait -ShowWindowMode:Hide ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "service-list-builder.exe")}"" --config ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini")}"" --disable-service-warning --output-dir ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")}""", CreateNoWindow = true }).WaitForExitAsync(), null),
