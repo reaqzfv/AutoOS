@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
+using Microsoft.Win32;
 
 namespace AutoOS.Views.Settings
 {
@@ -15,6 +16,8 @@ namespace AutoOS.Views.Settings
     {
         private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static readonly HttpClient httpClient = new();
+        private readonly string list = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini");
+        private readonly string nsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NSudo", "NSudoLC.exe");
         private readonly TextBlock StatusText = new()
         {
             Margin = new Thickness(0, 10, 0, 0),
@@ -86,7 +89,7 @@ namespace AutoOS.Views.Settings
             bool OBS = !File.Exists(@"C:\Program Files\obs-studio\bin\64bit\obs64.exe");
             bool Firefox = File.Exists(@"C:\Program Files\Mozilla Firefox\user.js");
             bool Zen = File.Exists(@"C:\Program Files\Zen Browser\user.js");
-            bool Spotify = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify"));
+            bool Spotify = File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Spotify", "config.ini"));
 
             if (OBS || Firefox || Zen || Spotify)
             {
@@ -115,7 +118,12 @@ namespace AutoOS.Views.Settings
 
                 string obsVersion = "";
                 string spotifyVersion = "";
-
+                bool servicesState = false;
+                bool wifiState = false;
+                bool bluetoothState = false;
+                bool laptopState = false;
+                bool apexLegendsState = false;
+                
                 string previousTitle = string.Empty;
 
                 var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
@@ -131,7 +139,7 @@ namespace AutoOS.Views.Settings
                     ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c move ""C:\Program Files\obs-studio\$APPDATA\obs-studio-hook"" ""%ProgramData%\obs-studio-hook"""), () => OBS == true),
                     ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\obs-studio"" ""%APPDATA%"""), () => OBS == true),
                     ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /S /Q ""C:\Program Files\obs-studio\$PLUGINSDIR"" & rmdir /S /Q ""C:\Program Files\obs-studio\$APPDATA"""), () => OBS == true),
-                    ("Installing OBS Studio", async () => await ProcessActions.RunCustom(async () => obsVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(@"C:\Program Files\obs-studio\bin\64bit\obs64.exe").ProductVersion)), () => OBS == true),
+                    ("Installing OBS Studio", async () => obsVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(@"C:\Program Files\obs-studio\bin\64bit\obs64.exe").ProductVersion), () => OBS == true),
                     ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\OBS Studio"" /v ""DisplayVersion"" /t REG_SZ /d ""{obsVersion}"" /f"), () => OBS == true),
                     ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("CurrentUser", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "obs.reg")}\""), () => OBS == true),
                     ("Installing OBS Studio", async () => await ProcessActions.RunPowerShell(@"$s=New-Object -ComObject WScript.Shell;$sc=$s.CreateShortcut([System.IO.Path]::Combine($env:ProgramData,'Microsoft\Windows\Start Menu\Programs\OBS Studio.lnk'));$sc.TargetPath='C:\Program Files\obs-studio\bin\64bit\obs64.exe';$sc.WorkingDirectory='C:\Program Files\obs-studio\bin\64bit';$sc.Save()"), () => OBS == true),
@@ -155,7 +163,7 @@ namespace AutoOS.Views.Settings
                     ("Downloading Spotify", async () => await RunDownload("https://download.scdn.co/SpotifyFullSetupX64.exe", Path.GetTempPath(), "SpotifyFullSetupX64.exe"), () => Spotify == true),
 
                     // install spotify
-                    ("Installing Spotify", async () => await ProcessActions.RunCustom(async () => spotifyVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"%TEMP%\SpotifyFullSetupX64.exe")).ProductVersion)), () => Spotify == true),
+                    ("Installing Spotify", async () => spotifyVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"%TEMP%\SpotifyFullSetupX64.exe")).ProductVersion), () => Spotify == true),
                     ("Installing Spotify", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\SpotifyFullSetupX64.exe"" /extract ""%APPDATA%\Spotify"""), () => Spotify == true),
                     ("Installing Spotify", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Spotify"" /v ""DisplayIcon"" /t REG_SZ /d ""%AppData%\Spotify\Spotify.exe"" /f"), () => Spotify == true),
                     ("Installing Spotify", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Spotify"" /v ""DisplayName"" /t REG_SZ /d ""Spotify"" /f"), () => Spotify == true),
@@ -180,6 +188,29 @@ namespace AutoOS.Views.Settings
                 
                     // remove spotify desktop shortcut
                     ("Removing Spotify desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%HOMEPATH%\Desktop\Spotify.lnk"""), () => Spotify == true),
+
+                    // save services state
+                    ("Saving Services & Drivers state ", async () => await Task.Run(() => servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1), null),
+                    ("Saving Services & Drivers state ", async () => await Task.Run(() => wifiState = new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# tdx", "# vwififlt", "# Netwtw10", "# Netwtw14" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+                    ("Saving Services & Drivers state ", async () => await Task.Run(() => bluetoothState = new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# BthA2dp", "# BthEnum", "# BthHFAud", "# BthHFEnum", "# BthLEEnum", "# BthMini", "# BTHMODEM", "# BthPan", "# BTHPORT", "# BTHUSB", "# HidBth", "# ibtusb", "# Microsoft_Bluetooth_AvrcpTransport", "# RFCOMM" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+                    ("Saving Services & Drivers state ", async () => await Task.Run(() => laptopState = new[] { "# msisadrv" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+                    ("Saving Services & Drivers state ", async () => await Task.Run(() => apexLegendsState = new[] { "KeyIso" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service))), null),
+
+                    // enable services & drivers
+                    ("Enabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Enable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
+
+                    // update lists.ini
+                    ("Updating lists.ini", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "lists.ini"), Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini"), true)), null),
+                    ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "tdx", "vwififlt", "Netwtw10", "Netwtw14" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => wifiState == true),
+                    ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "BthA2dp", "BthEnum", "BthHFAud", "BthHFEnum", "BthLEEnum", "BthMini", "BTHMODEM", "BthPan", "BTHPORT", "BTHUSB", "HidBth", "ibtusb", "Microsoft_Bluetooth_AvrcpTransport", "RFCOMM" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => bluetoothState == true),
+                    ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "msisadrv" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => laptopState == true),
+                    ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "KeyIso" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#') : line)]), () => apexLegendsState == true),
+
+                    // build service list
+                    ("Building service list", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $@"-U:T -P:E -Wait -ShowWindowMode:Hide ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "service-list-builder.exe")}"" --config ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini")}"" --disable-service-warning --output-dir ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")}""", CreateNoWindow = true }).WaitForExitAsync(), null),
+
+                    // disable services & drivers
+                    ("Disabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
                 };
 
                 var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
