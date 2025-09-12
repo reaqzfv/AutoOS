@@ -71,8 +71,6 @@ namespace AutoOS.Views.Settings
 
                         contentDialog.Resources["ContentDialogMaxWidth"] = 1000;
                         await contentDialog.ShowAsync();
-
-                        localSettings.Values["Version"] = currentVersion;
                     }
                 }
                 catch
@@ -81,6 +79,7 @@ namespace AutoOS.Views.Settings
                 }
 
                 await Update();
+                localSettings.Values["Version"] = currentVersion;
             }
         }
 
