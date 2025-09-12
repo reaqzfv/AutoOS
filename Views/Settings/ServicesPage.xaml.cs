@@ -13,9 +13,10 @@ public sealed partial class ServicesPage : Page
     private bool isInitializingCameraState = true;
     private bool isInitializingTaskManagerState = true;
     private bool isInitializingLaptopState = true;
+    private bool isInitializingApexLegendsState = true;
     private bool isInitializingGTAState = true;
     private bool isInitializingAMDVRRState = true;
-    private string list = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini");
+    private readonly string list = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini");
     private readonly string nsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NSudo", "NSudoLC.exe");
 
     public ServicesPage()
@@ -32,6 +33,7 @@ public sealed partial class ServicesPage : Page
         GetCameraState();
         GetTaskManagerState();
         GetLaptopState();
+        GetApexLegendsState();
         GetGTAState();
         GetAMDVRRState();
     }
@@ -58,12 +60,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) => Process.Start("shutdown", "/r /f /t 0");
 
@@ -255,14 +257,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -395,14 +395,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -530,14 +528,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -665,14 +661,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -810,14 +804,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -833,6 +825,139 @@ public sealed partial class ServicesPage : Page
             ServiceInfo.Children.Add(new InfoBar
             {
                 Title = Laptop.IsChecked == true ? "Successfully enabled Laptop Keyboard support." : "Successfully disabled Laptop Keyboard support.",
+                IsClosable = false,
+                IsOpen = true,
+                Severity = InfoBarSeverity.Success,
+                Margin = new Thickness(5)
+            });
+
+            // delay
+            await Task.Delay(2000);
+
+            // remove infobar
+            ServiceInfo.Children.Clear();
+        }
+    }
+
+    private void GetApexLegendsState()
+    {
+        // define services and drivers
+        var services = new[] { "KeyIso" };
+
+        // check state
+        ApexLegends.IsChecked = services.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service));
+
+        isInitializingApexLegendsState = false;
+    }
+
+    private async void ApexLegends_Checked(object sender, RoutedEventArgs e)
+    {
+        if (isInitializingApexLegendsState) return;
+
+        // remove infobar
+        ServiceInfo.Children.Clear();
+
+        // add infobar
+        ServiceInfo.Children.Add(new InfoBar
+        {
+            Title = ApexLegends.IsChecked == true ? "Enabling Apex Legends support..." : "Disabling Apex Legends support...",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Informational,
+            Margin = new Thickness(5)
+        });
+
+        // read list
+        var lines = await File.ReadAllLinesAsync(list);
+
+        // define services
+        var services = new[] { "KeyIso" };
+
+        // make changes
+        bool isChecked = ApexLegends.IsChecked == true;
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (services.Contains(lines[i].Trim().TrimStart('#', ' ')))
+                lines[i] = (isChecked ? lines[i].TrimStart('#', ' ') : "# " + lines[i].TrimStart('#', ' ')).Trim();
+        }
+
+        // write changes
+        await File.WriteAllLinesAsync(list, lines);
+
+        if (!Services.IsOn)
+        {
+            // get latest build
+            string folderName = Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last();
+
+            // enable services
+            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Enable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
+        }
+
+        if (isChecked)
+        {
+            // declare services and drivers
+            var groups = new[]
+            {
+                (new[] { "KeyIso" }, 2),
+            };
+
+            // set start values
+            foreach (var group in groups)
+            {
+                foreach (var service in group.Item1)
+                {
+                    using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
+                    {
+                        if (key == null) continue;
+
+                        Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", group.Item2);
+                    }
+                }
+            }
+        }
+
+        // build service list
+        await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $@"-U:T -P:E -Wait -ShowWindowMode:Hide ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "service-list-builder.exe")}"" --config ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini")}"" --disable-service-warning --output-dir ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")}""", CreateNoWindow = true }).WaitForExitAsync();
+
+        if (!Services.IsOn)
+        {
+            // get latest build
+            string folderName = Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last();
+
+            // disable services
+            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
+
+            // remove infobar
+            ServiceInfo.Children.Clear();
+
+            // add infobar
+            var infoBar = new InfoBar
+            {
+                Title = ApexLegends.IsChecked == true ? "Successfully enabled Apex Legends support. A restart is required to apply the change." : "Successfully disabled Apex Legends support. A restart is required to apply the change.",
+                IsClosable = false,
+                IsOpen = true,
+                Severity = InfoBarSeverity.Success,
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
+            };
+            ((Button)infoBar.ActionButton).Click += (s, args) =>
+            Process.Start("shutdown", "/r /f /t 0");
+
+            ServiceInfo.Children.Add(infoBar);
+        }
+        else
+        {
+            // remove infobar
+            ServiceInfo.Children.Clear();
+
+            // add infobar
+            ServiceInfo.Children.Add(new InfoBar
+            {
+                Title = ApexLegends.IsChecked == true ? "Successfully enabled Apex Legends support." : "Successfully disabled Apex Legends support.",
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
@@ -914,12 +1039,10 @@ public sealed partial class ServicesPage : Page
             {
                 foreach (var service in group.Item1)
                 {
-                    using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
-                    {
-                        if (key == null) continue;
+                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true);
+                    if (key == null) continue;
 
-                        Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", group.Item2);
-                    }
+                    Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", group.Item2);
                 }
             }
         }
@@ -945,14 +1068,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
@@ -1098,14 +1219,12 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            };
-
-            // add restart button
-            infoBar.ActionButton = new Button
-            {
-                Content = "Restart",
-                HorizontalAlignment = HorizontalAlignment.Right
+                Margin = new Thickness(5),
+                ActionButton = new Button
+                {
+                    Content = "Restart",
+                    HorizontalAlignment = HorizontalAlignment.Right
+                }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
             Process.Start("shutdown", "/r /f /t 0");
