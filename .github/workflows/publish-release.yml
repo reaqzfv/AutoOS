@@ -129,7 +129,7 @@ jobs:
     # Uploading all zip files to access them in the 'release' job
     - uses: actions/upload-artifact@v4
       with:
-        name: artifacts-${{ matrix.platform }}
+        name: Build-${{ matrix.platform }}
         path: Packages\
 
     # Checking version suffix for words like [alpha, beta, preview, and experiment]. Marking the release as a pre-release if any exists.
