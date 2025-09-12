@@ -1,5 +1,5 @@
 ﻿using AutoOS.Views.Installer.Actions;
-using CommunityToolkit.Labs.WinUI.MarkdownTextBlock;
+using CommunityToolkit.WinUI.Controls;
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
