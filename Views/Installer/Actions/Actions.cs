@@ -326,7 +326,7 @@ public static class ProcessActions
         const uint CDS_GLOBAL = 0x00000008;
         const int ENUM_CURRENT_SETTINGS = -1;
 
-        DISPLAY_DEVICE display = new DISPLAY_DEVICE { cb = Marshal.SizeOf<DISPLAY_DEVICE>() };
+        DISPLAY_DEVICE display = new() { cb = Marshal.SizeOf<DISPLAY_DEVICE>() };
         uint i = 0;
 
         while (EnumDisplayDevices(null, i++, ref display, 0))
