@@ -1,4 +1,5 @@
 ﻿using AutoOS.Views.Installer.Actions;
+using DevWinUI;
 using Microsoft.UI.Xaml.Media;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -29,24 +30,23 @@ public static partial class GamesStage
         string fortnitePath = string.Empty;
 
         string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini");
-        InIHelper iniHelper = null;
+        InIHelper iniHelper = new InIHelper(iniPath);
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // setting fortnite frame rate
             ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
-            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini")))), () => Fortnite == true),
-            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings"))), () => Fortnite == true),
+            ("Setting Fortnite Frame Rate", async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings")), () => Fortnite == true),
             
             // setting fortnite rendering mode
-            ("Setting Fortnite Rendering Mode", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference"))), () => Fortnite == true && NVIDIA == true),
+            ("Setting Fortnite Rendering Mode", async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference")), () => Fortnite == true && NVIDIA == true),
             
             // import fortnite settings
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient"""), () => Fortnite == true),
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c copy /Y """ + iniPath + @""" ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient\GameUserSettings.ini"""), () => Fortnite == true),
 
             // set gpu preference to high performance for fortnite
-            ("Setting GPU Preference to high performance for Fortnite", async () => await ProcessActions.RunCustom(async () => fortnitePath = await Task.Run(() => JsonDocument.Parse(File.ReadAllText(@"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat")).RootElement.GetProperty("InstallationList").EnumerateArray().FirstOrDefault(e => e.GetProperty("AppName").GetString() == "Fortnite").GetProperty("InstallLocation").GetString())), () => Fortnite == true),
+            ("Setting GPU Preference to high performance for Fortnite", async () => fortnitePath = await Task.Run(() => JsonDocument.Parse(File.ReadAllText(@"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat")).RootElement.GetProperty("InstallationList").EnumerateArray().FirstOrDefault(e => e.GetProperty("AppName").GetString() == "Fortnite").GetProperty("InstallLocation").GetString()), () => Fortnite == true),
             ("Setting GPU Preference to high performance for Fortnite", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\DirectX\UserGpuPreferences"" /v """ + fortnitePath + @"\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe"" /t REG_SZ /d ""SwapEffectUpgradeEnable=1;GpuPreference=2;"" /f"), () => Fortnite == true),
 
             // install easyanticheat

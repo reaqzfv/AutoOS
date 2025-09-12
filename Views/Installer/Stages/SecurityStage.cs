@@ -24,7 +24,7 @@ public static class SecurityStage
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // import hosts file
-            ("Importing hosts file", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "hosts"), @"C:\Windows\System32\drivers\etc\hosts", true))), null),
+            ("Importing hosts file", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "hosts"), @"C:\Windows\System32\drivers\etc\hosts", true)), null),
             ("Importing hosts file", async () => await ProcessActions.RunNsudo("CurrentUser", @"ipconfig /flushdns"), null),
 
             // optimize windows defender

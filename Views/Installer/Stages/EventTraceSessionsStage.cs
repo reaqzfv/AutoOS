@@ -16,7 +16,7 @@ public static class EventTraceSessionsStage
         {
             // saving event trace session (ets) data
             ("Saving Event Trace Session (ETS) data", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg export ""HKLM\SYSTEM\CurrentControlSet\Control\WMI\Autologger"" ""C:\ets-enable.reg"""), null),
-            ("Saving Event Trace Session (ETS) data", async () => await ProcessActions.RunCustom(async () => await Task.Run(() => Directory.CreateDirectory(Path.Combine(PathHelper.GetAppDataFolderPath(), "EventTraceSessions")))), null),
+            ("Saving Event Trace Session (ETS) data", async () => await Task.Run(() => Directory.CreateDirectory(Path.Combine(PathHelper.GetAppDataFolderPath(), "EventTraceSessions"))), null),
             ("Saving Event Trace Session (ETS) data", async () => await ProcessActions.RunNsudo("TrustedInstaller", @$"cmd /c move ""C:\ets-enable.reg"" ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "EventTraceSessions", "ets-enable.reg")}"""), null),
             ("Saving Event Trace Session (ETS) data", async () => await ProcessActions.Sleep(500), null),
 

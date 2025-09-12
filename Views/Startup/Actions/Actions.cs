@@ -175,10 +175,5 @@ public static class StartupActions
     {
         await Task.Delay(amount);
     }
-
-    public static async Task RunCustom(Func<Task> action)
-    {
-        await action();
-    }
 }
 

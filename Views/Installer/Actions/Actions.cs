@@ -597,11 +597,6 @@ public static class ProcessActions
         await Task.Delay(amount);
     }
 
-    public static async Task RunCustom(Func<Task> action)
-    {
-        await action();
-    }
-
     public static async Task RunMicrosoftStoreDownload(string productFamilyName, string catalogId, string fileType, int index, bool dependencies)
     {
         string title = InstallPage.Info.Title;
