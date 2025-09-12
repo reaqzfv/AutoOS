@@ -87,6 +87,13 @@ jobs:
       with:
         vs-prerelease: true
 
+    # Restore the app
+    - name: Restore the application
+      run: |
+        msbuild $env:PROJECT_PATH /t:Restore /p:Configuration=Release
+      env:
+        Configuration: Release
+
     # Decode PFX
     - name: Decode the pfx
       run: |
