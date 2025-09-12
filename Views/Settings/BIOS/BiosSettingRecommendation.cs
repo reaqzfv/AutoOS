@@ -53,11 +53,14 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Bi-Directional PROCHOT#", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Vmax Stress", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "V-Max Stress", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU VRM Thermal Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel RMT State", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "FIVR Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "RFI Spread Spectrum", Type = "Option", RecommendedOption = "0.5%" },
         new BiosSettingRecommendation { SetupQuestion = "Pcie Pll SSC", Type = "Option", RecommendedOption = "0.0%" },
         //new BiosSettingRecommendation { SetupQuestion = "Hyper-Threading", Type = "Option", RecommendedOption = "Disabled" }, // condition if >6 cores
+        new BiosSettingRecommendation { SetupQuestion = "Active E-Cores", Type = "Option", RecommendedOption = "0" }, // condition if >6 cores
+        new BiosSettingRecommendation { SetupQuestion = "Active Efficient Cores", Type = "Option", RecommendedOption = "0" }, // condition if >6 cores
         new BiosSettingRecommendation { SetupQuestion = "Thermal Throttling Level", Type = "Option", RecommendedOption = "Manual" },
         new BiosSettingRecommendation { SetupQuestion = "T0 Level", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "T1 Level", Type = "Value", RecommendedOption = "0" },
@@ -77,12 +80,15 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "CPU EIST Function", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         //new BiosSettingRecommendation { SetupQuestion = "EIST", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel(R) Adaptive Boost Technology", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Per Core P State OS control mode", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "HwP Autonomous Per Core P State", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", Type = "Option", RecommendedOption = "Disabled  Enforce All limits" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", Type = "Option", RecommendedOption = "Sync All Cores" },
         new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "MCH Full Check", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "VRM Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Overclocking TVB", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Thermal Velocity Boost", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", Type = "Option", RecommendedOption = "Disabled" },
 
@@ -162,7 +168,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", Type = "Option", RecommendedOption = "Enable" },
-        new BiosSettingRecommendation { SetupQuestion = "Disabled Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enable" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Disable Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enable" },
         new BiosSettingRecommendation { SetupQuestion = "Disabled Energy Reporting", Type = "Option", RecommendedOption = "Enable" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Legacy IO Low Latency", Type = "Option", RecommendedOption = "Enabled" },
@@ -264,6 +270,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "DPC", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "EDPC", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Hardware Flow Control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "HID Event Filter Driver", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "MachineCheck", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" },
         new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" },
@@ -292,16 +300,23 @@ public static class BiosSettingRecommendationsList
 
         // AMD
         new BiosSettingRecommendation { SetupQuestion = "Power Down Enable", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "DRAM Latency Enhance", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Context Restore", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Fast Boot", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory interleaving", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Channel Interleaving", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Bank Interleaving", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Gear Down Mode", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CC6 memory region encryption", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "GMI encryption control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "xGMI encryption control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SRIS", Type = "Option", RecommendedOption = "Enable" },
 
         new BiosSettingRecommendation { SetupQuestion = "Global C-state Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ACPI _CST C1 Declaration", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "FCH Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SB Clock Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Int. Clk Differential Spread", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "NX Mode", Type = "Option", RecommendedOption = "Disabled" }, // valorant may need this enabled or virtualization
         new BiosSettingRecommendation { SetupQuestion = "SVM Mode", Type = "Option", RecommendedOption = "Disabled" },
@@ -329,6 +344,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Onboard PCIE LAN PXE ROM", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Enhanced REP MOVSB/STOSB", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Fast Short REP MOVSB (FSRM)", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Disable DF to external downstream IP SyncFloodPropagation", Type = "Option", RecommendedOption = "Sync flood disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable DF sync flood propagation", Type = "Option", RecommendedOption = "Sync flood disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Freeze DF module queues on error", Type = "Option", RecommendedOption = "Disabled" },
 
@@ -373,6 +389,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PSS Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 0", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 1", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "S3/Modern Standby Support", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
@@ -388,6 +405,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "When system is in working state", Type = "Option", RecommendedOption = "Aura Off" },
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Aura Off" },
         new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "RGB Light", Type = "Value", RecommendedOption = "0" },
 
         // useful
         new BiosSettingRecommendation { SetupQuestion = "Boot Sector (MBR/GPT) Recovery Policy", Type = "Option", RecommendedOption = "Auto Recovery" },
