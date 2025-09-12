@@ -322,13 +322,17 @@ public static class ProcessActions
 
     public static async Task SetHighestRefreshRates()
     {
+        const uint CDS_UPDATEREGISTRY = 0x00000001;
+        const uint CDS_GLOBAL = 0x00000008;
+        const int ENUM_CURRENT_SETTINGS = -1;
+
         DISPLAY_DEVICE display = new DISPLAY_DEVICE { cb = Marshal.SizeOf<DISPLAY_DEVICE>() };
         uint i = 0;
 
         while (EnumDisplayDevices(null, i++, ref display, 0))
         {
             DEVMODE current = new DEVMODE { dmSize = (ushort)Marshal.SizeOf<DEVMODE>() };
-            if (!EnumDisplaySettings(display.DeviceName, -1, ref current)) continue;
+            if (!EnumDisplaySettings(display.DeviceName, ENUM_CURRENT_SETTINGS, ref current)) continue;
 
             DEVMODE best = current;
             for (int j = 0; ; j++)
@@ -346,7 +350,13 @@ public static class ProcessActions
 
             if (best.dmDisplayFrequency > current.dmDisplayFrequency)
             {
-                int r = ChangeDisplaySettingsEx(display.DeviceName, ref best, IntPtr.Zero, 0, IntPtr.Zero);
+                int r = ChangeDisplaySettingsEx(
+                    display.DeviceName,
+                    ref best,
+                    IntPtr.Zero,
+                    CDS_UPDATEREGISTRY | CDS_GLOBAL,
+                    IntPtr.Zero
+                );
             }
 
             display = new DISPLAY_DEVICE { cb = Marshal.SizeOf<DISPLAY_DEVICE>() };
