@@ -202,7 +202,17 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 
                         var rule = BiosSettingRecommendationsList.Rules
                             .FirstOrDefault(r =>
-                                string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase));
+                                string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                                (
+                                    (r.Type?.Equals("Option", StringComparison.OrdinalIgnoreCase) ?? false) &&
+                                    setting.Options.Any(o =>
+                                        string.Equals(o.Label?.Trim(), r.RecommendedOption?.Trim(), StringComparison.OrdinalIgnoreCase)
+                                    )
+                                    ||
+                                    (r.Type?.Equals("Value", StringComparison.OrdinalIgnoreCase) ?? false && setting.HasValueField)
+                                )
+                            );
+
 
                         if (rule != null)
                         {
@@ -239,17 +249,24 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                     return settings;
                 });
 
-                var ruleOrder = BiosSettingRecommendationsList.Rules
-                 .Select((r, i) => new { r.SetupQuestion, Index = i })
-                 .ToDictionary(x => x.SetupQuestion.ToLowerInvariant(), x => x.Index);
+            var ruleOrder = BiosSettingRecommendationsList.Rules
+                .Select((r, i) => new { r.SetupQuestion, r.RecommendedOption, Index = i })
+                .ToDictionary(
+                    x => (x.SetupQuestion.ToLowerInvariant(), x.RecommendedOption.ToLowerInvariant()),
+                    x => x.Index
+                );
 
-                var sortedRecommended = parsedList
-                    .Where(s => s.IsRecommended)
-                    .OrderBy(s => ruleOrder.TryGetValue(s.SetupQuestion.ToLowerInvariant(), out var index) ? index : int.MaxValue)
-                    .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
+            var sortedRecommended = parsedList
+                .Where(s => s.IsRecommended)
+                .OrderBy(s =>
+                    ruleOrder.TryGetValue(
+                        (s.SetupQuestion.ToLowerInvariant(),
+                         (s.RecommendedOption?.Label ?? s.RecommendedValue ?? string.Empty).ToLowerInvariant()),
+                        out var index) ? index : int.MaxValue)
+                .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
+                .ToList();
 
-                biosSettings.Clear();
+            biosSettings.Clear();
                 recommendedSettings.Clear();
                 allSettings.Clear();
 
@@ -276,27 +293,27 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 SwitchPresenter.Value = "Loaded";
                 Backup.IsEnabled = true;
             }
-            else
+        else
+        {
+            if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
             {
-                if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
-                {
-                    var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
+                var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
 
-                    if (protectedChipsets.Any(c => product.Contains(c)))
-                    {
-                        SwitchPresenter.Value = "HII Resources (Protected)";
-                    }
-                    else
-                    {
-                        SwitchPresenter.Value = "HII Resources (Regular)";
-                    }
+                if (protectedChipsets.Any(c => product.Contains(c)))
+                {
+                    SwitchPresenter.Value = "HII Resources (Protected)";
                 }
                 else
                 {
-                    SwitchPresenter.Value = "HII Resources (Other)";
+                    SwitchPresenter.Value = "HII Resources (Regular)";
                 }
             }
+            else
+            {
+                SwitchPresenter.Value = "HII Resources (Other)";
+            }
         }
+    }
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
