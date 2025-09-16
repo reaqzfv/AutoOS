@@ -45,7 +45,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
     private readonly ObservableCollection<BiosSettingModel> biosSettings = [];
     private readonly ObservableCollection<BiosSettingModel> recommendedSettings = [];
     private readonly List<BiosSettingModel> allSettings = [];
-    
+
     public BiosSettingPage()
     {
         InitializeComponent();
@@ -249,24 +249,24 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                     return settings;
                 });
 
-            var ruleOrder = BiosSettingRecommendationsList.Rules
-                .Select((r, i) => new { r.SetupQuestion, r.RecommendedOption, Index = i })
-                .ToDictionary(
-                    x => (x.SetupQuestion.ToLowerInvariant(), x.RecommendedOption.ToLowerInvariant()),
-                    x => x.Index
-                );
+                var ruleOrder = BiosSettingRecommendationsList.Rules
+                    .Select((r, i) => new { r.SetupQuestion, r.RecommendedOption, Index = i })
+                    .ToDictionary(
+                        x => (x.SetupQuestion.ToLowerInvariant(), x.RecommendedOption.ToLowerInvariant()),
+                        x => x.Index
+                    );
 
-            var sortedRecommended = parsedList
-                .Where(s => s.IsRecommended)
-                .OrderBy(s =>
-                    ruleOrder.TryGetValue(
-                        (s.SetupQuestion.ToLowerInvariant(),
-                         (s.RecommendedOption?.Label ?? s.RecommendedValue ?? string.Empty).ToLowerInvariant()),
-                        out var index) ? index : int.MaxValue)
-                .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
-                .ToList();
+                var sortedRecommended = parsedList
+                    .Where(s => s.IsRecommended)
+                    .OrderBy(s =>
+                        ruleOrder.TryGetValue(
+                            (s.SetupQuestion.ToLowerInvariant(),
+                             (s.RecommendedOption?.Label ?? s.RecommendedValue ?? string.Empty).ToLowerInvariant()),
+                            out var index) ? index : int.MaxValue)
+                    .ThenBy(s => s.SetupQuestion, StringComparer.OrdinalIgnoreCase)
+                    .ToList();
 
-            biosSettings.Clear();
+                biosSettings.Clear();
                 recommendedSettings.Clear();
                 allSettings.Clear();
 
@@ -293,27 +293,27 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 SwitchPresenter.Value = "Loaded";
                 Backup.IsEnabled = true;
             }
-        else
-        {
-            if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+            else
             {
-                var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
-
-                if (protectedChipsets.Any(c => product.Contains(c)))
+                if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
                 {
-                    SwitchPresenter.Value = "HII Resources (Protected)";
+                    var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
+
+                    if (protectedChipsets.Any(c => product.Contains(c)))
+                    {
+                        SwitchPresenter.Value = "HII Resources (Protected)";
+                    }
+                    else
+                    {
+                        SwitchPresenter.Value = "HII Resources (Regular)";
+                    }
                 }
                 else
                 {
-                    SwitchPresenter.Value = "HII Resources (Regular)";
+                    SwitchPresenter.Value = "HII Resources (Other)";
                 }
             }
-            else
-            {
-                SwitchPresenter.Value = "HII Resources (Other)";
-            }
         }
-    }
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -444,7 +444,8 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                     await LoadAsync();
                 }
             }
-            else {
+            else
+            {
                 var dialog = new ContentDialog
                 {
                     Title = "Invalid File",
@@ -457,7 +458,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 
                 senderButton.IsEnabled = true;
             }
-        }        
+        }
     }
 
     private async void Import_Click(object sender, RoutedEventArgs e)
