@@ -40,7 +40,16 @@
                                                    Height="Auto"
                                                    ImageUrl="ms-appx:///Assets/BackgroundBlur.png"
                                                    Stretch="{TemplateBinding ImageStretch}" />
-                                <Rectangle Fill="#66000000" />
+                                <Rectangle>
+                                    <Rectangle.Fill>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Offset="0.0" Color="#40000000" />
+                                            <GradientStop Offset="0.4" Color="#50000000" />
+                                            <GradientStop Offset="0.5" Color="#66000000" />
+                                            <GradientStop Offset="1.0" Color="#FF000000" />
+                                        </LinearGradientBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
                             </Grid>
                         </dev:OpacityMaskView>
                         <!--  Title  -->
