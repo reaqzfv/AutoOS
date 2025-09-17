@@ -74,8 +74,8 @@ public partial class HeaderCarousel : ItemsControl
     private string currentSortKey = "Title";
     private bool ascending = true;
 
-    private MenuFlyoutItem SortByName, SortByLauncher, SortByRating, SortByPlayTime;
-    private MenuFlyoutItem SortAscending, SortDescending;
+    private RadioMenuFlyoutItem SortByName, SortByLauncher, SortByRating, SortByPlayTime;
+    private RadioMenuFlyoutItem SortAscending, SortDescending;
 
     private Button Fullscreen;
     private TextBlock FullscreenText;
@@ -117,18 +117,19 @@ public partial class HeaderCarousel : ItemsControl
         SearchBox.TextChanged += SearchBox_TextChanged;
         SearchBox.QuerySubmitted += SearchBox_QuerySubmitted;
 
-        SortByName = GetTemplateChild("SortByName") as MenuFlyoutItem;
-        SortByName.Click += SortByName_Click;
-        SortByLauncher = GetTemplateChild("SortByLauncher") as MenuFlyoutItem;
-        SortByLauncher.Click += SortByLauncher_Click;
-        SortByRating = GetTemplateChild("SortByRating") as MenuFlyoutItem;
-        SortByRating.Click += SortByRating_Click;
-        SortByPlayTime = GetTemplateChild("SortByPlayTime") as MenuFlyoutItem;
-        SortByPlayTime.Click += SortByPlayTime_Click;
-        SortAscending = GetTemplateChild("SortAscending") as MenuFlyoutItem;
-        SortAscending.Click += SortAscending_Click;
-        SortDescending = GetTemplateChild("SortDescending") as MenuFlyoutItem;
-        SortDescending.Click += SortDescending_Click;
+        SortByName = GetTemplateChild("SortByName") as RadioMenuFlyoutItem;
+        SortByLauncher = GetTemplateChild("SortByLauncher") as RadioMenuFlyoutItem;
+        SortByRating = GetTemplateChild("SortByRating") as RadioMenuFlyoutItem;
+        SortByPlayTime = GetTemplateChild("SortByPlayTime") as RadioMenuFlyoutItem;
+        SortAscending = GetTemplateChild("SortAscending") as RadioMenuFlyoutItem;
+        SortDescending = GetTemplateChild("SortDescending") as RadioMenuFlyoutItem;
+
+        SortByName.Click += SortKey_Click;
+        SortByLauncher.Click += SortKey_Click;
+        SortByRating.Click += SortKey_Click;
+        SortByPlayTime.Click += SortKey_Click;
+        SortAscending.Click += SortOrder_Click;
+        SortDescending.Click += SortOrder_Click;
 
         Fullscreen = GetTemplateChild("Fullscreen") as Button;
         FullscreenText = GetTemplateChild("FullscreenText") as TextBlock;
@@ -656,52 +657,32 @@ public partial class HeaderCarousel : ItemsControl
         SubscribeToEvents();
     }
 
-    private void SortByName_Click(object sender, RoutedEventArgs e)
+    private void SortKey_Click(object sender, RoutedEventArgs e)
     {
-        currentSortKey = "Title";
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
+        if (sender is RadioMenuFlyoutItem item)
+        {
+            currentSortKey = item.Name switch
+            {
+                "SortByName" => "Title",
+                "SortByLauncher" => "Launcher",
+                "SortByRating" => "Rating",
+                "SortByPlayTime" => "PlayTime",
+                _ => currentSortKey
+            };
+
+            ApplySort();
+            SaveSortSettings();
+        }
     }
 
-    private void SortByLauncher_Click(object sender, RoutedEventArgs e)
+    private void SortOrder_Click(object sender, RoutedEventArgs e)
     {
-        currentSortKey = "Launcher";
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
-    }
-
-    private void SortByPlayTime_Click(object sender, RoutedEventArgs e)
-    {
-        currentSortKey = "PlayTime";
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
-    }
-
-    private void SortByRating_Click(object sender, RoutedEventArgs e)
-    {
-        currentSortKey = "Rating";
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
-    }
-
-    private void SortAscending_Click(object sender, RoutedEventArgs e)
-    {
-        ascending = true;
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
-    }
-
-    private void SortDescending_Click(object sender, RoutedEventArgs e)
-    {
-        ascending = false;
-        UpdateSortIcons();
-        ApplySort();
-        SaveSortSettings();
+        if (sender is RadioMenuFlyoutItem item)
+        {
+            ascending = item.Name == "SortAscending";
+            ApplySort();
+            SaveSortSettings();
+        }
     }
 
     private void ApplySort()
@@ -743,16 +724,6 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void UpdateSortIcons()
-    {
-        SortByName.Icon = currentSortKey == "Title" ? new FontIcon { Glyph = "\uE915" } : null;
-        SortByLauncher.Icon = currentSortKey == "Launcher" ? new FontIcon { Glyph = "\uE915" } : null;
-        SortByPlayTime.Icon = currentSortKey == "PlayTime" ? new FontIcon { Glyph = "\uE915" } : null;
-        SortByRating.Icon = currentSortKey == "Rating" ? new FontIcon { Glyph = "\uE915" } : null;
-        SortAscending.Icon = ascending ? new FontIcon { Glyph = "\uE915" } : null;
-        SortDescending.Icon = !ascending ? new FontIcon { Glyph = "\uE915" } : null;
-    }
-
     private void SaveSortSettings()
     {
         ApplicationData.Current.LocalSettings.Values["SortKey"] = currentSortKey;
@@ -765,7 +736,14 @@ public partial class HeaderCarousel : ItemsControl
         currentSortKey = settings["SortKey"] as string ?? "Title";
         ascending = settings["SortAscending"] is not bool b || b;
 
-        UpdateSortIcons();
+        SortByName.IsChecked = currentSortKey == "Title";
+        SortByLauncher.IsChecked = currentSortKey == "Launcher";
+        SortByRating.IsChecked = currentSortKey == "Rating";
+        SortByPlayTime.IsChecked = currentSortKey == "PlayTime";
+
+        SortAscending.IsChecked = ascending;
+        SortDescending.IsChecked = !ascending;
+
         ApplySort();
     }
 

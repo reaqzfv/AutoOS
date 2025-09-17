@@ -86,31 +86,37 @@
                                                 <Setter Property="BorderThickness" Value="1" />
                                             </Style>
                                         </MenuFlyout.MenuFlyoutPresenterStyle>
-                                        <MenuFlyoutItem x:Name="SortByName"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Name" />
-                                        <MenuFlyoutItem x:Name="SortByLauncher"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Launcher" />
-                                        <MenuFlyoutItem x:Name="SortByRating"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Rating" />
-                                        <MenuFlyoutItem x:Name="SortByPlayTime"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Play Time" />
+                                        <RadioMenuFlyoutItem x:Name="SortByName"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortKey"
+                                                             Text="Name" />
+                                        <RadioMenuFlyoutItem x:Name="SortByLauncher"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortKey"
+                                                             Text="Launcher" />
+                                        <RadioMenuFlyoutItem x:Name="SortByRating"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortKey"
+                                                             Text="Rating" />
+                                        <RadioMenuFlyoutItem x:Name="SortByPlayTime"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortKey"
+                                                             Text="Play Time" />
                                         <MenuFlyoutSeparator Margin="2" />
-                                        <MenuFlyoutItem x:Name="SortAscending"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Ascending" />
-                                        <MenuFlyoutItem x:Name="SortDescending"
-                                                        Padding="12,8"
-                                                        CornerRadius="12"
-                                                        Text="Descending" />
+                                        <RadioMenuFlyoutItem x:Name="SortAscending"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortOrder"
+                                                             Text="Ascending" />
+                                        <RadioMenuFlyoutItem x:Name="SortDescending"
+                                                             Padding="12,8"
+                                                             CornerRadius="12"
+                                                             GroupName="SortOrder"
+                                                             Text="Descending" />
                                     </MenuFlyout>
                                 </Button.Flyout>
                             </Button>
