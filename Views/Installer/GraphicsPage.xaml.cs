@@ -16,7 +16,7 @@ public sealed partial class GraphicsPage : Page
         GetBrand();
         GetHDCPState();
         GetMsiProfile();
-        MainShortcutWithTextLabel.Keys = new List<object>() { "Alt", "F10" };
+        MainShortcutWithTextLabel.Keys = ["Alt", "F10"];
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -48,9 +48,9 @@ public sealed partial class GraphicsPage : Page
         var selectedBrand = localSettings.Values["GpuBrand"] as string;
         var brandItems = Brands.ItemsSource as List<GridViewItem>;
         Brands.SelectedItems.AddRange(
-            selectedBrand?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+            selectedBrand?.Split([", "], StringSplitOptions.RemoveEmptyEntries)
             .Select(e => brandItems?.FirstOrDefault(ext => ext.Text == e))
-            .Where(ext => ext != null) ?? Enumerable.Empty<GridViewItem>()
+            .Where(ext => ext != null) ?? []
         );
         isInitializingBrandsState = false;
     }
@@ -69,8 +69,7 @@ public sealed partial class GraphicsPage : Page
 
     private void GetHDCPState()
     {
-        object value;
-        if (!localSettings.Values.TryGetValue("HighBandwidthDigitalContentProtection", out value))
+        if (!localSettings.Values.TryGetValue("HighBandwidthDigitalContentProtection", out object value))
         {
             localSettings.Values["HighBandwidthDigitalContentProtection"] = 0;
         }
@@ -133,7 +132,7 @@ public sealed partial class GraphicsPage : Page
         {
             ShowAllFilesOption = false
         };
-        picker.FileTypeChoices.Add("MSI Afterburner profile", new List<string> { "*.cfg" });
+        picker.FileTypeChoices.Add("MSI Afterburner profile", ["*.cfg"]);
         var file = await picker.PickSingleFileAsync();
 
         if (file != null)

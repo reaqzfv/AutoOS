@@ -379,7 +379,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             ShowAllFilesOption = false,
             InitialDirectory = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup")
         };
-        picker.FileTypeChoices.Add("NVRAM", new List<string> { "*.txt" });
+        picker.FileTypeChoices.Add("NVRAM", ["*.txt"]);
         var file = await picker.PickSingleFileAsync();
 
         if (file != null)

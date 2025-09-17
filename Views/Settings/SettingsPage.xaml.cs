@@ -91,10 +91,10 @@ public sealed partial class SettingsPage : Page
         }
     }
 
-    private void toCloneRepoCard_Click(object sender, RoutedEventArgs e)
+    private void CloneRepo_Click(object sender, RoutedEventArgs e)
     {
-        DataPackage package = new DataPackage();
-        package.SetText(gitCloneTextBlock.Text);
+        DataPackage package = new();
+        package.SetText(GitCloneTextBlock.Text);
         Clipboard.SetContent(package);
     }
 
@@ -110,7 +110,7 @@ public sealed partial class SettingsPage : Page
         SetTintColor(e.Color);
     }
 
-    private void SetTintColor(Color color)
+    private static void SetTintColor(Color color)
     {
         if (color.ToString().Contains("#FF000000") || color.ToString().Contains("#000000"))
         {

@@ -65,7 +65,7 @@ public sealed partial class DisplayPage : Page
         {
             ShowAllFilesOption = false
         };
-        picker.FileTypeChoices.Add("CRU profile", new List<string> { "*.exe" });
+        picker.FileTypeChoices.Add("CRU profile", ["*.exe"]);
         var file = await picker.PickSingleFileAsync();
 
         if (file != null)

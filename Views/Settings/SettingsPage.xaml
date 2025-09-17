@@ -125,11 +125,11 @@
                                    IsTextSelectionEnabled="True"
                                    Text="{x:Bind dev:ProcessInfoHelper.Version}" />
                         <dev:SettingsExpander.Items>
-                            <dev:SettingsCard x:Name="toCloneRepoCard"
-                                              Click="toCloneRepoCard_Click"
+                            <dev:SettingsCard x:Name="CloneRepo"
+                                              Click="CloneRepo_Click"
                                               Header="To clone this repository"
                                               IsClickEnabled="True">
-                                <TextBlock x:Name="gitCloneTextBlock"
+                                <TextBlock x:Name="GitCloneTextBlock"
                                            FontFamily="Consolas"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            IsTextSelectionEnabled="True"
