@@ -43,8 +43,8 @@
                                 <Rectangle>
                                     <Rectangle.Fill>
                                         <RadialGradientBrush Center="0.5,0.22" GradientOrigin="0.5,0.0" MappingMode="RelativeToBoundingBox" RadiusX="0.92" RadiusY="0.82" SpreadMethod="Pad">
-                                            <GradientStop Offset="0" Color="#50000000" />
-                                            <GradientStop Offset="0.55" Color="#20000000" />
+                                            <GradientStop Offset="0" Color="#40000000" />
+                                            <GradientStop Offset="0.55" Color="#30000000" />
                                             <GradientStop Offset="0.7" Color="#B3000000" />
                                             <GradientStop Offset="1" Color="#FF000000" />
                                         </RadialGradientBrush>
