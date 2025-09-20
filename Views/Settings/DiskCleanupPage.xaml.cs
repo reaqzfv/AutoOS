@@ -11,12 +11,18 @@ namespace AutoOS.Views.Settings;
 
 public sealed partial class DiskCleanupPage : Page
 {
-    private readonly ObservableCollection<DriveModel> drives = [];
+    private ObservableCollection<DriveModel> drives = [];
 
     public DiskCleanupPage()
     {
         InitializeComponent();
-        GetDrives();
+        _ = InitializeDrives();
+    }
+
+    private async Task InitializeDrives()
+    {
+        drives = await GetDrives();
+        DrivesRepeater.ItemsSource = drives;
     }
 
     private static string FormatSize(double sizeGiB)
@@ -26,8 +32,10 @@ public sealed partial class DiskCleanupPage : Page
         return $"{sizeGiB:N2} GiB";
     }
 
-    private void GetDrives()
+    private static async Task<ObservableCollection<DriveModel>> GetDrives()
     {
+        var result = new ObservableCollection<DriveModel>();
+
         foreach (var drive in DriveInfo.GetDrives().Where(d => d.IsReady))
         {
             double totalGiB = drive.TotalSize / 1073741824d;
@@ -36,35 +44,29 @@ public sealed partial class DiskCleanupPage : Page
             var model = new DriveModel
             {
                 Name = drive.Name.TrimEnd('\\'),
-                Label = string.IsNullOrWhiteSpace(drive.VolumeLabel)
-                    ? $"Local Disk ({drive.Name.TrimEnd('\\')})"
-                    : $"{drive.VolumeLabel} ({drive.Name.TrimEnd('\\')})",
+                Label = $"{drive.VolumeLabel} ({drive.Name.TrimEnd('\\')})",
                 Total = totalGiB,
                 Free = $"{FormatSize(freeGiB)} free of {FormatSize(totalGiB)}",
                 Used = totalGiB - freeGiB
             };
 
-            drives.Add(model);
-            LoadDriveThumbnailAsync(model);
-        }
-
-        DrivesRepeater.ItemsSource = drives;
-    }
-
-    private static async void LoadDriveThumbnailAsync(DriveModel model)
-    {
-        try
-        {
-            var folder = await StorageFolder.GetFolderFromPathAsync(model.Name + "\\");
-            using var thumb = await folder.GetThumbnailAsync(ThumbnailMode.SingleItem, 32, ThumbnailOptions.UseCurrentScale);
-            if (thumb != null)
+            try
             {
-                var bmp = new BitmapImage();
-                await bmp.SetSourceAsync(thumb);
-                model.Icon = bmp;
+                var folder = await StorageFolder.GetFolderFromPathAsync(drive.Name);
+                using var thumb = await folder.GetThumbnailAsync(ThumbnailMode.SingleItem, 32, ThumbnailOptions.UseCurrentScale);
+                if (thumb != null)
+                {
+                    var bmp = new BitmapImage();
+                    await bmp.SetSourceAsync(thumb);
+                    model.Icon = bmp;
+                }
             }
+            catch { }
+
+            result.Add(model);
         }
-        catch { }
+
+        return result;
     }
 
     private void UpdateDrives()
