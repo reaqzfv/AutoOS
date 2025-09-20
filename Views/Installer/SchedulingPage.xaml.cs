@@ -63,16 +63,21 @@ public sealed partial class SchedulingPage : Page
         string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "AutoGpuAffinity");
         string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "AutoGpuAffinity");
 
-        foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+        if (!Directory.Exists(destinationPath))
         {
-            string subDirPath = directory.Replace(sourcePath, destinationPath);
-            Directory.CreateDirectory(subDirPath);
-        }
+            Directory.CreateDirectory(destinationPath);
 
-        foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-        {
-            string destFilePath = file.Replace(sourcePath, destinationPath);
-            File.Copy(file, destFilePath, true);
+            foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+            {
+                string subDirPath = directory.Replace(sourcePath, destinationPath);
+                Directory.CreateDirectory(subDirPath);
+            }
+
+            foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                string destFilePath = file.Replace(sourcePath, destinationPath);
+                File.Copy(file, destFilePath);
+            }
         }
 
         // configure config

@@ -54,25 +54,23 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         SettingsListView.ItemsSource = biosSettings;
 
         // copy scewin to localstate because of permissions
-        string scewinPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN");
-        if (!Directory.Exists(scewinPath))
-        {
-            Directory.CreateDirectory(scewinPath);
+        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN");
+        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN");
 
-            string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "SCEWIN");
+        if (!Directory.Exists(destinationPath))
+        {
+            Directory.CreateDirectory(destinationPath);
 
             foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
             {
-                string subDirPath = directory.Replace(sourcePath, scewinPath);
-                if (!Directory.Exists(subDirPath))
-                    Directory.CreateDirectory(subDirPath);
+                string subDirPath = directory.Replace(sourcePath, destinationPath);
+                Directory.CreateDirectory(subDirPath);
             }
 
             foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
-                string destFilePath = file.Replace(sourcePath, scewinPath);
-                if (!File.Exists(destFilePath))
-                    File.Copy(file, destFilePath);
+                string destFilePath = file.Replace(sourcePath, destinationPath);
+                File.Copy(file, destFilePath);
             }
         }
 
