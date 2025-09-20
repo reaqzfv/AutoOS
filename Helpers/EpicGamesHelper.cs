@@ -638,9 +638,9 @@ namespace AutoOS.Helpers
                                 //                !string.IsNullOrWhiteSpace(output["url"]?.ToString()))
                                 //            .Select(output => MediaSource.CreateFromUri(new Uri(output["url"].ToString())))],
                                 ReleaseDate = releaseDate.ToString("d"),
-                                Size = sizeBytes >= 1024 * 1024 * 1024
-                                    ? $"{sizeBytes.Value / (1024d * 1024d * 1024d):F1} GB"
-                                    : $"{sizeBytes.Value / (1024d * 1024d):F2} MB",
+                                Size = sizeBytes >= 1_000_000_000
+                                    ? $"{sizeBytes.Value / 1_000_000_000d:F1} GB"
+                                    : $"{sizeBytes.Value / 1_000_000d:F2} MB",
                                 Version = currentVersion,
                                 Width = 240,
                                 Height = 320,
