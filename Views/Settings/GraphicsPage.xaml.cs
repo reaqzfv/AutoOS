@@ -65,6 +65,8 @@ public sealed partial class GraphicsPage : Page
             {
                 var (_, newestVersion, newestDownloadUrl) = await NvidiaHelper.CheckUpdate();
 
+                NvidiaUpdateCheck.IsHitTestVisible = false;
+
                 NvidiaUpdateCheck.CheckedContent = "Downloading the NVIDIA driver...";
 
                 await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
@@ -128,6 +130,7 @@ public sealed partial class GraphicsPage : Page
                 process.Start();
                 await process.WaitForExitAsync();
 
+                NvidiaUpdateCheck.IsHitTestVisible = true;
                 NvidiaUpdateCheck.IsChecked = false;
                 NvidiaUpdateCheck.Content = "Checking for updates";
                 NvidiaUpdateCheck.IsChecked = true;
