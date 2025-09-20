@@ -285,6 +285,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Above 4GB MMIO BIOS assignment", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Above 4G memory/Crypto Currency mining", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "PCIE Resizable BAR Support", Type = "Option", RecommendedOption = "Enabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "OS Type", Type = "Option", RecommendedOption = "Windows UEFI mode" },
         new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", Type = "Option", RecommendedOption = "Standard" },
