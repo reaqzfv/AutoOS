@@ -15,7 +15,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using WinRT.Interop;
 
-namespace AutoOS.Views.Settings.Games.HeaderCarousel;
+namespace AutoOS.Views.Settings.Games;
 
 [TemplatePart(Name = nameof(PART_BackDropImage), Type = typeof(AnimatedImage))]
 [TemplatePart(Name = nameof(PART_ScrollViewer), Type = typeof(ScrollViewer))]

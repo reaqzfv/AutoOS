@@ -11,8 +11,8 @@
                 <ResourceDictionary Source="Themes/Styles.xaml" />
                 <ResourceDictionary Source="Themes/ThemeResources.xaml" />
                 <ResourceDictionary Source="Themes/NavigationViewItemStyle.xaml" />
-                <ResourceDictionary Source="Views/Settings/Games/HeaderCarousel/HeaderCarousel.xaml" />
-                <ResourceDictionary Source="Views/Settings/Games/HeaderCarousel/HeaderCarouselItem.xaml" />
+                <ResourceDictionary Source="Views/Settings/Games/HeaderCarousel.xaml" />
+                <ResourceDictionary Source="Views/Settings/Games/HeaderCarouselItem.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--  Other app resources here  -->
         </ResourceDictionary>

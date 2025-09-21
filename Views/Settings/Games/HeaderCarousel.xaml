@@ -4,8 +4,8 @@
                     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
                     xmlns:converters="using:CommunityToolkit.WinUI.Converters"
                     xmlns:dev="using:DevWinUI"
-                    xmlns:local="using:AutoOS.Views.Settings.Games.HeaderCarousel"
-                    xmlns:views="using:AutoOS.Views.Settings.Games">
+                    xmlns:local="using:AutoOS.Views.Settings.Games"
+                    xmlns:views="using:AutoOS.Views.Settings">
     <Style TargetType="local:HeaderCarousel">
         <Setter Property="ItemsPanel">
             <Setter.Value>

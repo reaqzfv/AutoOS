@@ -3,7 +3,7 @@
 public sealed partial class GamesPage : Page
 {
     public static GamesPage Instance { get; private set; }
-    public Games.HeaderCarousel.HeaderCarousel Games => games;
+    public Games.HeaderCarousel Games => games;
 
     public GamesPage()
     {

@@ -27,7 +27,7 @@ namespace AutoOS.Helpers
                 }
 
                 // remove previous games
-                foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>().Where(item => item.Launcher == "Ryujinx").ToList())
+                foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarouselItem>().Where(item => item.Launcher == "Ryujinx").ToList())
                     GamesPage.Instance.Games.Items.Remove(item);
 
                 // get game dirs
@@ -131,7 +131,7 @@ namespace AutoOS.Helpers
 
                     GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                     {
-                        GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarousel.HeaderCarouselItem
+                        GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarouselItem
                         {
                             Launcher = "Ryujinx",
                             LauncherLocation = localSettings.Values["RyujinxLocation"]?.ToString(),

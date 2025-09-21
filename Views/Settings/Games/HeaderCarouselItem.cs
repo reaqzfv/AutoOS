@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Hosting;
 using System.Numerics;
 
-namespace AutoOS.Views.Settings.Games.HeaderCarousel;
+namespace AutoOS.Views.Settings.Games;
 
 [TemplatePart(Name = nameof(PART_ShadowHost), Type = typeof(Grid))]
 public partial class HeaderCarouselItem : Button

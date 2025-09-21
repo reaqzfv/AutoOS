@@ -380,7 +380,7 @@ namespace AutoOS.Helpers
                 GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                 {
                     var existingItem = GamesPage.Instance.Games.Items
-                        .OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>()
+                        .OfType<Views.Settings.Games.HeaderCarouselItem>()
                         .FirstOrDefault(item => item.ArtifactId == artifactId);
 
                     if (existingItem != null)
@@ -410,7 +410,7 @@ namespace AutoOS.Helpers
             if (File.Exists(EpicGamesPath) && Directory.Exists(EpicGamesMainfestDir))
             {
                 // remove previous games
-                foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>().Where(item => item.Launcher == "Epic Games").ToList())
+                foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarouselItem>().Where(item => item.Launcher == "Epic Games").ToList())
                     GamesPage.Instance.Games.Items.Remove(item);
 
                 // get access token
@@ -594,7 +594,7 @@ namespace AutoOS.Helpers
 
                         GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                         {
-                            GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarousel.HeaderCarouselItem
+                            GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarouselItem
                             {
                                 Launcher = "Epic Games",
                                 CatalogNamespace = itemJson["MainGameCatalogNamespace"]?.GetValue<string>(),

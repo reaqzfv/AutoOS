@@ -87,7 +87,7 @@ namespace AutoOS.Helpers
             if (!File.Exists(SteamPath) || !File.Exists(SteamLibraryPath)) return;
 
             // remove previous games
-            foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>().Where(item => item.Launcher == "Steam").ToList())
+            foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarouselItem>().Where(item => item.Launcher == "Steam").ToList())
                 GamesPage.Instance.Games.Items.Remove(item);
 
             string region = RegionInfo.CurrentRegion.TwoLetterISORegionName.ToUpper();
@@ -226,7 +226,7 @@ namespace AutoOS.Helpers
 
                         GamesPage.Instance.DispatcherQueue.TryEnqueue(() =>
                         {
-                            GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarousel.HeaderCarouselItem
+                            GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarouselItem
                             {
                                 Launcher = "Steam",
                                 ImageUrl = $"https://cdn.steamstatic.com/steam/apps/{gameId}/library_600x900.jpg",

@@ -20,7 +20,7 @@ namespace AutoOS.Helpers
             if (!File.Exists(UbisoftConnectPath)) return;
 
             // remove previous games
-            foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarousel.HeaderCarouselItem>().Where(item => item.Launcher == "Ubisoft Connect").ToList())
+            foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarouselItem>().Where(item => item.Launcher == "Ubisoft Connect").ToList())
                 GamesPage.Instance.Games.Items.Remove(item);
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -78,7 +78,7 @@ namespace AutoOS.Helpers
 
             foreach (var game in parsedGames)
             {
-                GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarousel.HeaderCarouselItem
+                GamesPage.Instance.Games.Items.Add(new Views.Settings.Games.HeaderCarouselItem
                 {
                     Launcher = "Ubisoft Connect",
                     Title = game.Name,
