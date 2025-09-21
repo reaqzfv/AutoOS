@@ -163,6 +163,11 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         {
             if (new FileInfo(nvram).Length > 100 * 1024)
             {
+                // reset ui
+                RecommendedChanges.Visibility = Visibility.Visible;
+                RecommendedChanges.IsExpanded = true;
+                AllSettings.IsExpanded = false;
+
                 // backup nvram.txt
                 string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
 
