@@ -7,6 +7,8 @@ public static class FileSystemStage
 {
     public static async Task Run()
     {
+        bool? SSD = PreparingStage.SSD;
+
         InstallPage.Status.Text = "Configuring the file system...";
 
         string previousTitle = string.Empty;
@@ -51,7 +53,7 @@ public static class FileSystemStage
             ("Disabling the use of extended characters in short file names", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set allowextchar 0"), null),
 
             // enable trim support
-            ("Enabling TRIM support", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set disabledeletenotify 0"), null),
+            ("Enabling TRIM support", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set disabledeletenotify 0"), () => SSD == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
