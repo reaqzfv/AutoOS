@@ -204,8 +204,8 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                         if (setting.HasOptions)
                             setting.OriginalSelectedOption = setting.SelectedOption;
 
-                        var rule = BiosSettingRecommendationsList.Rules
-                            .FirstOrDefault(r =>
+                        var matchingRules = BiosSettingRecommendationsList.Rules
+                            .Where(r =>
                                 string.Equals(r.SetupQuestion?.Trim(), setting.SetupQuestion?.Trim(), StringComparison.OrdinalIgnoreCase) &&
                                 (
                                     (r.Type?.Equals("Option", StringComparison.OrdinalIgnoreCase) ?? false) &&
@@ -215,10 +215,11 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                                     ||
                                     (r.Type?.Equals("Value", StringComparison.OrdinalIgnoreCase) ?? false && setting.HasValueField)
                                 )
-                            );
+                            )
+                            .Where(r => r.Condition == null || r.Condition())
+                            .ToList();
 
-
-                        if (rule != null)
+                        foreach (var rule in matchingRules)
                         {
                             string recommendedLabel = rule.RecommendedOption?.Trim().ToLowerInvariant();
 
@@ -233,6 +234,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                                 {
                                     setting.RecommendedOption = recommended;
                                     setting.IsRecommended = true;
+                                    break;
                                 }
                             }
 
@@ -243,6 +245,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                                 {
                                     setting.IsRecommended = true;
                                     setting.RecommendedValue = rule.RecommendedOption;
+                                    break;
                                 }
                             }
                         }
