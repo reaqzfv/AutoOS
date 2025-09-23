@@ -2,10 +2,12 @@
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Win32;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
+using System.Diagnostics;
 
 namespace AutoOS.Views.Settings
 {
@@ -13,6 +15,8 @@ namespace AutoOS.Views.Settings
     {
         private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         private static readonly HttpClient httpClient = new();
+        private readonly string list = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini");
+        private readonly string nsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NSudo", "NSudoLC.exe");
         private readonly TextBlock StatusText = new()
         {
             Margin = new Thickness(0, 10, 0, 0),
@@ -107,6 +111,8 @@ namespace AutoOS.Views.Settings
 
             _ = updater.ShowAsync();
 
+            bool servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1;
+
             string previousTitle = string.Empty;
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
@@ -124,7 +130,19 @@ namespace AutoOS.Views.Settings
                 ("Downloading Arkenfox user.js", async () => await RunDownload("https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js", @"C:\Program Files\Zen Browser", "user.js"), () => Zen == true),
 
                 // optimize discord settings
-                ("Optimizing Discord settings", async () => await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Discord", "settings.json"), "{\"enableHardwareAcceleration\": false, \"OPEN_ON_STARTUP\": false, \"MINIMIZE_TO_TRAY\": false, \"debugLogging\": false}"), () => Discord == true)
+                ("Optimizing Discord settings", async () => await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Discord", "settings.json"), "{\"enableHardwareAcceleration\": false, \"OPEN_ON_STARTUP\": false, \"MINIMIZE_TO_TRAY\": false, \"debugLogging\": false}"), () => Discord == true),
+            
+                // enable services & drivers
+                ("Enabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Enable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
+
+                // update lists.ini
+                ("Updating lists.ini", async () => await Task.Run(() => File.WriteAllText(list, File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "lists.ini")).Replace("License Manager", "LicenseManager"))), null),
+
+                // build service list
+                ("Building service list", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $@"-U:T -P:E -Wait -ShowWindowMode:Hide ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "service-list-builder.exe")}"" --config ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini")}"" --disable-service-warning --output-dir ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")}""", CreateNoWindow = true }).WaitForExitAsync(), null),
+
+                // disable services & drivers
+                ("Disabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
