@@ -28,7 +28,7 @@ public static class SchedulingStage
             ("Applying GPU Affinity", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"cmd /c ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "AutoGpuAffinity", "AutoGpuAffinity.exe")}"" --apply-affinity {localSettings.Values["GpuAffinity"]}"), null),
 
             // apply xhci affinity
-            ("Applying XHCI Affinity", async () => await ProcessActions.Sleep(2000), () => Scheduling == false),
+            ("Applying XHCI Affinity", async () => await ProcessActions.Sleep(3000), () => Scheduling == false),
             ("Applying XHCI Affinity", async () => await ProcessActions.ApplyXhciAffinity(), null),
 
             // apply nic affinity

@@ -1,5 +1,4 @@
 ﻿using AutoOS.Views.Installer.Actions;
-using DevWinUI;
 using Microsoft.UI.Xaml.Media;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -30,12 +29,13 @@ public static partial class GamesStage
         string fortnitePath = string.Empty;
 
         string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini");
-        InIHelper iniHelper = new InIHelper(iniPath);
+        InIHelper iniHelper = null;
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // setting fortnite frame rate
             ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
+            ("Setting Fortnite Frame Rate", async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini"))), () => Fortnite == true),
             ("Setting Fortnite Frame Rate", async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings")), () => Fortnite == true),
             
             // setting fortnite rendering mode
