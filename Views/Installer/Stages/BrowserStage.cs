@@ -161,11 +161,14 @@ public static class BrowserStage
             // install 1password extension
             ("Installing 1Password Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\BraveSoftware\Brave\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'aeblfdkhhhdcdjpifhhbdiojplfjncoa' /f"), () => Brave == true && OnePassword == true),
 
+            // download arc dependency
+            ("Downloading Arc Dependency", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/dependencies/x64/Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx", Path.GetTempPath(), "Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"), () => Arc == true),
+
             // install arc dependency
             ("Installing Arc Dependency", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"""), () => Arc == true),
 
             // download arc
-            ("Downloading Arc", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/prod/1.56.0.351/Arc.x64.msix", Path.GetTempPath(), "Arc.x64.msix"), () => Arc == true),
+            ("Downloading Arc", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/prod/1.72.0.296/Arc.x64.msix", Path.GetTempPath(), "Arc.x64.msix"), () => Arc == true),
 
             // install arc
             ("Installing Arc", async () => await ProcessActions.RunNsudo("CurrentUser", @"powershell -Command ""Add-AppxPackage -Path $env:TEMP\Arc.x64.msix"""), () => Arc == true),
@@ -286,9 +289,6 @@ public static class BrowserStage
             // install 1password extension
             ("Installing 1Password Extension", async () => await Task.Run(() => { string policiesPath = @"C:\Program Files\Zen Browser\distribution\policies.json"; string extensionUrl = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager"; var policiesContent = JsonSerializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(policiesPath)); if (policiesContent.ContainsKey("policies")) { var policies = (JsonElement)policiesContent["policies"]; var policiesDict = JsonSerializer.Deserialize<Dictionary<string, object>>(policies.ToString()); if (!policiesDict.ContainsKey("Extensions")) { policiesDict["Extensions"] = new Dictionary<string, object> { { "Install", new string[] { extensionUrl } } }; } else { var extensions = (JsonElement)policiesDict["Extensions"]; var installArray = JsonSerializer.Deserialize<List<string>>(extensions.GetProperty("Install").ToString()); installArray.Add(extensionUrl); policiesDict["Extensions"] = new Dictionary<string, object> { { "Install", installArray.ToArray() } }; } policiesContent["policies"] = JsonSerializer.SerializeToElement(policiesDict); File.WriteAllText(policiesPath, JsonSerializer.Serialize(policiesContent, new JsonSerializerOptions { WriteIndented = true })); } }), () => Zen == true && OnePassword == true),
             ("Installing 1Password Extension", async () => await ProcessActions.Sleep(500), () => Zen == true && OnePassword == true),
-
-            // download arc dependency
-            ("Downloading Arc Dependency", async () => await ProcessActions.RunDownload("https://releases.arc.net/windows/dependencies/x64/Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx", Path.GetTempPath(), "Microsoft.VCLibs.x64.14.00.Desktop.14.0.33728.0.appx"), () => Arc == true)
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
