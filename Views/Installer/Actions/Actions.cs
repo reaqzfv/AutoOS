@@ -710,49 +710,28 @@ public static class ProcessActions
             {
                 if (EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
                 {
+                    // close epic games launcher
+                    EpicGamesHelper.CloseEpicGames();
+
+                    // disable tray and notifications
+                    EpicGamesHelper.DisableMinimizeToTray(EpicGamesHelper.ActiveEpicGamesAccountPath);
+                    EpicGamesHelper.DisableNotifications(EpicGamesHelper.ActiveEpicGamesAccountPath);
+
+                    InstallPage.Info.Title = $"Succesfully logged in as {EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).DisplayName}...";
                     break;
                 }
             }
 
-            await Task.Delay(500);
-        }
-
-        // close epic games launcher
-        EpicGamesHelper.CloseEpicGames();
-
-        // disable tray and notifications
-        EpicGamesHelper.DisableMinimizeToTray(EpicGamesHelper.ActiveEpicGamesAccountPath);
-        EpicGamesHelper.DisableNotifications(EpicGamesHelper.ActiveEpicGamesAccountPath);
-
-        InstallPage.Info.Title = $"Succesfully logged in as {EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).DisplayName}...";
-
-        await Task.Delay(1000);
-    }
-
-    public static async Task SteamLogin()
-    {
-        // launch steam
-        Process.Start(SteamHelper.SteamPath);
-
-        // check when logged in
-        while (true)
-        {
-            if (File.Exists(SteamHelper.SteamLoginUsersPath))
+            if (Process.GetProcessesByName("EpicGamesLauncher").Length == 0)
             {
-                if (KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Deserialize(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(SteamHelper.SteamLoginUsersPath)))).Children.Count() > 0)
-                    break;
+                // disable tray and notifications
+                EpicGamesHelper.DisableMinimizeToTray(EpicGamesHelper.ActiveEpicGamesAccountPath);
+                EpicGamesHelper.DisableNotifications(EpicGamesHelper.ActiveEpicGamesAccountPath);
+                break;
             }
 
             await Task.Delay(500);
         }
-
-        // close steam
-        SteamHelper.CloseSteam();
-
-        var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text)
-                             .Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(SteamHelper.SteamLoginUsersPath))));
-
-        InstallPage.Info.Title = $"Successfully logged in as {kv.Children.Select(c => c["AccountName"]?.ToString()).FirstOrDefault(name => !string.IsNullOrEmpty(name))}...";
 
         await Task.Delay(1000);
     }
@@ -946,6 +925,42 @@ public static class ProcessActions
         {
             return;
         }
+    }
+
+    public static async Task SteamLogin()
+    {
+        // launch steam
+        Process.Start(SteamHelper.SteamPath);
+
+        // check when logged in
+        while (true)
+        {
+            if (File.Exists(SteamHelper.SteamLoginUsersPath))
+            {
+                if (KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Deserialize(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(SteamHelper.SteamLoginUsersPath)))).Children.Count() > 0)
+                {
+                    // close steam
+                    SteamHelper.CloseSteam();
+
+                    var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text)
+                                         .Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(SteamHelper.SteamLoginUsersPath))));
+
+                    InstallPage.Info.Title = $"Successfully logged in as {kv.Children.Select(c => c["AccountName"]?.ToString()).FirstOrDefault(name => !string.IsNullOrEmpty(name))}...";
+                    break;
+                }
+                    
+            }
+
+            if (Process.GetProcessesByName("steam").Length == 0)
+            {
+                break;
+            }
+
+            await Task.Delay(500);
+        }
+
+        
+        await Task.Delay(1000);
     }
 
     public static async Task RunImportSteamGames()
@@ -1178,4 +1193,3 @@ public static class ProcessActions
         }
     }
 }
-
