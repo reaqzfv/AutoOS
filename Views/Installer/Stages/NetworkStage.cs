@@ -39,7 +39,7 @@ public static class NetworkStage
             ("Waiting for internet connection to reestablish", async () => await ProcessActions.RunConnectionCheck(), null),
 
             // adjust wifi adapter advanved settings
-            ("Adjusting Wi-Fi adapter advanced settings", async () => await ProcessActions.RunPowerShellScript("wifi.ps1", ""), () => Wifi == true),
+            ("Adjusting Wi-Fi adapter advanced settings", async () => await ProcessActions.RunPowerShellScript("wifi.ps1", ""), null),
 
             // check connection
             ("Waiting for internet connection to reestablish", async () => await ProcessActions.RunConnectionCheck(), () => Wifi == true),
