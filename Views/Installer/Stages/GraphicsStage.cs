@@ -152,6 +152,43 @@ public static class GraphicsStage
             // configure settings
             ("Configuring settings", async () => await ProcessActions.RunPowerShellScript("amdsettings.ps1", ""), () => AMD == true),
 
+            // accept eula
+            ("Accepting EULA", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN\DisplayOverride"" /v ""EulaAccepted"" /t REG_SZ /d true /f"), () => AMD == true),
+
+            // disable issue detection
+            ("Disabling issue detection", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\AIM"" /v ""LaunchBugTool"" /t REG_DWORD /d 0 /f"), () => AMD == true),
+
+            // disable hotkeys
+            ("Disabling hotkeys", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN\R3DBk"" /v ""HotkeysDisabled"" /t REG_DWORD /d 1 /f"), () => AMD == true),
+
+            // disable overlays
+            ("Disabling overlays", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN\Performance"" /v ""MetricsOverlayState"" /t REG_DWORD /d 0 /f"), () => AMD == true),
+
+            // disable web browser
+            ("Disabling web browser", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""AllowWebContent"" /t REG_SZ /d false /f"), () => AMD == true),
+
+            // disable system tray
+            ("Disabling system tray", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""SystemTray"" /t REG_SZ /d false /f"), () => AMD == true),
+
+            // disable tutorials
+            ("Disabling tutorials", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""CN_Hide_Tutorials"" /t REG_SZ /d true /f"), () => AMD == true),
+
+            // disable advertisements
+            ("Disabling advertisements", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""CN_Hide_FeatureData"" /t REG_SZ /d true /f"), () => AMD == true),
+
+            // disable toast notifications
+            ("Disabling toast notifications", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""CN_Hide_Toast_Notification"" /t REG_SZ /d true /f"), () => AMD == true),
+            
+            // disable animations & effects
+            ("Disabling animations & effects", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""AnimationEffect"" /t REG_SZ /d false /f"), () => AMD == true),
+
+            // disabling unnecessary services
+            ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\AMD Crash Defender Service"" /v Start /t REG_DWORD /d 4 /f & sc stop ""AMD Crash Defender Service"""), () => AMD == true),
+            ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\AMD External Events Utility"" /v Start /t REG_DWORD /d 4 /f & sc stop ""AMD External Events Utility"""), () => AMD == true),
+            ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdfendr"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdfendr"""), () => AMD == true),
+            ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdfendrmgr"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdfendrmgr"""), () => AMD == true),
+            ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdlog"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdlog"""), () => AMD == true),
+
             // disable the nvidia tray icon
             ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\NvTray"" /v StartOnLogin /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
 

@@ -94,11 +94,6 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         New-ItemProperty -Path $classKey -Name "PP_ThermalAutoThrottlingEnable" -PropertyType DWord -Value 0 -Force
         New-ItemProperty -Path $classKey -Name "DisableDrmdmaPowerGating" -PropertyType DWord -Value 1 -Force
 
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdwddmg" -Name "ChillEnabled" -PropertyType DWord -Value 0 -Force
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\AMD Crash Defender Service" -Name "Start" -PropertyType DWord -Value 4 -Force
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\AMD External Events Utility" -Name "Start" -PropertyType DWord -Value 4 -Force
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdfendr" -Name "Start" -PropertyType DWord -Value 4 -Force
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdfendrmgr" -Name "Start" -PropertyType DWord -Value 4 -Force
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdlog" -Name "Start" -PropertyType DWord -Value 4 -Force    
+        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdwddmg" -Name "ChillEnabled" -PropertyType DWord -Value 0 -Force 
     }
 }
