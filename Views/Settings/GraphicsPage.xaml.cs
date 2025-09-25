@@ -42,6 +42,7 @@ public sealed partial class GraphicsPage : Page
                     if (name.Contains("AMD", StringComparison.OrdinalIgnoreCase) || name.Contains("Radeon", StringComparison.OrdinalIgnoreCase))
                     {
                         Amd_SettingsGroup.Visibility = Visibility.Visible;
+                        Amd_SettingsGroup.Description = $"Current Version: {AmdHelper.GetCurrentVersion()}";
                         AmdUpdateCheck.IsChecked = true;
                     }
                     if (name.Contains("Intel", StringComparison.OrdinalIgnoreCase))
@@ -178,7 +179,6 @@ public sealed partial class GraphicsPage : Page
                 // delay
                 await Task.Delay(800);
 
-                // connection failed message
                 NvidiaUpdateCheck.IsChecked = false;
                 NvidiaUpdateCheck.Content = "Failed to check for updates";
             }
@@ -236,7 +236,37 @@ public sealed partial class GraphicsPage : Page
     {
         if (AmdUpdateCheck.Content.ToString().Contains("Update to"))
         {
+            if (new ServiceController("Beep").Status == ServiceControllerStatus.Running)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Not implemented yet",
+                    Content = "AMD Driver Update functionality has not been added yet.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
 
+                AmdUpdateCheck.IsHitTestVisible = true;
+                AmdUpdateCheck.IsChecked = false;
+                AmdUpdateCheck.Content = "Checking for updates";
+                AmdUpdateCheck.IsChecked = true;
+            }
+            else
+            {
+                AmdUpdateCheck.IsChecked = false;
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Services & Drivers are disabled",
+                    Content = "Please enable Services & Drivers before updating.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
+            }
         }
         else
         {
@@ -244,8 +274,7 @@ public sealed partial class GraphicsPage : Page
 
             try
             {
-                string currentVersion = "1";
-                string newestVersion = "2";
+                var (currentVersion, newestVersion, newestDownloadUrl) = await AmdHelper.CheckUpdate();
 
                 // delay
                 await Task.Delay(800);
@@ -267,7 +296,6 @@ public sealed partial class GraphicsPage : Page
                 // delay
                 await Task.Delay(800);
 
-                // connection failed message
                 AmdUpdateCheck.IsChecked = false;
                 AmdUpdateCheck.Content = "Failed to check for updates";
             }
@@ -278,7 +306,37 @@ public sealed partial class GraphicsPage : Page
     {
         if (IntelUpdateCheck.Content.ToString().Contains("Update to"))
         {
+            if (new ServiceController("Beep").Status == ServiceControllerStatus.Running)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Not implemented yet",
+                    Content = "Intel Driver Update functionality has not been added yet.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
 
+                IntelUpdateCheck.IsHitTestVisible = true;
+                IntelUpdateCheck.IsChecked = false;
+                IntelUpdateCheck.Content = "Checking for updates";
+                IntelUpdateCheck.IsChecked = true;
+            }
+            else
+            {
+                IntelUpdateCheck.IsChecked = false;
+
+                var dialog = new ContentDialog
+                {
+                    Title = "Services & Drivers are disabled",
+                    Content = "Please enable Services & Drivers before updating.",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = App.MainWindow.Content.XamlRoot
+                };
+                await dialog.ShowAsync();
+            }
         }
         else
         {
@@ -309,7 +367,6 @@ public sealed partial class GraphicsPage : Page
                 // delay
                 await Task.Delay(800);
 
-                // connection failed message
                 IntelUpdateCheck.IsChecked = false;
                 IntelUpdateCheck.Content = "Failed to check for updates";
             }
@@ -563,6 +620,5 @@ public sealed partial class GraphicsPage : Page
         // remove infobar
         MsiAfterburnerInfo.Children.Clear();
     }
-
 }
 
