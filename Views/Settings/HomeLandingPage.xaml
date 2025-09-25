@@ -8,7 +8,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       mc:Ignorable="d">
     <dev:MainLandingPage HeaderImage="{ThemeResource HeaderCover}"
-                         HeaderOverlayImage="{ThemeResource HeaderCover}"
                          HeaderSubtitleText="Windows App SDK 1.8"
                          HeaderText="AutoOS Settings"
                          JsonNavigationService="{x:Bind local:App.Current.NavService}">
@@ -23,18 +22,14 @@
                         <Image Source="/Assets/AppIcon.png" />
                     </dev:HeaderTile.Source>
                 </dev:HeaderTile>
-                <dev:HeaderTile Title="GitHub"
-                                Description="Explore the source code and report bugs."
+                <dev:HeaderTile Title="AutoOS on GitHub"
+                                Description="Explore the AutoOS source code and repository."
                                 Link="https://github.com/tinodin/AutoOS">
                     <dev:HeaderTile.Source>
-                        <PathIcon Data="{StaticResource GitHubIconPath}"
-                                  Foreground="{ThemeResource TextFillColorPrimaryBrush}">
-                            <PathIcon.RenderTransform>
-                                <CompositeTransform ScaleX="2.05"
-                                                    ScaleY="2.05"
-                                                    TranslateX="-20" />
-                            </PathIcon.RenderTransform>
-                        </PathIcon>
+                        <Viewbox>
+                            <PathIcon Data="{StaticResource GitHubIconPath}"
+                                      Foreground="{ThemeResource TextFillColorPrimaryBrush}" />
+                        </Viewbox>
                     </dev:HeaderTile.Source>
                 </dev:HeaderTile>
                 <dev:HeaderTile Title="Discord"

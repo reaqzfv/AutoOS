@@ -98,30 +98,6 @@ public sealed partial class SettingsPage : Page
         Clipboard.SetContent(package);
     }
 
-    private void OnColorPaletteColorChanged(object sender, ColorPaletteColorChangedEventArgs e)
-    {
-        SetTintColor(e.Color);
-
-        MainDropdownColorPicker.Color = e.Color;
-    }
-
-    private void MainDropdownColorPicker_ColorChanged(object sender, DropdownColorPickerColorChangedEventArgs e)
-    {
-        SetTintColor(e.Color);
-    }
-
-    private static void SetTintColor(Color color)
-    {
-        if (color.ToString().Contains("#FF000000") || color.ToString().Contains("#000000"))
-        {
-            App.Current.ThemeService.ResetBackdropProperties();
-        }
-        else
-        {
-            App.Current.ThemeService.SetBackdropTintColor(color);
-        }
-    }
-
     private void LoadSettings()
     {
         if (localSettings.Values.TryGetValue("RyujinxLocation", out object ryujinxLocationValue) && ryujinxLocationValue is string ryujinxLocationPath)

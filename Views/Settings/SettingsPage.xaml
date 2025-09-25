@@ -39,7 +39,7 @@
                     </dev:SettingsCard>
                     <dev:SettingsCard Description="Change the appearance of the backdrop material behind your app. You can choose from mica, acrylic, or transparent options."
                                       Header="Material"
-                                      HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Backdrop.png}">
+                                      HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Acrylic.png}">
                         <ComboBox dev:ThemeServiceAttach.ThemeService="{x:Bind local:App.Current.ThemeService}">
                             <ComboBoxItem Content="None"
                                           Tag="None" />
@@ -47,37 +47,14 @@
                                           Tag="Mica" />
                             <ComboBoxItem Content="Mica Alt"
                                           Tag="MicaAlt" />
-                            <ComboBoxItem Content="Desktop Acrylic"
-                                          Tag="DesktopAcrylic" />
-                            <ComboBoxItem Content="Acrylic Base"
-                                          Tag="AcrylicBase" />
+                            <ComboBoxItem Content="Acrylic"
+                                          Tag="Acrylic" />
                             <ComboBoxItem Content="Acrylic Thin"
                                           Tag="AcrylicThin" />
                             <ComboBoxItem Content="Transparent"
                                           Tag="Transparent" />
                         </ComboBox>
                     </dev:SettingsCard>
-                    <dev:SettingsCard ActionIcon="{dev:BitmapIcon Source=Assets/Fluent/External.png}"
-                                      Description="Sync your app’s color with your Windows accent color. You can open the Windows accent color setting by clicking this card."
-                                      Header="Accent color"
-                                      HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Color.png}"
-                                      IsClickEnabled="True"
-                                      LaunchUri="ms-settings:colors" />
-                    <dev:SettingsExpander Description="Add tint to your window to make your experience more personalized."
-                                          Header="TintColor"
-                                          HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Tint.png}">
-                        <dev:DropdownColorPicker x:Name="MainDropdownColorPicker"
-                                                 ColorChanged="MainDropdownColorPicker_ColorChanged" />
-                        <dev:SettingsExpander.ItemsHeader>
-                            <dev:SettingsCard>
-                                <dev:SettingsCard.Description>
-                                    <dev:ColorPalette x:Name="ColorPalette"
-                                                      ColorChanged="OnColorPaletteColorChanged"
-                                                      ColorSet="Extended" />
-                                </dev:SettingsCard.Description>
-                            </dev:SettingsCard>
-                        </dev:SettingsExpander.ItemsHeader>
-                    </dev:SettingsExpander>
                 </dev:SimpleSettingsGroup>
                 <dev:SimpleSettingsGroup Header="Games">
                     <dev:SettingsCard Header="Ryujinx Location"
