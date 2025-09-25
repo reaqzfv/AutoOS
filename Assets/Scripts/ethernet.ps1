@@ -232,4 +232,14 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Reduce Speed On Power Down" }) {
         Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Reduce Speed On Power Down" -DisplayValue "Disabled"
     }
+
+    # Multi-Channel Concurrent
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Multi-Channel Concurrent" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Multi-Channel Concurrent" -DisplayValue "Disabled"
+    }
+
+    # Preamble Mode
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Preamble Mode" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Preamble Mode" -DisplayValue "Short"
+    }
 }
