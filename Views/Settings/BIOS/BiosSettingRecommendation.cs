@@ -45,6 +45,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Total Memory Encryption", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "CPU C-states", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU C States Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C State Limit", Type = "Option", RecommendedOption = "C0/C1" },
         new BiosSettingRecommendation { SetupQuestion = "C-States Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Enhanced C-states", Type = "Option", RecommendedOption = "Disabled" },
@@ -53,6 +54,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "C-State Un-demotion", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C-State Demotion", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C-State Un-demotion", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU C6 State Support", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU C7 State Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Ring Down Bin", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", Type = "Option", RecommendedOption = "Disabled" },
@@ -291,6 +294,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Hardware Flow Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "HID Event Filter Driver", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "MachineCheck", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Enhanced Halt (C1E)", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Enhanced Halt State (C1E)", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" },
         new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" },
@@ -303,6 +308,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Above 4GB MMIO BIOS assignment", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Above 4G memory/Crypto Currency mining", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Resize BAR Support", Type = "Option", RecommendedOption = "Auto" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Resizable BAR Support", Type = "Option", RecommendedOption = "Enabled" },
 
         //new BiosSettingRecommendation { SetupQuestion = "OS Type", Type = "Option", RecommendedOption = "Windows UEFI mode" },
@@ -373,6 +379,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "AB Clock Gating", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Clock Power Management(CLKREQ#)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe Power Management Features", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "USB Phy Power Down", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Opcache Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Unused GPP Clocks Off", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Onboard PCIE LAN PXE ROM", Type = "Option", RecommendedOption = "Disabled" },
@@ -453,9 +460,11 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SMM Isolation Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Serial(COM) Port0", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Power Supply Idle Control", Type = "Option", RecommendedOption = "Typical Current Idle" },
+        new BiosSettingRecommendation { SetupQuestion = "ACS Enable", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
+        new BiosSettingRecommendation { SetupQuestion = "LN2 Mode", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "LN2 Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LN2 Mode 1", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LN2 Mode 2", Type = "Option", RecommendedOption = "Disabled" },
@@ -483,15 +492,18 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "LAN Wake From DeepSx", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Wake on LAN Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "PME Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for wake on lan
+        //new BiosSettingRecommendation { SetupQuestion = "Wake on PME", Type = "Option", RecommendedOption = "Enabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Power On By PCI-E", Type = "Option", RecommendedOption = "Enabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN", Type = "Option", RecommendedOption = "Disabled" }, // required for wlan
         //new BiosSettingRecommendation { SetupQuestion = "WWAN Device", Type = "Option", RecommendedOption = "Disabled" }, // required for wlan and bt
         //new BiosSettingRecommendation { SetupQuestion = "WWAN participant", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "WWAN (WIFI)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "WLAN Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi
         //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi
         //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Core", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
+        //new BiosSettingRecommendation { SetupQuestion = "Blue Tooth Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "BT Core", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "Onboard CNVi Module Control", Type = "Option", RecommendedOption = "Disable Integrated" },
         //new BiosSettingRecommendation { SetupQuestion = "Connectivity mode (Wi-Fi & Bluetooth)", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi and bt
