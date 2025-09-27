@@ -305,8 +305,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Resizable BAR Support", Type = "Option", RecommendedOption = "Enabled" },
 
-        new BiosSettingRecommendation { SetupQuestion = "OS Type", Type = "Option", RecommendedOption = "Windows UEFI mode" },
-        new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", Type = "Option", RecommendedOption = "Standard" },
+        //new BiosSettingRecommendation { SetupQuestion = "OS Type", Type = "Option", RecommendedOption = "Windows UEFI mode" },
+        //new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", Type = "Option", RecommendedOption = "Standard" },
         new BiosSettingRecommendation { SetupQuestion = "TPM State", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "TCM State", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Me State", Type = "Option", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
