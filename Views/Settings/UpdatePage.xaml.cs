@@ -116,22 +116,34 @@ public sealed partial class UpdatePage : Page
 
     private void GetTargetVersion()
     {
+        TargetVersion.Items.Add(new ComboBoxItem { Content = "Default" });
+
+        string current = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion")?.GetValue("DisplayVersion") as string;
+
+        if (!string.IsNullOrEmpty(current))
+        {
+            if (string.Compare("23H2", current, StringComparison.OrdinalIgnoreCase) >= 0)
+                TargetVersion.Items.Add(new ComboBoxItem { Content = "23H2" });
+            if (string.Compare("24H2", current, StringComparison.OrdinalIgnoreCase) >= 0)
+                TargetVersion.Items.Add(new ComboBoxItem { Content = "24H2" });
+            if (string.Compare("25H2", current, StringComparison.OrdinalIgnoreCase) >= 0)
+                TargetVersion.Items.Add(new ComboBoxItem { Content = "25H2" });
+        }
+
         string version = "Default";
 
         using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate", false);
-
         if (key?.GetValue("TargetReleaseVersion") is int trv && trv == 1)
-        {
             version = key.GetValue("TargetReleaseVersionInfo") as string ?? "Default";
-        }
 
-        TargetVersion.SelectedIndex = version switch
+        foreach (ComboBoxItem item in TargetVersion.Items.Cast<ComboBoxItem>())
         {
-            "23H2" => 1,
-            "24H2" => 2,
-            "25H2" => 3,
-            _ => 0
-        };
+            if ((item.Content as string) == version)
+            {
+                TargetVersion.SelectedItem = item;
+                break;
+            }
+        }
 
         isInitializingTargetVersion = false;
     }

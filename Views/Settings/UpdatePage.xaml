@@ -39,12 +39,7 @@
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard Header="Target Version">
                             <ComboBox x:Name="TargetVersion"
-                                      SelectionChanged="TargetVersion_SelectionChanged">
-                                <ComboBoxItem Content="Default" />
-                                <ComboBoxItem Content="23H2" />
-                                <ComboBoxItem Content="24H2" />
-                                <ComboBoxItem Content="25H2" />
-                            </ComboBox>
+                                      SelectionChanged="TargetVersion_SelectionChanged" />
                         </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
