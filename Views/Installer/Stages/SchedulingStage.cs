@@ -26,13 +26,14 @@ public static class SchedulingStage
             // apply gpu affinity
             ("Applying GPU Affinity", async () => await ProcessActions.Sleep(1000), null),
             ("Applying GPU Affinity", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"cmd /c ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "AutoGpuAffinity", "AutoGpuAffinity.exe")}"" --apply-affinity {localSettings.Values["GpuAffinity"]}"), null),
+            ("Applying GPU Affinity", async () => await ProcessActions.Sleep(2000), null),
 
             // apply xhci affinity
-            ("Applying XHCI Affinity", async () => await ProcessActions.Sleep(3000), () => Scheduling == false),
+            ("Applying XHCI Affinity", async () => await ProcessActions.Sleep(1000), () => Scheduling == false),
             ("Applying XHCI Affinity", async () => await ProcessActions.ApplyXhciAffinity(), null),
 
             // apply nic affinity
-            ("Applying NIC Affinity", async () => await ProcessActions.Sleep(2000), () => Scheduling == false),
+            ("Applying NIC Affinity", async () => await ProcessActions.Sleep(1000), () => Scheduling == false),
             ("Applying NIC Affinity", async () => await ProcessActions.ApplyNicAffinity(), null),
 
             // reserve cpus
