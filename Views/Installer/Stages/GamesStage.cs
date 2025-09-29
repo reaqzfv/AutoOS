@@ -37,21 +37,27 @@ public static partial class GamesStage
             ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
             ("Setting Fortnite Frame Rate", async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini"))), () => Fortnite == true),
             ("Setting Fortnite Frame Rate", async () => await Task.Run(() => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings")), () => Fortnite == true),
+            ("Setting Fortnite Frame Rate", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
             
             // setting fortnite rendering mode
             ("Setting Fortnite Rendering Mode", async () => await Task.Run(() => iniHelper.AddValue("PreferredRHI", "dx11", "D3DRHIPreference")), () => Fortnite == true && NVIDIA == true),
+            ("Setting Fortnite Rendering Mode", async () => await ProcessActions.Sleep(1000), () => Fortnite == true && NVIDIA == true),
             
             // import fortnite settings
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient"""), () => Fortnite == true),
             ("Importing Fortnite settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c copy /Y """ + iniPath + @""" ""%LocalAppData%\FortniteGame\Saved\Config\WindowsClient\GameUserSettings.ini"""), () => Fortnite == true),
+            ("Importing Fortnite settings", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
 
             // set gpu preference to high performance for fortnite
             ("Setting GPU Preference to high performance for Fortnite", async () => fortnitePath = await Task.Run(() => JsonDocument.Parse(File.ReadAllText(@"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat")).RootElement.GetProperty("InstallationList").EnumerateArray().FirstOrDefault(e => e.GetProperty("AppName").GetString() == "Fortnite").GetProperty("InstallLocation").GetString()), () => Fortnite == true),
             ("Setting GPU Preference to high performance for Fortnite", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\DirectX\UserGpuPreferences"" /v """ + fortnitePath + @"\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe"" /t REG_SZ /d ""SwapEffectUpgradeEnable=1;GpuPreference=2;"" /f"), () => Fortnite == true),
+            ("Setting GPU Preference to high performance for Fortnite", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
 
             // install easyanticheat
             ("Installing EasyAntiCheat", async () => await ProcessActions.RunNsudo("CurrentUser", $@"""{fortnitePath}\FortniteGame\Binaries\Win64\EasyAntiCheat\EasyAntiCheat_EOS_Setup.exe"" install 4fe75bbc5a674f4f9b356b5c90567da5"), () => Fortnite == true),
+            ("Installing EasyAntiCheat", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
             ("Disabling EasyAntiCheat startup entry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\EasyAntiCheat_EOS"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop EasyAntiCheat_EOS"), () => Fortnite == true),
+            ("Disabling EasyAntiCheat startup entry", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
 
             // create fortnite qos policy
             ("Creating Fortnite QoS Policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\QoS\FortniteClient-Win64-Shipping.exe"" /v ""Application Name"" /t REG_SZ /d ""FortniteClient-Win64-Shipping.exe"" /f"), () => Fortnite == true),
