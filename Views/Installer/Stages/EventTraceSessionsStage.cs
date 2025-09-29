@@ -29,7 +29,9 @@ public static class EventTraceSessionsStage
             ("Disabling Event Trace Sessions (ETS)", async () => await ProcessActions.Sleep(500), null),
 
             // disable sleep study
-            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for %a in (""SleepStudy"" ""Kernel-Processor-Power"" ""UserModePowerService"") do (wevtutil sl Microsoft-Windows-%~a/Diagnostic /e:false)"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-SleepStudy/Diagnostic /e:false"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-Kernel-Processor-Power/Diagnostic /e:false"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-UserModePowerService/Diagnostic /e:false"), null),
             ("Disabling sleep study", async () => await ProcessActions.Sleep(500), null),
         };
 
