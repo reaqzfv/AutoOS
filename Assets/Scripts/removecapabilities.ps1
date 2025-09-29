@@ -12,7 +12,8 @@ $features = @(
     "OpenSSH.Client~~~~0.0.1.0",
     "Print.Management.Console~~~~0.0.1.0",
     "Windows.Kernel.LA57~~~~0.0.1.0",
-    "WMIC~~~~"
+    "WMIC~~~~",
+    "VBSCRIPT~~~~"
 )
 
 $totalFeatures = $features.Count
