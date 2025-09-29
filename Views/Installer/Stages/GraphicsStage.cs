@@ -182,7 +182,7 @@ public static class GraphicsStage
             // disable animations & effects
             ("Disabling animations & effects", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\AMD\CN"" /v ""AnimationEffect"" /t REG_SZ /d false /f"), () => AMD == true),
 
-            // disabling unnecessary services
+            // disable unnecessary services
             ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\AMD Crash Defender Service"" /v Start /t REG_DWORD /d 4 /f & sc stop ""AMD Crash Defender Service"""), () => AMD == true),
             ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\AMD External Events Utility"" /v Start /t REG_DWORD /d 4 /f & sc stop ""AMD External Events Utility"""), () => AMD == true),
             ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdfendr"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdfendr"""), () => AMD == true),

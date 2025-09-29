@@ -86,6 +86,12 @@ public static class ApplicationStage
             // install dolby vision extension
             ("Installing Dolby Vision Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\DolbyLaboratories.DolbyVisionAccess (Package)\"" | Select-Object -First 1).FullName"), () => true),
 
+            //// download movies & tv
+            //("Downloading Movies & TV", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.ZuneVideo_8wekyb3d8bbwe", "64b22df1-5a9c-4c88-aa1f-42cefaf8b281", "appxbundle", 0, false), () => true),
+
+            //// install movies & tv
+            //("Installing Movies & TV", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.ZuneVideo_8wekyb3d8bbwe (Package)\"" | Select-Object -First 1).FullName"), () => true),
+
             // download icloud dependencies
             ("Downloading iCloud Dependencies", async () => await ProcessActions.RunMicrosoftStoreDownload("AppleInc.iCloud", "1e4f5d0e-4b36-4f9b-bfbc-9fec63fd0f1e", "", 0, true), () => iCloud == true),
 

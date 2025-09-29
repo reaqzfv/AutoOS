@@ -453,7 +453,7 @@ public static class RegistryStage
             ("Disabling typing accessibility settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7"" /v MultilingualEnabled /t REG_DWORD /d 0 /f"), null),
             ("Disabling typing accessibility settings", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\TabletTip\1.7"" /v MultilingualEnabled /t REG_DWORD /d 0 /f"), null),
 
-            // disabling sticky keys
+            // disable sticky keys
             ("Disabling sticky keys", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Accessibility\StickyKeys"" /v Flags /t REG_SZ /d ""506"" /f"), null),
 
             // disable typing insights
@@ -469,10 +469,10 @@ public static class RegistryStage
             ("Disabling mouse acceleration", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Mouse"" /v MouseThreshold1 /t REG_SZ /d 0 /f"), null),
             ("Disabling mouse acceleration", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Mouse"" /v MouseThreshold2 /t REG_SZ /d 0 /f"), null),
 
-            // disabling clipboard history
-            ("Disabling clipboard history", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Clipboard"" /v EnableClipboardHistory /t REG_DWORD /d 0 /f"), null),
-            ("Disabling clipboard history", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System"" /v AllowClipboardHistory /t REG_DWORD /d 1 /f"), null),
-            ("Disabling clipboard history", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System"" /v AllowCrossDeviceClipboard /t REG_DWORD /d 1 /f"), null),
+            // enable clipboard history
+            ("Enabling clipboard history", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Clipboard"" /v EnableClipboardHistory /t REG_DWORD /d 1 /f"), null),
+            ("Enabling clipboard history", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System"" /v AllowClipboardHistory /t REG_DWORD /d 1 /f"), null),
+            ("Enabling clipboard history", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\System"" /v AllowCrossDeviceClipboard /t REG_DWORD /d 1 /f"), null),
 
             // disable settings sync
             ("Disabling settings sync", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableApplicationSettingSync /t REG_DWORD /d 2 /f"), null),
@@ -519,10 +519,10 @@ public static class RegistryStage
             // allocate cpu resources primarily to programs
             ("Allocating CPU resources primarily to programs", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl"" /v Win32PrioritySeparation /t REG_DWORD /d 38 /f"), null),
 
-            // disabling background apps
+            // disable background apps
             ("Disabling background apps", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy"" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f"), null),
 
-            // optimizing priorities
+            // optimize priorities
             ("Optimizing priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\SearchIndexer.exe\PerfOptions"" /v CpuPriorityClass /t REG_DWORD /d 5 /f"), null),
             ("Optimizing priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ctfmon.exe\PerfOptions"" /v CpuPriorityClass /t REG_DWORD /d 5 /f"), null),
             ("Optimizing priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\fontdrvhost.exe\PerfOptions"" /v CpuPriorityClass /t REG_DWORD /d 1 /f"), null),

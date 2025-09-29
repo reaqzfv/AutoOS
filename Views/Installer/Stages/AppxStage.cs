@@ -35,7 +35,7 @@ public static class AppxStage
             ("Uninstalling provisioned Microsoft.BingNews_8wekyb3d8bbwe", async () => await ProcessActions.RemoveAppxProvisioned("Microsoft.BingNews"), null),
             ("Deprovisioning Microsoft.BingNews_8wekyb3d8bbwe", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.BingNews_8wekyb3d8bbwe"" /f"), null),
 
-            // bing search
+            // bing search 
             //("Uninstalling Microsoft.BingSearch_8wekyb3d8bbwe", async () => await ProcessActions.RemoveAppx("Microsoft.BingSearch"), null),
             //("Uninstalling provisioned Microsoft.BingSearch_8wekyb3d8bbwe", async () => await ProcessActions.RemoveAppxProvisioned("Microsoft.BingSearch"), null),
             //("Deprovisioning Microsoft.BingSearch_8wekyb3d8bbwe", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.BingSearch"" /f"), null),
@@ -52,7 +52,6 @@ public static class AppxStage
 
             // copilot
             ("Uninstalling Microsoft.Copilot_8wekyb3d8bbwe", async () => await ProcessActions.RemoveAppx("Microsoft.Copilot"), null),
-            //("Microsoft.Copilot", async () => await ProcessActions.RemoveAppxProvisioned("Microsoft.Copilot"), null),
             ("Deprovisioning Copilot_8wekyb3d8bbwe", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.Copilot_8wekyb3d8bbwe"" /f"), null),
 
             // get help
