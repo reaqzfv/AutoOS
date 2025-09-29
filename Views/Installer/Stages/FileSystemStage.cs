@@ -52,6 +52,9 @@ public static class FileSystemStage
             // disable the use of extended characters in short file names
             ("Disabling the use of extended characters in short file names", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set allowextchar 0"), null),
 
+            // enable non-paged ntfs
+            ("Enabling non-paged NTFS", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set enablenonpagedntfs 1"), null),
+
             // enable trim support
             ("Enabling TRIM support", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"fsutil behavior set disabledeletenotify 0"), () => SSD == true),
         };
