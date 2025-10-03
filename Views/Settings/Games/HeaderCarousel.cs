@@ -472,6 +472,7 @@ public partial class HeaderCarousel : ItemsControl
             AppName = selectedTile?.AppName;
             LaunchExecutable = selectedTile?.LaunchExecutable;
             LaunchCommand = selectedTile?.LaunchCommand;
+            ProcessNames = selectedTile?.ProcessNames;
             ArtifactId = selectedTile?.ArtifactId;
 
             GameID = selectedTile?.GameID;
@@ -1597,7 +1598,10 @@ public partial class HeaderCarousel : ItemsControl
             "FortniteClient-Win64-Shipping_EAC_EOS",
             "GameBar",
             "GameBarFTServer",
+            "LeagueCrashHandler64",
             "mobsync",
+            "RiotClientServices",
+            "RiotClientCrashHandler",
             "rundll32",
             "RuntimeBroker",
             "SearchHost",
@@ -1811,7 +1815,8 @@ public partial class HeaderCarousel : ItemsControl
             StartGameWatcher(() =>
                 Process.GetProcessesByName(offlineExecutable).Length > 0 ||
                 (!string.IsNullOrEmpty(onlineExecutable) &&
-                 Process.GetProcessesByName(onlineExecutable).Length > 0)
+                 Process.GetProcessesByName(onlineExecutable).Length > 0) ||
+                ProcessNames.Any(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p)).Length > 0)
             );
         }
         else if (Launcher == "Steam")

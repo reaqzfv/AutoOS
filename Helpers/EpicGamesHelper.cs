@@ -603,6 +603,7 @@ namespace AutoOS.Helpers
                                 InstallLocation = itemJson["InstallLocation"]?.GetValue<string>(),
                                 LaunchCommand = itemJson["LaunchCommand"]?.GetValue<string>(),
                                 LaunchExecutable = itemJson["LaunchExecutable"]?.GetValue<string>(),
+                                ProcessNames = itemJson["ProcessNames"]?.AsArray().Select(p => p.GetValue<string>()).ToList(),
                                 ArtifactId = artifactId,
                                 UpdateIsAvailable = latestVersion != null && latestVersion != currentVersion,
                                 //ImageUrl = imageTallUrl,

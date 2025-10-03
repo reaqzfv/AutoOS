@@ -229,6 +229,22 @@ public partial class HeaderCarousel
     public static readonly DependencyProperty LaunchExecutableProperty =
         DependencyProperty.Register(nameof(LaunchExecutable), typeof(string), typeof(HeaderCarousel), new PropertyMetadata(null));
 
+    public List<string> ProcessNames
+    {
+        get => (List<string>)GetValue(ProcessNamesProperty);
+        set => SetValue(ProcessNamesProperty, value);
+    }
+    public static readonly DependencyProperty ProcessNamesProperty =
+        DependencyProperty.Register(nameof(ProcessNames), typeof(List<string>), typeof(HeaderCarousel), new PropertyMetadata(null));
+
+    public List<string> BackgroundProcessNames
+    {
+        get => (List<string>)GetValue(BackgroundProcessNamesProperty);
+        set => SetValue(BackgroundProcessNamesProperty, value);
+    }
+    public static readonly DependencyProperty BackgroundProcessNamesProperty =
+        DependencyProperty.Register(nameof(BackgroundProcessNames), typeof(List<string>), typeof(HeaderCarousel), new PropertyMetadata(null));
+
     public string ArtifactId
     {
         get => (string)GetValue(ArtifactIdProperty);
