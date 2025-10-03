@@ -76,6 +76,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "FIVR Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "RFI Spread Spectrum", Type = "Option", RecommendedOption = "0.5%" },
         new BiosSettingRecommendation { SetupQuestion = "Pcie Pll SSC", Type = "Option", RecommendedOption = "0.0%" },
+        new BiosSettingRecommendation { SetupQuestion = "FIVR Dynamic PM", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Hyper-Threading", Type = "Option", RecommendedOption = "Disabled" }, // condition if >6 cores
         new BiosSettingRecommendation { SetupQuestion = "Active E-Cores", Type = "Option", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Active Efficient Cores", Type = "Option", RecommendedOption = "0" },
@@ -113,6 +114,9 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Thermal Velocity Boost", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Long Duration Package Power Limit", Type = "Value", RecommendedOption = "4095" },
+        new BiosSettingRecommendation { SetupQuestion = "Package Power Time Window", Type = "Option", RecommendedOption = "448" },
+        new BiosSettingRecommendation { SetupQuestion = "Short Duration Package Power Limit", Type = "Value", RecommendedOption = "4095" },
 
         // timer res
         new BiosSettingRecommendation { SetupQuestion = "System Time and Alarm Source", Type = "Option", RecommendedOption = "Legacy RTC" },
@@ -389,6 +393,16 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Disable DF to external downstream IP SyncFloodPropagation", Type = "Option", RecommendedOption = "Sync flood disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable DF sync flood propagation", Type = "Option", RecommendedOption = "Sync flood disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Freeze DF module queues on error", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Core tunings Configuration for gaming", Type = "Option", RecommendedOption = "Legacy" },
+        new BiosSettingRecommendation { SetupQuestion = "Performance Bias", Type = "Option", RecommendedOption = "None" },
+        new BiosSettingRecommendation { SetupQuestion = "IBUF_LPWR_MODE", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "DDR5 Nitro Mode", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "DDR5 Robust Training Mode", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "Nitro RX Data", Type = "Option", RecommendedOption = "1" },
+        new BiosSettingRecommendation { SetupQuestion = "Nitro TX Data", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Nitro Control Line", Type = "Option", RecommendedOption = "1" },
+        new BiosSettingRecommendation { SetupQuestion = "Nitro Rx Burst Length", Type = "Option", RecommendedOption = "8x" },
+        new BiosSettingRecommendation { SetupQuestion = "Nitro Tx Burst Length", Type = "Option", RecommendedOption = "8x" },
 
         new BiosSettingRecommendation { SetupQuestion = "IOMMU", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PSPP Policy", Type = "Option", RecommendedOption = "Disabled" },
@@ -476,6 +490,8 @@ public static class BiosSettingRecommendationsList
         // rgb
         new BiosSettingRecommendation { SetupQuestion = "When system is in working state", Type = "Option", RecommendedOption = "Aura Off" },
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Aura Off" },
+        new BiosSettingRecommendation { SetupQuestion = "Onboard LED", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Onboard LED off" },
         new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "RGB Light", Type = "Value", RecommendedOption = "0" },
 

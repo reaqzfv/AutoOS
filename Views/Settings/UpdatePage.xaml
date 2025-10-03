@@ -23,7 +23,7 @@
                         Padding="{ThemeResource ContentPagePadding}"
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
-                <dev:SettingsGroup Description="Enabling Windows Updates is currently not recommended for 24H2 and later because they feature questionable changes that can hurt gaming performance:&#10;- BBR2 Congestion Provider is broken therefore Steam, Roblox, etc. will not work&#10;- Event Trace Sessions (ETS) can't be reenabled therefore AutoGpuAffinity will not work&#10;- SerializeTimerExpiration is broken therefore you get bad sleep deltas even with it disabled&#10;- Changes to AutoBoost Behavior"
+                <dev:SettingsGroup Description="Enabling Windows Updates is currently not recommended for 24H2 and later because they feature questionable changes that can hurt gaming performance:&#10;- BBR2 Congestion Provider is broken therefore Steam, Roblox, etc. will not work with it&#10;- Event Trace Sessions (ETS) can't be reenabled therefore AutoGpuAffinity will not work once they are disabled&#10;- SerializeTimerExpiration is broken therefore you get bad sleep deltas even with it disabled&#10;- Changes to AutoBoost Behavior"
                                    Header="Windows Updates"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Update2.png}">
                     <dev:SettingsGroup.Content>
