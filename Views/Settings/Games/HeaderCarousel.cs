@@ -1813,10 +1813,9 @@ public partial class HeaderCarousel : ItemsControl
             if (Title == "Fall Guys") offlineExecutable = "FallGuys_client";
 
             StartGameWatcher(() =>
-                Process.GetProcessesByName(offlineExecutable).Length > 0 ||
-                (!string.IsNullOrEmpty(onlineExecutable) &&
-                 Process.GetProcessesByName(onlineExecutable).Length > 0) ||
-                ProcessNames.Any(p => Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p)).Length > 0)
+                (!string.IsNullOrEmpty(offlineExecutable) && Process.GetProcessesByName(Path.GetFileNameWithoutExtension(offlineExecutable)).Length > 0) ||
+                (!string.IsNullOrEmpty(onlineExecutable) && Process.GetProcessesByName(Path.GetFileNameWithoutExtension(onlineExecutable)).Length > 0) ||
+                (ProcessNames?.Any(p => !string.IsNullOrEmpty(p) && Process.GetProcessesByName(Path.GetFileNameWithoutExtension(p)).Length > 0) ?? false)
             );
         }
         else if (Launcher == "Steam")
