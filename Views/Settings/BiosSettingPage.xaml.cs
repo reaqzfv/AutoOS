@@ -182,7 +182,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
 
                 var backupFolders = Directory.GetDirectories(backupRoot)
                     .OrderByDescending(dir => dir)
-                    .Skip(10)
+                    .Skip(50)
                     .ToList();
 
                 foreach (var folder in backupFolders)
