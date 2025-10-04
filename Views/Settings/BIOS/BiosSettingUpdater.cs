@@ -49,13 +49,12 @@ public static class BiosSettingUpdater
 
     public static void UpdateValue(BiosSettingModel setting, List<string> lines = null)
     {
-        int startLineIndex = setting.Line;
-
-        if (startLineIndex < 0 || startLineIndex >= lines.Count)
+        if (setting.Line < 0 || setting.Line >= lines.Count)
             return;
 
         int valueLineIndex = -1;
-        for (int i = startLineIndex; i < lines.Count; i++)
+
+        for (int i = setting.Line; i < lines.Count; i++)
         {
             if (lines[i].TrimStart().StartsWith("Value", StringComparison.OrdinalIgnoreCase))
             {
@@ -63,48 +62,51 @@ public static class BiosSettingUpdater
                 break;
             }
         }
+
         if (valueLineIndex == -1)
             return;
 
         string line = lines[valueLineIndex];
-        int commentIndex = line.IndexOf("//");
 
-        string commentPart = commentIndex >= 0
-            ? line[(commentIndex - (line[commentIndex - 1] == ' ' ? 1 : 0))..]
-            : "";
-
-        string valuePart = commentIndex >= 0
-            ? line[..commentIndex].TrimEnd()
-            : line.TrimEnd();
+        int commentIndex = line.IndexOf("//", StringComparison.Ordinal);
+        string valuePart = commentIndex >= 0 ? line[..commentIndex] : line;
+        string commentPart = commentIndex >= 0 ? line[commentIndex..] : "";
 
         int equalsIndex = valuePart.IndexOf('=');
+        if (equalsIndex < 0)
+            return;
 
-        string prefix = valuePart[..(equalsIndex + 1)].TrimEnd();
-        string originalValueText = valuePart[(equalsIndex + 1)..].Trim();
+        string prefix = valuePart.Substring(0, equalsIndex + 1);
+        string originalValueText = valuePart.Substring(equalsIndex + 1);
 
-        string newValue = setting.Value ?? "";
+        char firstChar = originalValueText.TrimStart().FirstOrDefault();
+        char lastChar = originalValueText.TrimEnd().LastOrDefault();
+        string innerValue = setting.Value ?? "";
 
-        if ((originalValueText.StartsWith('\"') && originalValueText.EndsWith('\"')) ||
-            (originalValueText.StartsWith('<') && originalValueText.EndsWith('>')) ||
-            (originalValueText.StartsWith('{') && originalValueText.EndsWith('}')))
+        if ((firstChar == '<' && lastChar == '>') ||
+            (firstChar == '"' && lastChar == '"') ||
+            (firstChar == '{' && lastChar == '}'))
         {
-            string inner = originalValueText[1..^1];
-            int trailingSpacesCount = inner.Length - inner.TrimEnd().Length;
-            string trailingSpaces = new(' ', trailingSpacesCount);
+            int leadingSpaces = originalValueText.TakeWhile(char.IsWhiteSpace).Count();
+            int trailingSpaces = originalValueText.Reverse().TakeWhile(char.IsWhiteSpace).Count();
+            string leading = new(' ', leadingSpaces);
+            string trailing = new(' ', trailingSpaces);
 
-            newValue = $"{originalValueText[0]}{newValue}{trailingSpaces}{originalValueText[^1]}";
+            lines[valueLineIndex] = $"{prefix}{leading}{firstChar}{innerValue}{lastChar}{trailing}{commentPart}";
         }
-
-        lines[valueLineIndex] = $"{prefix}{newValue}{commentPart}".TrimEnd();
+        else
+        {
+            lines[valueLineIndex] = $"{prefix}{originalValueText.Replace(originalValueText.Trim(), innerValue)}{commentPart}";
+        }
     }
 
     public static void UpdateOption(BiosSettingModel setting, List<string> lines = null)
     {
-        int start = setting.Line;
-        if (start < 0 || start >= lines.Count) return;
+        if (setting.Line < 0 || setting.Line >= lines.Count) 
+            return;
 
         int optionsIdx = -1;
-        for (int i = start; i < lines.Count; i++)
+        for (int i = setting.Line; i < lines.Count; i++)
             if (lines[i].TrimStart().StartsWith("Options", StringComparison.OrdinalIgnoreCase))
             {
                 optionsIdx = i;
