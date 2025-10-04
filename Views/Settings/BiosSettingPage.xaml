@@ -350,7 +350,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <InfoBar Title="Incorrect settings may affect system stability or leave it in an unbootable state. The recommended changes are verified to be safe but will disable all kinds of powersaving features."
+                        <InfoBar Title="Before applying any changes, make sure you know how to reset CMOS in case something goes wrong. The recommended changes should be safe but will disable all kinds of powersaving features."
                                  Grid.Row="0"
                                  Margin="0,0,0,12"
                                  IsClosable="False"
