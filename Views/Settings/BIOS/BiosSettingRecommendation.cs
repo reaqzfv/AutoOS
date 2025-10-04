@@ -27,6 +27,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "DDR PowerDown and idle counter", Type = "Option", RecommendedOption = "PCODE" },
         new BiosSettingRecommendation { SetupQuestion = "For LPDDR Only: DDR PowerDown and idle counter", Type = "Option", RecommendedOption = "PCODE" },
         new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "No Power Down" },
+        new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LPMode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Per Bank Refresh", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PowerDown Energy Ch0Dimm0", Type = "Value", RecommendedOption = "0" },
@@ -44,6 +45,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SA GV", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Total Memory Encryption", Type = "Option", RecommendedOption = "Disabled" },
 
+        new BiosSettingRecommendation { SetupQuestion = "Intel C-State", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU C-states", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU C States Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C State Limit", Type = "Option", RecommendedOption = "C0/C1" },
@@ -96,6 +98,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel (VMX) Virtualization Technology", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "L1 Substates", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Tcc Activation Offset", Type = "Value", RecommendedOption = "0" },
 
         // for oc
         new BiosSettingRecommendation { SetupQuestion = "BCLK Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
@@ -203,7 +206,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Bootup NumLock State", Type = "Option", RecommendedOption = "Off" },
         new BiosSettingRecommendation { SetupQuestion = "Interrupt Redirection Mode Selection", Type = "Option", RecommendedOption = "Round robin" },
         new BiosSettingRecommendation { SetupQuestion = "USB 2.0 Controller Mode", Type = "Option", RecommendedOption = "HiSpeed" },
-        new BiosSettingRecommendation { SetupQuestion = "3DMark01 Enhancement", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "3DMark01 Enhancement", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Legacy Game Compatibility Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "BIST", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "BIST Enable", Type = "Option", RecommendedOption = "Disabled" },
@@ -484,6 +487,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Latency Killer", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SMM Isolation Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Serial(COM) Port0", Type = "Value", RecommendedOption = "0" },
+        new BiosSettingRecommendation { SetupQuestion = "Parallel(LPT) Port", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Power Supply Idle Control", Type = "Option", RecommendedOption = "Typical Current Idle" },
         new BiosSettingRecommendation { SetupQuestion = "ACS Enable", Type = "Option", RecommendedOption = "Disabled" },
 
@@ -503,7 +507,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Aura Off" },
         new BiosSettingRecommendation { SetupQuestion = "Onboard LED", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Onboard LED off" },
-        new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", Type = "Option", RecommendedOption = "Off" },
         new BiosSettingRecommendation { SetupQuestion = "RGB Light", Type = "Value", RecommendedOption = "0" },
 
         // useful
@@ -527,7 +531,7 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "WWAN (WIFI)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         //new BiosSettingRecommendation { SetupQuestion = "WLAN Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi
         //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for wifi
-        //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Core", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        //new BiosSettingRecommendation { SetupQuestion = "Wi-Fi Core", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth Controller", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "Bluetooth", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
         //new BiosSettingRecommendation { SetupQuestion = "Blue Tooth Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for bluetooth
