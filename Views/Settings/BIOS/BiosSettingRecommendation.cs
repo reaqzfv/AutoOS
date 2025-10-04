@@ -41,7 +41,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Power Down Unused Lanes", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Command Rate Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ECC Support", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Link Training Retry", Type = "Option", RecommendedOption = "Disabled" }, // or 2
+        new BiosSettingRecommendation { SetupQuestion = "Link Training Retry", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SA GV", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Total Memory Encryption", Type = "Option", RecommendedOption = "Disabled" },
 
