@@ -40,7 +40,12 @@ public partial class BiosSettingParser
 
                 var parts = line.Split('=', 2);
                 if (parts.Length == 2)
-                    current.SetupQuestion = parts[1].Trim().Replace('�', '™');
+                {
+                    var rawQuestion = parts[1].Trim().Replace('�', '™');
+
+                    var match = TrailingWordRegex().Match(rawQuestion);
+                    current.SetupQuestion = match.Success ? match.Groups[1].Value : rawQuestion;
+                }
 
                 continue;
             }
@@ -185,6 +190,8 @@ public partial class BiosSettingParser
         return help;
     }
 
+    [GeneratedRegex(@"^(.*?)\s{2,}\w+$", RegexOptions.Compiled)]
+    private static partial Regex TrailingWordRegex();
     [GeneratedRegex(@"(?<!^)(?=\[\w.*?\]:)", RegexOptions.Compiled)]
     private static partial Regex BracketedMarkerRegex();
 
