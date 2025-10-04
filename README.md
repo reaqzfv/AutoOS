@@ -32,7 +32,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 🚀 Getting Started
 
 > [!NOTE]
-> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 8!
+> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 9!
 
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
 
