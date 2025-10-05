@@ -66,6 +66,16 @@ public sealed partial class DisplayPage : Page
                     Margin = new Thickness(5)
                 });
 
+                // close obs studio
+                if (Process.GetProcessesByName("obs64").Length > 0)
+                {
+                    foreach (var process in Process.GetProcessesByName("obs64"))
+                    {
+                        process.Kill();
+                        process.WaitForExit();
+                    }
+                }
+
                 // delay
                 await Task.Delay(300);
 
@@ -80,6 +90,10 @@ public sealed partial class DisplayPage : Page
                 {
                     await Task.Run(() => Process.Start(new ProcessStartInfo(@"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe") { Arguments = "/Profile1 /q" })?.WaitForExit());
                 }
+
+                // launch obs studio
+                await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q" })?.WaitForExit());
+                await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
 
                 // remove infobar
                 CruInfo.Children.Clear();
@@ -191,11 +205,23 @@ public sealed partial class DisplayPage : Page
             Margin = new Thickness(5)
         });
 
+        // close obs studio
+        if (Process.GetProcessesByName("obs64").Length > 0)
+        {
+            foreach (var process in Process.GetProcessesByName("obs64"))
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+        }
+
         // delay
         await Task.Delay(300);
 
-        // launch
+        // reset
         Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "CRU", "reset-all.exe")) { Arguments = "/q" }).WaitForExit();
+        
+        // restart
         Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "CRU", "restart64.exe")) { Arguments = "/q" }).WaitForExit();
 
         // apply profile
@@ -203,6 +229,10 @@ public sealed partial class DisplayPage : Page
         {
             await Task.Run(() => Process.Start(new ProcessStartInfo(@"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe") { Arguments = "/Profile1 /q" })?.WaitForExit());
         }
+
+        // launch obs studio
+        await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q" })?.WaitForExit());
+        await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
 
         // remove infobar
         CruInfo.Children.Clear();
@@ -239,10 +269,20 @@ public sealed partial class DisplayPage : Page
             Margin = new Thickness(5)
         });
 
+        // close obs studio
+        if (Process.GetProcessesByName("obs64").Length > 0)
+        {
+            foreach (var process in Process.GetProcessesByName("obs64"))
+            {
+                process.Kill();
+                process.WaitForExit();
+            }
+        }
+
         // delay
         await Task.Delay(300);
 
-        // launch
+        // restart
         Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "CRU", "restart64.exe"))).WaitForExit();
 
         // apply profile
@@ -250,6 +290,10 @@ public sealed partial class DisplayPage : Page
         {
             await Task.Run(() => Process.Start(new ProcessStartInfo(@"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe") { Arguments = "/Profile1 /q" })?.WaitForExit());
         }
+
+        // launch obs studio
+        await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q" })?.WaitForExit());
+        await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
 
         // remove infobar
         CruInfo.Children.Clear();

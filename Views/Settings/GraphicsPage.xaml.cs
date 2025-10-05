@@ -84,28 +84,26 @@ public sealed partial class GraphicsPage : Page
 
                 int gpuAffinity = -1;
 
-                foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_VideoController").Get())
+                foreach (ManagementObject obj in new ManagementObjectSearcher("SELECT PNPDeviceID FROM Win32_VideoController").Get().Cast<ManagementObject>())
                 {
                     string path = obj["PNPDeviceID"]?.ToString();
                     if (path?.StartsWith("PCI\\VEN_") != true)
                         continue;
 
-                    using (var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy"))
+                    using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy");
+                    if (affinityKey?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
                     {
-                        if (affinityKey?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
+                        for (int i = 0; i < value.Length; i++)
                         {
-                            for (int i = 0; i < value.Length; i++)
+                            for (int bit = 0; bit < 8; bit++)
                             {
-                                for (int bit = 0; bit < 8; bit++)
+                                if ((value[i] & (1 << bit)) != 0)
                                 {
-                                    if ((value[i] & (1 << bit)) != 0)
-                                    {
-                                        gpuAffinity = i * 8 + bit;
-                                        break;
-                                    }
+                                    gpuAffinity = i * 8 + bit;
+                                    break;
                                 }
-                                if (gpuAffinity != -1) break;
                             }
+                            if (gpuAffinity != -1) break;
                         }
                     }
                 }
@@ -414,11 +412,9 @@ public sealed partial class GraphicsPage : Page
                 if (HDCP.IsOn)
                 {
                     Registry.SetValue(path, "RMHdcpKeyglobZero", 0, RegistryValueKind.DWord);
-                    using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{{4d36e968-e325-11ce-bfc1-08002be10318}}\000{i}", true))
-                    {
-                        key?.DeleteValue("RmDisableHdcp22", false);
-                        key?.DeleteValue("RmSkipHdcp22Init", false);
-                    }
+                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{{4d36e968-e325-11ce-bfc1-08002be10318}}\000{i}", true);
+                    key?.DeleteValue("RmDisableHdcp22", false);
+                    key?.DeleteValue("RmSkipHdcp22Init", false);
                 }
                 else
                 {
@@ -426,6 +422,16 @@ public sealed partial class GraphicsPage : Page
                     Registry.SetValue(path, "RmDisableHdcp22", 1, RegistryValueKind.DWord);
                     Registry.SetValue(path, "RmSkipHdcp22Init", 1, RegistryValueKind.DWord);
                 }
+            }
+        }
+
+        // close obs studio
+        if (Process.GetProcessesByName("obs64").Length > 0)
+        {
+            foreach (var process in Process.GetProcessesByName("obs64"))
+            {
+                process.Kill();
+                process.WaitForExit();
             }
         }
 
@@ -440,6 +446,10 @@ public sealed partial class GraphicsPage : Page
         {
             await Task.Run(() => Process.Start(new ProcessStartInfo(@"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe") { Arguments = "/Profile1 /q" })?.WaitForExit());
         }
+
+        // launch obs studio
+        await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q" })?.WaitForExit());
+        await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
 
         // remove infobar
         GpuInfo.Children.Clear();
