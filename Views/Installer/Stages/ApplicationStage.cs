@@ -19,10 +19,11 @@ public static class ApplicationStage
         bool? Bitwarden = PreparingStage.Bitwarden;
         bool? OnePassword = PreparingStage.OnePassword;
         bool? AlwaysShowTrayIcons = PreparingStage.AlwaysShowTrayIcons;
-        bool? Spotify = PreparingStage.Spotify;
         bool? AppleMusic = PreparingStage.AppleMusic;
+        bool? Tidal = PreparingStage.Tidal;
         bool? AmazonMusic = PreparingStage.AmazonMusic;
         bool? DeezerMusic = PreparingStage.DeezerMusic;
+        bool? Spotify = PreparingStage.Spotify;
         bool? WhatsApp = PreparingStage.WhatsApp;
         bool? Discord = PreparingStage.Discord;
         bool? EpicGames = PreparingStage.EpicGames;
@@ -39,9 +40,10 @@ public static class ApplicationStage
         string icloudVersion = "";
         string bitwardenVersion = "";
         string onePasswordVersion = "";
-        string spotifyVersion = "";
         string dolbyAccessVersion = "";
         string appleMusicVersion = "";
+        string tidalVersion = "";
+        string spotifyVersion = "";
         string amazonMusicVersion = "";
         string deezerMusicVersion = "";
         string whatsAppVersion = "";
@@ -192,6 +194,79 @@ public static class ApplicationStage
             ("Installing Process Explorer", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\taskmgr.exe"" /v Debugger /t REG_SZ /d ""\""C:\Windows\procexp64.exe\"""" /f"), null),
             ("Installing Process Explorer", async () => await ProcessActions.Sleep(500), null),
 
+            //// download office
+            //("Downloading Office", async () => await ProcessActions.RunDownload("https://officecdn.microsoft.com/pr/wsus/setup.exe", Path.GetTempPath(), "setup.exe"), null),
+
+            //// install office
+            //("Installing Office", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\setup.exe"" /configure ""%TEMP%\Configuration.xml"""), null),
+
+            // download dolby access
+            ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess", "61e179bf-d7a6-4201-aa9b-88cf1bcbc472", "msixbundle", 1, false), () => AppleMusic == true),
+
+            // install dolby access
+            ("Installing Dolby Access", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\DolbyLaboratories.DolbyAccess (Package)\"" | Select-Object -First 1).FullName"), () => AppleMusic == true),
+            ("Installing Dolby Access", async () => dolbyAccessVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"DolbyLaboratories.DolbyAccess\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AppleMusic == true),
+
+            // log in to dolby access
+            ("Please log in to your Dolby Access account", async () => await ProcessActions.Sleep(1000), () => AppleMusic == true),
+            ("Please log in to your Dolby Access account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\DolbyLaboratories.DolbyAccess_" + dolbyAccessVersion + "_x64__rz1tebttyb220", "DolbyAccess.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AppleMusic == true),
+
+            // download apple music
+            ("Downloading Apple Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AppleInc.AppleMusicWin", "cf497837-70f4-4c2a-9b9d-3d5767379bb1", "msixbundle", 0, false), () => AppleMusic == true),
+
+            // install apple music
+            ("Installing Apple Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\AppleInc.AppleMusicWin (Package)\"" | Select-Object -First 1).FullName"), () => AppleMusic == true),
+            ("Installing Apple Music", async () => appleMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"AppleInc.AppleMusicWin\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AppleMusic == true),
+            
+            // enable keep miniplayer on top of all other windows
+            ("Enabling Keep Miniplayer on top of all other windows", async () => await ProcessActions.RunPowerShellScript("applemusic.ps1", ""), () => AppleMusic == true),
+
+            // pin apple music to the taskbar
+            ("Pinning Apple Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path AppleInc.AppleMusicWin_nzyj5cx40ttqa!App"), () => AppleMusic == true),
+
+            // log in to apple music
+            ("Please log in to your Apple Music account", async () => await ProcessActions.Sleep(1000), () => AppleMusic == true),
+            ("Please log in to your Apple Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\AppleInc.AppleMusicWin_" + appleMusicVersion + "_x64__nzyj5cx40ttqa", "AppleMusic.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AppleMusic == true),
+
+            // download tidal
+            ("Downloading TIDAL", async () => await ProcessActions.RunMicrosoftStoreDownload("WiMPMusic.27241E05630EA", "b938b446-5909-4b21-8034-c0eee2fa0bb5", "appx", 0, false), () => Tidal == true),
+
+            // install tidal
+            ("Installing TIDAL", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\WiMPMusic.27241E05630EA (Package)\"" | Select-Object -First 1).FullName"), () => Tidal == true),
+            ("Installing TIDAL", async () => tidalVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"WiMPMusic.27241E05630EA\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => Tidal == true),
+
+            // pin tidal to the taskbar
+            ("Pinning TIDAL to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path WiMPMusic.27241E05630EA_kn85bz84x7te4!TIDAL"), () => Tidal == true),
+
+            // log in to tidal
+            ("Please log in to your TIDAL account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\WiMPMusic.27241E05630EA_" + tidalVersion + @"_x86__kn85bz84x7te4\app", "TIDAL.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Tidal == true),
+
+            // download amazon music
+            ("Downloading Amazon Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AmazonMobileLLC.AmazonMusic", "7fb9f901-50c2-4974-a65c-01b4cd17ca77", "appx", 0, false), () => AmazonMusic == true),
+
+            // install amazon music
+            ("Installing Amazon Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\AmazonMobileLLC.AmazonMusic (Package)\"" | Select-Object -First 1).FullName"), () => AmazonMusic == true),
+            ("Installing Amazon Music", async () => amazonMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"AmazonMobileLLC.AmazonMusic\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AmazonMusic == true),
+
+            // pin amazon music to the taskbar
+            ("Pinning Amazon Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path AmazonMobileLLC.AmazonMusic_kc6t79cpj4tp0!AmazonMobileLLC.AmazonMusic"), () => AmazonMusic == true),
+
+            // log in to amazon music
+            ("Please log in to your Amazon Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\AmazonMobileLLC.AmazonMusic_" + amazonMusicVersion + "_x86__kc6t79cpj4tp0", "Amazon Music.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AmazonMusic == true),
+
+            // download deezer music
+            ("Downloading Deezer Music", async () => await ProcessActions.RunMicrosoftStoreDownload("Deezer.62021768415AF", "9ba24187-b508-4235-ad59-e78e833322a4", "appxbundle", 0, false), () => DeezerMusic == true),
+
+            // install deezer music
+            ("Installing Deezer Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Deezer.62021768415AF (Package)\"" | Select-Object -First 1).FullName"), () => DeezerMusic == true),
+            ("Installing Deezer Music", async () => deezerMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"Deezer.62021768415AF\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => DeezerMusic == true),
+
+            // pin deezer music to the taskbar
+            ("Pinning Deezer Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path Deezer.62021768415AF_q7m17pa7q8kj0!Deezer.Music"), () => DeezerMusic == true),
+
+            // log in to deezer music
+            ("Please log in to your Deezer Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\Deezer.62021768415AF_" + deezerMusicVersion + @"_x86__q7m17pa7q8kj0\app", "Deezer.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => DeezerMusic == true),
+
             // download spotify
             ("Downloading Spotify", async () => await ProcessActions.RunDownload("https://download.scdn.co/SpotifyFullSetupX64.exe", Path.GetTempPath(), "SpotifyFullSetupX64.exe"), () => Spotify == true),
 
@@ -232,60 +307,6 @@ public static class ApplicationStage
 
             // disable spotify startup entry
             ("Disabling Spotify startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Spotify"" /t REG_BINARY /d ""01"" /f"), () => Spotify == true),
-
-            // download dolby access
-            ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess", "61e179bf-d7a6-4201-aa9b-88cf1bcbc472", "msixbundle", 1, false), () => AppleMusic == true),
-
-            // install dolby access
-            ("Installing Dolby Access", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\DolbyLaboratories.DolbyAccess (Package)\"" | Select-Object -First 1).FullName"), () => AppleMusic == true),
-            ("Installing Dolby Access", async () => dolbyAccessVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"DolbyLaboratories.DolbyAccess\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AppleMusic == true),
-
-            // log in to dolby access
-            ("Please log in to your Dolby Access account", async () => await ProcessActions.Sleep(1000), () => AppleMusic == true),
-            ("Please log in to your Dolby Access account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\DolbyLaboratories.DolbyAccess_" + dolbyAccessVersion + "_x64__rz1tebttyb220", "DolbyAccess.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AppleMusic == true),
-
-            // download apple music
-            ("Downloading Apple Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AppleInc.AppleMusicWin", "cf497837-70f4-4c2a-9b9d-3d5767379bb1", "msixbundle", 0, false), () => AppleMusic == true),
-
-            // install apple music
-            ("Installing Apple Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\AppleInc.AppleMusicWin (Package)\"" | Select-Object -First 1).FullName"), () => AppleMusic == true),
-            ("Installing Apple Music", async () => appleMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"AppleInc.AppleMusicWin\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AppleMusic == true),
-            
-            // enable keep miniplayer on top of all other windows
-            ("Enabling Keep Miniplayer on top of all other windows", async () => await ProcessActions.RunPowerShellScript("applemusic.ps1", ""), () => AppleMusic == true),
-
-            // pin apple music to the taskbar
-            ("Pinning Apple Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path AppleInc.AppleMusicWin_nzyj5cx40ttqa!App"), () => AppleMusic == true),
-
-            // log in to apple music
-            ("Please log in to your Apple Music account", async () => await ProcessActions.Sleep(1000), () => AppleMusic == true),
-            ("Please log in to your Apple Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\AppleInc.AppleMusicWin_" + appleMusicVersion + "_x64__nzyj5cx40ttqa", "AppleMusic.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AppleMusic == true),
-
-            // download amazon music
-            ("Downloading Amazon Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AmazonMobileLLC.AmazonMusic", "7fb9f901-50c2-4974-a65c-01b4cd17ca77", "appx", 0, false), () => AmazonMusic == true),
-
-            // install amazon music
-            ("Installing Amazon Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\AmazonMobileLLC.AmazonMusic (Package)\"" | Select-Object -First 1).FullName"), () => AmazonMusic == true),
-            ("Installing Amazon Music", async () => amazonMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"AmazonMobileLLC.AmazonMusic\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => AmazonMusic == true),
-
-            // pin amazon music to the taskbar
-            ("Pinning Amazon Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path AmazonMobileLLC.AmazonMusic_kc6t79cpj4tp0!AmazonMobileLLC.AmazonMusic"), () => AmazonMusic == true),
-
-            // log in to amazon music
-            ("Please log in to your Amazon Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\AmazonMobileLLC.AmazonMusic_" + amazonMusicVersion + "_x86__kc6t79cpj4tp0", "Amazon Music.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => AmazonMusic == true),
-
-            // download deezer music
-            ("Downloading Deezer Music", async () => await ProcessActions.RunMicrosoftStoreDownload("Deezer.62021768415AF", "9ba24187-b508-4235-ad59-e78e833322a4", "appxbundle", 0, false), () => DeezerMusic == true),
-
-            // install deezer music
-            ("Installing Deezer Music", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Deezer.62021768415AF (Package)\"" | Select-Object -First 1).FullName"), () => DeezerMusic == true),
-            ("Installing Deezer Music", async () => deezerMusicVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"Deezer.62021768415AF\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => DeezerMusic == true),
-
-            // pin deezer music to the taskbar
-            ("Pinning Deezer Music to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path Deezer.62021768415AF_q7m17pa7q8kj0!Deezer.Music"), () => DeezerMusic == true),
-
-            // log in to deezer music
-            ("Please log in to your Deezer Music account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\Deezer.62021768415AF_" + deezerMusicVersion + @"_x86__q7m17pa7q8kj0\app", "Deezer.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => DeezerMusic == true),
 
             // download whatsapp
             ("Downloading WhatsApp", async () => await ProcessActions.RunMicrosoftStoreDownload("5319275A.WhatsAppDesktop", "3dadc9b1-3603-496c-a6d1-bf2fda81df89", "msixbundle", 0, false), () => WhatsApp == true),

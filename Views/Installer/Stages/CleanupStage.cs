@@ -175,6 +175,7 @@ public static class CleanupStage
         InstallPage.Progress.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
         InstallPage.ProgressRingControl.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
         localSettings.Values["Version"] = ProcessInfoHelper.Version;
+        Registry.SetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\Explorer","LockedStartLayout", 0, RegistryValueKind.DWord);
         await ProcessActions.RunRestart();
     }
 }

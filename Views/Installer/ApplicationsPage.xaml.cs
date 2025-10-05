@@ -4,6 +4,7 @@ namespace AutoOS.Views.Installer;
 
 public sealed partial class ApplicationsPage : Page
 {
+    private bool isInitializingOfficeState = true;
     private bool isInitializingMusicState = true;
     private bool isInitializingMessagingState = true;
     private bool isInitializingLaunchersState = true;
@@ -14,6 +15,7 @@ public sealed partial class ApplicationsPage : Page
     {
         InitializeComponent();
         GetItems();
+        GetOffice();
         GetMusic();
         GetMessaging();
         GetLaunchers();
@@ -34,12 +36,25 @@ public sealed partial class ApplicationsPage : Page
 
     private void GetItems()
     {
+        Office.ItemsSource = new List<GridViewItem>
+        {
+            new() { Text = "Word", ImageSource = "ms-appx:///Assets/Fluent/Word.png" },
+            new() { Text = "Excel", ImageSource = "ms-appx:///Assets/Fluent/Excel.png" },
+            new() { Text = "Powerpoint", ImageSource = "ms-appx:///Assets/Fluent/Powerpoint.png" },
+            new() { Text = "OneNote", ImageSource = "ms-appx:///Assets/Fluent/OneNote.png" },
+            new() { Text = "Teams", ImageSource = "ms-appx:///Assets/Fluent/Teams.png" },
+            new() { Text = "Outlook", ImageSource = "ms-appx:///Assets/Fluent/Outlook.png" },
+            new() { Text = "Sharepoint", ImageSource = "ms-appx:///Assets/Fluent/Sharepoint.png" },
+            new() { Text = "OneDrive", ImageSource = "ms-appx:///Assets/Fluent/OneDrive.png" }
+        };
+
         Music.ItemsSource = new List<GridViewItem>
         {
-            new() { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" },
             new() { Text = "Apple Music", ImageSource = "ms-appx:///Assets/Fluent/AppleMusic.png" },
+            new() { Text = "TIDAL", ImageSource = "ms-appx:///Assets/Fluent/Tidal.png" },
             new() { Text = "Amazon Music", ImageSource = "ms-appx:///Assets/Fluent/AmazonMusic.png" },
-            new() { Text = "Deezer Music", ImageSource = "ms-appx:///Assets/Fluent/DeezerMusic.png" }
+            new() { Text = "Deezer Music", ImageSource = "ms-appx:///Assets/Fluent/DeezerMusic.png" },
+            new() { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" },
         };
 
         Messaging.ItemsSource = new List<GridViewItem>
@@ -53,6 +68,19 @@ public sealed partial class ApplicationsPage : Page
             new() { Text = "Epic Games", ImageSource = "ms-appx:///Assets/Fluent/EpicGames.png" },
             new() { Text = "Steam", ImageSource = "ms-appx:///Assets/Fluent/Steam.png" }
         };
+    }
+
+    private void GetOffice()
+    {
+        var selectedOffice = localSettings.Values["Office"] as string;
+        var oficeItems = Office.ItemsSource as List<GridViewItem>;
+        Office.SelectedItems.AddRange(
+            selectedOffice?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(e => oficeItems?.FirstOrDefault(ext => ext.Text == e))
+            .Where(ext => ext != null) ?? Enumerable.Empty<GridViewItem>()
+        );
+
+        isInitializingOfficeState = false;
     }
 
     private void GetMusic()
@@ -92,6 +120,18 @@ public sealed partial class ApplicationsPage : Page
         );
 
         isInitializingLaunchersState = false;
+    }
+
+    private void Office_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (isInitializingOfficeState) return;
+
+        var selectedOffice = Office.SelectedItems
+            .Cast<GridViewItem>()
+            .Select(item => item.Text)
+            .ToArray();
+
+        localSettings.Values["Office"] = string.Join(", ", selectedOffice);
     }
 
     private void Music_Changed(object sender, SelectionChangedEventArgs e)

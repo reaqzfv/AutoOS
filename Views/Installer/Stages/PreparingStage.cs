@@ -33,7 +33,6 @@ public static class PreparingStage
     public static bool? AlwaysShowTrayIcons;
     public static bool? TaskbarAlignment;
 
-    public static bool? AppleMusic;
     public static bool? WOL;
     public static bool? TxIntDelay;
 
@@ -71,8 +70,10 @@ public static class PreparingStage
     public static string DarkTime;
 
     public static bool? Spotify;
+    public static bool? AppleMusic;
     public static bool? AmazonMusic;
     public static bool? DeezerMusic;
+    public static bool? Tidal;
 
     public static bool? WhatsApp;
     public static bool? Discord;
@@ -171,10 +172,11 @@ public static class PreparingStage
             LightTime = localSettings.Values["LightTime"]?.ToString();
             DarkTime = localSettings.Values["DarkTime"]?.ToString();
 
-            Spotify = (localSettings.Values["Music"]?.ToString().Contains("Spotify") ?? false);
             AppleMusic = (localSettings.Values["Music"]?.ToString().Contains("Apple Music") ?? false);
+            Tidal = (localSettings.Values["Music"]?.ToString().Contains("TIDAL") ?? false);
             AmazonMusic = (localSettings.Values["Music"]?.ToString().Contains("Amazon Music") ?? false);
             DeezerMusic = (localSettings.Values["Music"]?.ToString().Contains("Deezer Music") ?? false);
+            Spotify = (localSettings.Values["Music"]?.ToString().Contains("Spotify") ?? false);
 
             WhatsApp = (localSettings.Values["Messaging"]?.ToString().Contains("WhatsApp") ?? false);
             Discord = (localSettings.Values["Messaging"]?.ToString().Contains("Discord") ?? false);
