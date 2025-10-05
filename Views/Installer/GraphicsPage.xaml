@@ -82,19 +82,6 @@
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="MsiAfterburnerInfo" />
-                <dev:SettingsGroup Margin="0,0,0,10"
-                                   Description="OBS Studio will automatically be started on startup and start the replay buffer."
-                                   Header="OBS Studio"
-                                   HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Obs.png}">
-                    <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Description="Select your desired keyboard shorcut for saving the last 30 seconds."
-                                          Header="Save Replay Shortcut (Coming soon)"
-                                          IsEnabled="False">
-
-                            <dev:ShortcutWithTextLabel x:Name="MainShortcutWithTextLabel" />
-                        </dev:SettingsCard>
-                    </dev:SettingsGroup.Items>
-                </dev:SettingsGroup>
                 <Border Height="25"
                         Background="Transparent" />
             </StackPanel>
