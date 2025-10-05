@@ -19,10 +19,10 @@ public static class DeviceStage
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // enable write caching on all drives
-            ("Enabling write caching on all drives", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for /f ""delims="" %k in ('reg query HKLM\SYSTEM\CurrentControlSet\Enum /f ""{4d36e967-e325-11ce-bfc1-08002be10318}"" /s /d ^| find ""HKEY""') do reg add ""%k\Device Parameters\Disk"" /v UserWriteCacheSetting /t REG_DWORD /d 1 /f"), null),
+            ("Enabling write caching on all drives", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for /f ""tokens=*"" %i in ('reg query ""HKLM\SYSTEM\CurrentControlSet\Enum\SCSI""^| findstr ""HKEY""') do for /f ""tokens=*"" %a in ('reg query ""%i""^| findstr ""HKEY""') do reg add ""%a\Device Parameters\Disk"" /v ""UserWriteCacheSetting"" /t REG_DWORD /d 1 /f"), null),
 
             // disable write-cache buffer flushing on all drives
-            ("Disabling write-cache buffer flushing on all drives", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for /f ""delims="" %k in ('reg query HKLM\SYSTEM\CurrentControlSet\Enum /f ""{4d36e967-e325-11ce-bfc1-08002be10318}"" /s /d ^| find ""HKEY""') do reg add ""%k\Device Parameters\Disk"" /v CacheIsPowerProtected /t REG_DWORD /d 1 /f"), null),
+            ("Disabling write-cache buffer flushing on all drives", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for /f ""tokens=*"" %i in ('reg query ""HKLM\SYSTEM\CurrentControlSet\Enum\SCSI""^| findstr ""HKEY""') do for /f ""tokens=*"" %a in ('reg query ""%i""^| findstr ""HKEY""') do reg add ""%a\Device Parameters\Disk"" /v ""CacheIsPowerProtected"" /t REG_DWORD /d 1 /f"), null),
 
             // disable drive powersaving features
             ("Disabling drive powersaving features", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for %a in (EnableHIPM EnableDIPM EnableHDDParking) do for /f ""delims="" %b in ('reg query ""HKLM\SYSTEM\CurrentControlSet\Services"" /s /f ""%a"" ^| findstr ""HKEY""') do reg add ""%b"" /v ""%a"" /t REG_DWORD /d 0 /f"), null),

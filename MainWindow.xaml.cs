@@ -49,10 +49,11 @@ namespace AutoOS.Views
             }
         }
 
-        private void RootGrid_Loaded(object sender, RoutedEventArgs e)
+        private async void RootGrid_Loaded(object sender, RoutedEventArgs e)
         {
             if (!App.IsInstalled)
             {
+                await Task.Delay(100);
                 foreach (var item in NavView.FooterMenuItems.OfType<NavigationViewItem>())
                 {
                     item.IsEnabled = false;
