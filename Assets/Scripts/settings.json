@@ -255,7 +255,7 @@
             "enabled": false
         },
         "MessageLogger": {
-            "enabled": true
+            "enabled": false
         },
         "MessageTags": {
             "enabled": false
