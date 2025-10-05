@@ -27,12 +27,12 @@
                                    Header="Theme">
                     <dev:SettingsGroup.Content>
                         <GridView x:Name="Themes"
+                                  Margin="0,0,0,-12"
                                   SelectionChanged="Theme_Changed"
                                   SelectionMode="Single">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="0">
+                                    <StackPanel Orientation="Horizontal">
                                         <Image Width="190"
                                                Height="130"
                                                Source="{Binding ImageSource1}"
