@@ -68,16 +68,10 @@ public sealed partial class SchedulingPage : Page
             Directory.CreateDirectory(destinationPath);
 
             foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-            {
-                string subDirPath = directory.Replace(sourcePath, destinationPath);
-                Directory.CreateDirectory(subDirPath);
-            }
+                Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
 
             foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-            {
-                string destFilePath = file.Replace(sourcePath, destinationPath);
-                File.Copy(file, destFilePath);
-            }
+                File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
         }
 
         // configure config

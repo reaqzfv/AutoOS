@@ -22,6 +22,24 @@ public static class StartupStage
 
         string previousTitle = string.Empty;
 
+        // copy timerresolution and lowaudiolatency to localstate
+        foreach (var folderName in new[] { "TimerResolution", "LowAudioLatency" })
+        {
+            string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName);
+            string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), folderName);
+
+            if (!Directory.Exists(destinationPath))
+            {
+                Directory.CreateDirectory(destinationPath);
+
+                foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                    Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
+
+                foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                    File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
+            }
+        }
+
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // sync time
@@ -46,10 +64,10 @@ public static class StartupStage
             ("Disabling XHCI Interrupt Moderation (IMOD)", async () => await StartupActions.RunPowerShellScript("imod.ps1", $"-disable \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}\""), () => IMOD == true),
 
             // apply timer resolution
-            ("Applying Timer Resolution", async () => await StartupActions.RunApplication("TimerResolution", "SetTimerResolution.exe", "--resolution 5067 --no-console"), null),
+            ("Applying Timer Resolution", async () => await StartupActions.RunApplication("LocalState", "TimerResolution", "SetTimerResolution.exe", "--resolution 5067 --no-console"), null),
 
             // launch lowaudiolatency
-            ("Launching LowAudioLatency", async () => await StartupActions.RunApplication("LowAudioLatency", "low_audio_latency_no_console.exe", ""), null),
+            ("Launching LowAudioLatency", async () => await StartupActions.RunApplication("LocalState", "LowAudioLatency", "low_audio_latency_no_console.exe", ""), null),
 
             // disable event trace sessions (ets)
             ("Disabling Event Trace Sessions (ETS)", async () => await StartupActions.RunNsudo("TrustedInstaller", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "ets-disable.reg")}\""), null),
@@ -58,10 +76,10 @@ public static class StartupStage
             ("Pausing Windows Updates", async () => await StartupActions.RunPowerShellScript("pausewindowsupdates.ps1", ""), () => WindowsUpdates == true),
 
             // clean up devices
-            ("Cleaning up devices", async () => await StartupActions.RunApplication("DeviceCleanup", "DeviceCleanupCmd.exe", "/s *"), null),
+            ("Cleaning up devices", async () => await StartupActions.RunApplication("BaseDirectory", "DeviceCleanup", "DeviceCleanupCmd.exe", "/s *"), null),
 
             // clean up drives
-            ("Cleaning up drives" , async () => await StartupActions.RunApplication("DriveCleanup", "DriveCleanup.exe", ""), null),
+            ("Cleaning up drives" , async () => await StartupActions.RunApplication("BaseDirectory", "DriveCleanup", "DriveCleanup.exe", ""), null),
 
             // debloat discord
             ("Debloating Discord", async () => await Task.Run(() => { discordVersion = new DirectoryInfo(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord")).GetDirectories().FirstOrDefault(d => d.Name.StartsWith("app-"))?.Name.Substring(4); }), () => Discord == true),

@@ -81,9 +81,9 @@ public static class StartupActions
         await Process.Start(new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", script)}\" {arguments}") { CreateNoWindow = true })!.WaitForExitAsync();
     }
 
-    public static async Task RunApplication(string folderName, string executable, string arguments)
+    public static async Task RunApplication(string baseLocation, string folderName, string executable, string arguments)
     {
-        await Task.Run(() => Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName, executable), arguments) { CreateNoWindow = true }));
+        await Task.Run(() => Process.Start(new ProcessStartInfo(Path.Combine(baseLocation == "LocalState" ? PathHelper.GetAppDataFolderPath() : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications"), folderName, executable), arguments) { CreateNoWindow = true }));
     }
 
     public static async Task RunDownload(string url, string path, string file)
