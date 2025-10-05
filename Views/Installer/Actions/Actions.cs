@@ -139,7 +139,7 @@ public static class ProcessActions
                     if (response.IsSuccessStatusCode)
                     {
                         InstallPage.Info.Severity = InfoBarSeverity.Informational;
-                        InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
+                        InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
                         InstallPage.ProgressRingControl.Foreground = null;
                         InstallPage.Info.Title = "Internet connection successfully established...";
                         await Task.Delay(500);
@@ -291,9 +291,7 @@ public static class ProcessActions
         if (File.Exists(setupCfgPath))
         {
             var lines = await File.ReadAllLinesAsync(setupCfgPath);
-            var newLines = lines.Where(line => !line.Contains("<file name=\"${{EulaHtmlFile}}\"/>") &&
-                                                 !line.Contains("<file name=\"${{FunctionalConsentFile}}\"/>") &&
-                                                 !line.Contains("<file name=\"${{PrivacyPolicyFile}}\"/>")).ToList();
+            var newLines = lines.Where(line => !line.Contains("<file name=\"${{EulaHtmlFile}}\"/>") && !line.Contains("<file name=\"${{FunctionalConsentFile}}\"/>") && !line.Contains("<file name=\"${{PrivacyPolicyFile}}\"/>")).ToList();
 
             await File.WriteAllLinesAsync(setupCfgPath, newLines);
         }
@@ -530,7 +528,7 @@ public static class ProcessActions
 
     public static async Task DisableOptionalFeatures()
     {
-        ProcessStartInfo processStartInfo = new ProcessStartInfo("powershell.exe", $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "disablefeatures.ps1")}\"")
+        ProcessStartInfo processStartInfo = new("powershell.exe", $"-ExecutionPolicy Bypass -File \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "disablefeatures.ps1")}\"")
         {
             CreateNoWindow = true,
             RedirectStandardOutput = true
@@ -560,7 +558,7 @@ public static class ProcessActions
     public static async Task DisableWiFiServicesAndDrivers()
     {
         // set start values
-        string[] services = { "WlanSvc", "Wcmsvc", "WinHttpAutoProxySvc", "NlaSvc", "tdx", "vwififlt", "Netwtw10", "Netwtw14" };
+        string[] services = ["WlanSvc", "Wcmsvc", "WinHttpAutoProxySvc", "NlaSvc", "tdx", "vwififlt", "Netwtw10", "Netwtw14"];
 
         foreach (var service in services)
         {
@@ -577,7 +575,7 @@ public static class ProcessActions
 
     public static async Task DisableBluetoothServicesAndDrivers()
     {
-        string[] services = { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DsmSvc", "BthA2dp", "BthEnum", "BthHFAud", "BthHFEnum", "BthLEEnum", "BTHMODEM", "BthMini", "BthPan", "BTHPORT", "BTHUSB", "HidBth", "Microsoft_Bluetooth_AvrcpTransport", "RFCOMM", "ibtusb" };
+        string[] services = ["BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DsmSvc", "BthA2dp", "BthEnum", "BthHFAud", "BthHFEnum", "BthLEEnum", "BTHMODEM", "BthMini", "BthPan", "BTHPORT", "BTHUSB", "HidBth", "Microsoft_Bluetooth_AvrcpTransport", "RFCOMM", "ibtusb"];
 
         foreach (var service in services)
         {
@@ -601,12 +599,28 @@ public static class ProcessActions
     {
         string title = InstallPage.Info.Title;
 
-        string output = await Process.Start(new ProcessStartInfo("powershell.exe", @$"-ExecutionPolicy Bypass -File ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")}"" {productFamilyName} {catalogId} {fileType} {index}{(dependencies ? " -Dependencies" : "")}")
+        string output = "";
+
+        for (int attempt = 1; attempt <= 3; attempt++)
         {
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardOutput = true
-        })!.StandardOutput.ReadToEndAsync();
+            using var process = new Process
+            {
+                StartInfo = new ProcessStartInfo("powershell.exe",
+                    @$"-ExecutionPolicy Bypass -File ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "getmicrosoftstorelink.ps1")}"" {productFamilyName} {catalogId} {fileType} {index}{(dependencies ? " -Dependencies" : "")}")
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                }
+            };
+
+            process.Start();
+            output = await process.StandardOutput.ReadToEndAsync();
+            await process.WaitForExitAsync();
+
+            if (!string.IsNullOrWhiteSpace(output))
+                break;
+        }
 
         string folderName = $"{productFamilyName} {(dependencies ? "(Dependencies)" : "(Package)")}";
         string downloadFolder = Path.Combine(Path.GetTempPath(), folderName);
@@ -1077,19 +1091,15 @@ public static class ProcessActions
             {
                 if (obj["PNPDeviceID"]?.ToString()?.StartsWith("PCI\\VEN_") == true)
                 {
-                    using (var key = Registry.LocalMachine.OpenSubKey(
-                        $@"SYSTEM\CurrentControlSet\Enum\{obj["PNPDeviceID"]}\Device Parameters\Interrupt Management\Affinity Policy",
-                        true))
+                    using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{obj["PNPDeviceID"]}\Device Parameters\Interrupt Management\Affinity Policy", true);
+                    if (key != null)
                     {
-                        if (key != null)
-                        {
-                            var bytes = new byte[(i / 8) + 1]
-                                .Select((_, idx) => (byte)(idx == i / 8 ? 1 << (i % 8) : 0))
-                                .ToArray();
+                        var bytes = new byte[(i / 8) + 1]
+                            .Select((_, idx) => (byte)(idx == i / 8 ? 1 << (i % 8) : 0))
+                            .ToArray();
 
-                            key.SetValue("AssignmentSetOverride", bytes, RegistryValueKind.Binary);
-                            key.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
-                        }
+                        key.SetValue("AssignmentSetOverride", bytes, RegistryValueKind.Binary);
+                        key.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
                     }
                 }
             }
@@ -1113,7 +1123,7 @@ public static class ProcessActions
             using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}", writable: true);
             if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
 
-            // set rss values because NDIS drivers ignore device affinity
+            // set rss values because ndis drivers ignore device affinity
             classKey.SetValue("*RSS", "0", RegistryValueKind.String);
             classKey.SetValue("*RssBaseProcNumber", i.ToString(), RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcNumber", i.ToString(), RegistryValueKind.String);
@@ -1121,7 +1131,7 @@ public static class ProcessActions
             classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
             classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
 
-            // set device affinity because NetAdapterCx drivers ignore RSS registry keys
+            // set device affinity because netadaptercx drivers ignore rss registry keys
             using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}\Device Parameters\Interrupt Management\Affinity Policy", writable: true);
             if (affinityKey != null)
             {
@@ -1158,25 +1168,22 @@ public static class ProcessActions
     {
         await Task.Run(() =>
         {
-            using (var key = Registry.LocalMachine.OpenSubKey(
-                @"SYSTEM\CurrentControlSet\Control\Session Manager\kernel", true))
-            {
-                key.SetValue(
-                    "ReservedCpuSets",
-                    BitConverter.GetBytes(
+            using var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\kernel", true);
+            key.SetValue(
+                "ReservedCpuSets",
+                BitConverter.GetBytes(
+                    (1L << Convert.ToInt32(localSettings.Values["GpuAffinity"])) |
+                    (1L << Convert.ToInt32(localSettings.Values["XhciAffinity"])) |
+                    (1L << Convert.ToInt32(localSettings.Values["NicAffinity"]))
+                ).Concat(
+                    new byte[8 - BitConverter.GetBytes(
                         (1L << Convert.ToInt32(localSettings.Values["GpuAffinity"])) |
                         (1L << Convert.ToInt32(localSettings.Values["XhciAffinity"])) |
                         (1L << Convert.ToInt32(localSettings.Values["NicAffinity"]))
-                    ).Concat(
-                        new byte[8 - BitConverter.GetBytes(
-                            (1L << Convert.ToInt32(localSettings.Values["GpuAffinity"])) |
-                            (1L << Convert.ToInt32(localSettings.Values["XhciAffinity"])) |
-                            (1L << Convert.ToInt32(localSettings.Values["NicAffinity"]))
-                        ).Length]
-                    ).ToArray(),
-                    RegistryValueKind.Binary
-                );
-            }
+                    ).Length]
+                ).ToArray(),
+                RegistryValueKind.Binary
+            );
         });
     }
 

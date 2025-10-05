@@ -269,7 +269,7 @@ public static class PreparingStage
         });
 
         InstallPage.Info.Severity = InfoBarSeverity.Informational;
-        InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
+        InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
         InstallPage.ProgressRingControl.Foreground = null;
     }
 }

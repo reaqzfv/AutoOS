@@ -45,28 +45,26 @@ public static class StartupActions
 
     public static async Task RunConnectionCheck()
     {
-        StartupWindow.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
+        StartupWindow.Progress.ClearValue(ProgressBar.ForegroundProperty);
 
         await Task.Delay(1000);
 
-        using (var httpClient = new HttpClient())
+        using var httpClient = new HttpClient();
+        while (true)
         {
-            while (true)
+            try
             {
-                try
+                var response = await httpClient.GetAsync("http://www.google.com");
+                if (response.IsSuccessStatusCode)
                 {
-                    var response = await httpClient.GetAsync("http://www.google.com");
-                    if (response.IsSuccessStatusCode)
-                    {
-                        StartupWindow.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
-                        await Task.Delay(500);
-                        break;
-                    }
+                    StartupWindow.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                    await Task.Delay(500);
+                    break;
                 }
-                catch
-                {
+            }
+            catch
+            {
 
-                }
             }
         }
     }
@@ -145,7 +143,7 @@ public static class StartupActions
                     isPaused = false;
                     uiContext?.Post(_ =>
                     {
-                        StartupWindow.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
+                        StartupWindow.Progress.ClearValue(ProgressBar.ForegroundProperty);
                         StartupWindow.Status.Text = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB)";
                     }, null);
                 }
@@ -157,7 +155,7 @@ public static class StartupActions
                     isPaused = true;
                     uiContext?.Post(_ =>
                     {
-                        StartupWindow.Progress.Foreground = (Brush)Application.Current.Resources["AccentForegroundBrush"];
+                        StartupWindow.Progress.ClearValue(ProgressBar.ForegroundProperty);
                         StartupWindow.Status.Text = $"{title} ({speedMB:F1} MB/s - {receivedMB:F2} MB of {totalMB:F2} MB - Waiting for internet connection to reestablish...)";
                     }, null);
                 }
