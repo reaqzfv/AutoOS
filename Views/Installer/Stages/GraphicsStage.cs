@@ -26,6 +26,7 @@ public static class GraphicsStage
         int stagePercentage = 5;
 
         string obsVersion = "";
+        InIHelper iniHelper = null;
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
@@ -252,6 +253,9 @@ public static class GraphicsStage
             // install obs studio
             ("Installing OBS Studio", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "OBS-Studio-Windows-x64-Installer.exe"), @"C:\Program Files\obs-studio"), null),
             ("Installing OBS Studio", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "obs-studio.zip"), Path.Combine(Path.GetTempPath(), "obs-studio")), null),
+            ("Installing OBS Studio", async () => await Task.Run(() => iniHelper = new InIHelper(Path.Combine(Path.GetTempPath(), "obs-studio", "basic", "profiles", "Untitled", "basic.ini"))), () => AMD == true),
+            ("Installing OBS Studio", async () => await Task.Run(() => iniHelper.AddValue("RecEncoder", "h264_qsv", "AdvOut")), () => Intel10th == true || Intel11th == true),
+            ("Installing OBS Studio", async () => await Task.Run(() => iniHelper.AddValue("RecEncoder", "h265_texture_amf", "AdvOut")), () => AMD == true),
             ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c move ""C:\Program Files\obs-studio\$APPDATA\obs-studio-hook"" ""%ProgramData%\obs-studio-hook"""), null),
             ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\obs-studio"" ""%APPDATA%"""), null),
             ("Installing OBS Studio", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /S /Q ""C:\Program Files\obs-studio\$PLUGINSDIR"" & rmdir /S /Q ""C:\Program Files\obs-studio\$APPDATA"""), null),
