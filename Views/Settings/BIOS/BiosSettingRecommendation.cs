@@ -26,6 +26,7 @@ public static class BiosSettingRecommendationsList
     [
         new BiosSettingRecommendation { SetupQuestion = "DDR PowerDown and idle counter", Type = "Option", RecommendedOption = "PCODE" },
         new BiosSettingRecommendation { SetupQuestion = "For LPDDR Only: DDR PowerDown and idle counter", Type = "Option", RecommendedOption = "PCODE" },
+        new BiosSettingRecommendation { SetupQuestion = "For LPDDR Only: Throttler CKEMin Defeature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "No Power Down" },
         new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LPMode", Type = "Option", RecommendedOption = "Disabled" },
@@ -51,6 +52,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Package C State Limit", Type = "Option", RecommendedOption = "C0/C1" },
         new BiosSettingRecommendation { SetupQuestion = "C-States Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Enhanced C-states", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CState Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "C-state Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Auto Demotion", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Un-demotion", Type = "Option", RecommendedOption = "Disabled" },
@@ -197,7 +200,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", Type = "Option", RecommendedOption = "Enable" },
-        new BiosSettingRecommendation { SetupQuestion = "Disable Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "Disable Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable Energy Reporting", Type = "Option", RecommendedOption = "Enable" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Legacy IO Low Latency", Type = "Option", RecommendedOption = "Enabled" },
@@ -219,7 +222,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SMART Self Test", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Serial Port", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Parallel Port", Type = "Value", RecommendedOption = "0" }, // didn't find
-        new BiosSettingRecommendation { SetupQuestion = "Port 60/64 Emulation", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "Port 60/64 Emulation", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Port 61h Bit-4 Emulation", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         
         new BiosSettingRecommendation { SetupQuestion = "SR-IOV Support", Type = "Option", RecommendedOption = "Disabled" },
@@ -261,6 +264,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Control Iommu Pre-boot Behavior", Type = "Option", RecommendedOption = "Disable IOMMU" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "D0I3 Setting for HECI Disable", Type = "Option", RecommendedOption = "Enabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "BME DMA Mitigation", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PAVP Enable", Type = "Option", RecommendedOption = "Disabled" },
@@ -284,7 +288,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PS2 Keyboard and Mouse", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS2 Devices Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Option ROM Messages", Type = "Option", RecommendedOption = "Keep Current" },
-        new BiosSettingRecommendation { SetupQuestion = "Launch PXE OpROM policy", Type = "Option", RecommendedOption = "Do no launch" },
+        new BiosSettingRecommendation { SetupQuestion = "Launch PXE OpROM policy", Type = "Option", RecommendedOption = "Do not launch" },
         new BiosSettingRecommendation { SetupQuestion = "EC Notification", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS3 Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PS4 Enable", Type = "Option", RecommendedOption = "Disabled" },
@@ -328,6 +332,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Intel Platform Trust Technology (PTT)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Software Guard Extensions (SGX)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SW Guard Extension (security)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
+        new BiosSettingRecommendation { SetupQuestion = "SW Guard Extensions (SGX)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel Trusted Execution Technology", Type = "Option", RecommendedOption = "Disabled" },
 
         // AMD
@@ -370,6 +375,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Enumeration", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "PCIB Clock Run", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CLKRUN# logic", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Relaxed EDC throttling", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Aggressive Link PM Capability", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "UCLK DIV1 MODE", Type = "Option", RecommendedOption = "UCLK==MEMCLK" },
