@@ -113,7 +113,10 @@ namespace AutoOS.Views.Settings
             {
                 // fix broken registry path
                 ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching"" /v SearchOrderConfig /f"), null),
-                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching"" /v SearchOrderConfig /t REG_DWORD /d 0 /f"), null)
+                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\DriverSearching"" /v SearchOrderConfig /t REG_DWORD /d 0 /f"), null),
+            
+                // enable mld level
+                ("Enabling MLD level", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ip set global mldlevel=all"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

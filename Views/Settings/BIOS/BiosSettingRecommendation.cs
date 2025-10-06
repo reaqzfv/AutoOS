@@ -54,7 +54,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Enhanced C-states", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CState Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-state Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "C-State Pre-Wake", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Auto Demotion", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "C-State Un-demotion", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Package C-State Demotion", Type = "Option", RecommendedOption = "Disabled" },
@@ -151,6 +150,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PEP SATA", Type = "Option", RecommendedOption = "No Constraint" },
         new BiosSettingRecommendation { SetupQuestion = "PEP enumerated SATA ports", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP PCIe Storage", Type = "Option", RecommendedOption = "No Constraint" },
+        new BiosSettingRecommendation { SetupQuestion = "PEP PCIe Storage", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP PCIe LAN", Type = "Option", RecommendedOption = "No Constraint" },
         new BiosSettingRecommendation { SetupQuestion = "PEP PCIe WLAN", Type = "Option", RecommendedOption = "No Constraint" },
         new BiosSettingRecommendation { SetupQuestion = "PEP PCIe GFX", Type = "Option", RecommendedOption = "No Constraint" },
@@ -165,6 +165,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PEP SPI", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP XHCI", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP Audio", Type = "Option", RecommendedOption = "No Constraint" },
+        new BiosSettingRecommendation { SetupQuestion = "PEP Audio", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP CSME", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP HECI3", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PEP LAN(GBE)", Type = "Option", RecommendedOption = "Disabled" },
@@ -199,7 +200,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ErP Ready", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
         new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
-        new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable Energy Reporting", Type = "Option", RecommendedOption = "Enable" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", Type = "Option", RecommendedOption = "Enabled" },
@@ -311,14 +312,20 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" },
         new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" },
         new BiosSettingRecommendation { SetupQuestion = "PEG0 Max Payload size", Type = "Option", RecommendedOption = "256" },
+        new BiosSettingRecommendation { SetupQuestion = "PEG0 Max Payload size", Type = "Option", RecommendedOption = "256 TLP" },
         new BiosSettingRecommendation { SetupQuestion = "PEG1 Max Payload size", Type = "Option", RecommendedOption = "256" },
+        new BiosSettingRecommendation { SetupQuestion = "PEG1 Max Payload size", Type = "Option", RecommendedOption = "256 TLP" },
         new BiosSettingRecommendation { SetupQuestion = "PEG2 Max Payload size", Type = "Option", RecommendedOption = "256" },
+        new BiosSettingRecommendation { SetupQuestion = "PEG2 Max Payload size", Type = "Option", RecommendedOption = "256 TLP" },
         new BiosSettingRecommendation { SetupQuestion = "PEG3 Max Payload size", Type = "Option", RecommendedOption = "256" },
+        new BiosSettingRecommendation { SetupQuestion = "PEG3 Max Payload size", Type = "Option", RecommendedOption = "256 TLP" },
 
         new BiosSettingRecommendation { SetupQuestion = "Above 4G Decoding", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Above 4GB MMIO BIOS assignment", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Above 4G memory/Crypto Currency mining", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Re-Size BAR Support", Type = "Option", RecommendedOption = "Auto" },
+        new BiosSettingRecommendation { SetupQuestion = "Resize BAR Support", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Resize BAR Support", Type = "Option", RecommendedOption = "Auto" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Resizable BAR Support", Type = "Option", RecommendedOption = "Enabled" },
 
@@ -328,6 +335,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "TCM State", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Me State", Type = "Option", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "PTT", Type = "Option", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
+        new BiosSettingRecommendation { SetupQuestion = "Security Device Support", Type = "Option", RecommendedOption = "Enable" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", Type = "Option", RecommendedOption = "Enabled" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Intel Platform Trust Technology (PTT)", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Software Guard Extensions (SGX)", Type = "Option", RecommendedOption = "Disabled" },
@@ -373,12 +381,15 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Prochot VRM Throttling", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "Prochot VRM Throttling", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Enumeration", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Enumeration", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIB Clock Run", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CLKRUN# logic", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Relaxed EDC throttling", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Aggressive Link PM Capability", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "UCLK DIV1 MODE", Type = "Option", RecommendedOption = "UCLK==MEMCLK" },
+        new BiosSettingRecommendation { SetupQuestion = "UCLK DIV1 MODE", Type = "Option", RecommendedOption = "UCLK=MEMCLK" },
         new BiosSettingRecommendation { SetupQuestion = "APBDIS", Type = "Option", RecommendedOption = "1" },
         new BiosSettingRecommendation { SetupQuestion = "Adaptive S4", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LCLK DPM", Type = "Option", RecommendedOption = "Disabled" },
@@ -467,7 +478,9 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SB C1E Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Remote Display Feature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PSS Support", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 0", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 0", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 1", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "Aggresive SATA Device Sleep Port 1", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "S3/Modern Standby Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Advanced Error Reporting (AER)", Type = "Option", RecommendedOption = "Not Supported" },
@@ -511,8 +524,8 @@ public static class BiosSettingRecommendationsList
         // rgb
         new BiosSettingRecommendation { SetupQuestion = "When system is in working state", Type = "Option", RecommendedOption = "Aura Off" },
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Aura Off" },
-        new BiosSettingRecommendation { SetupQuestion = "Onboard LED", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "When system is in sleep, hibernate or soft off states", Type = "Option", RecommendedOption = "Onboard LED off" },
+        new BiosSettingRecommendation { SetupQuestion = "Onboard LED", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "RGB Fusion", Type = "Option", RecommendedOption = "Off" },
         new BiosSettingRecommendation { SetupQuestion = "RGB Light", Type = "Value", RecommendedOption = "0" },
 
