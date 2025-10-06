@@ -66,7 +66,6 @@ public static class NetworkStage
             ("Disabling source routing behavior", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ip set global sourceroutingbehavior=drop"), null),
             ("Disabling DHCP media sense", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ip set global dhcpmediasense=disabled"), null),
             ("Disabling media sense event log", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ip set global mediasenseeventlog=disabled"), null),
-            ("Disabling MLD level", async () => await ProcessActions.RunNsudo(  "TrustedInstaller", @"netsh int ip set global mldlevel=none"), null),
             ("Enabling DCA", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int tcp set global dca=enabled"), null),
             ("Disabling ECN Capability", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int tcp set global ecncapability=disabled"), null),
             ("Disabling NetDMA", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int tcp set global netdma=enabled"), null),
