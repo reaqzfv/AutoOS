@@ -51,7 +51,7 @@ public static class GraphicsStage
             ("Installing the Intel driver", async () => await ProcessActions.RefreshUI(), () => Intel10th == true),
 
             // download the latest intel driver
-            ("Downloading the latest Intel Driver", async () => await ProcessActions.RunDownload("https://downloadmirror.intel.com/851966/gfx_win_101.6734.exe", Path.GetTempPath(), "driver.exe"), () => Intel11th == true),
+            ("Downloading the latest Intel Driver", async () => await ProcessActions.RunDownload("https://downloadmirror.intel.com/866234/gfx_win_101.8136.exe", Path.GetTempPath(), "driver.exe"), () => Intel11th == true),
 
             // extract the driver
             ("Extracting the Intel driver", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver")), () => Intel11th == true),

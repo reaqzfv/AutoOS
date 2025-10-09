@@ -34,7 +34,7 @@
                                   SelectionMode="Multiple">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="75"
+                                    <Grid Height="95"
                                           Margin="24">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
