@@ -130,7 +130,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", Type = "Option", RecommendedOption = "Enabled  Remove All limits" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", Type = "Option", RecommendedOption = "Sync All Cores" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Ratio Mode", Type = "Option", RecommendedOption = "Fixed Mode" },
-        new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", Type = "Option", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "MCH Full Check", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "VRM Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Overclocking TVB", Type = "Option", RecommendedOption = "Disabled" },
