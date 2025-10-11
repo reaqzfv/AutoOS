@@ -31,9 +31,19 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "Native 802.11" } | For
             Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Wake on Magic Packet" -DisplayValue "Disabled"
         }
 
+        # WakeOnMagicPacket
+        if ($_.DisplayName -eq "WakeOnMagicPacket") {
+            Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "WakeOnMagicPacket" -DisplayValue "Disable"
+        }
+
         # Wake on Pattern Match
         if ($_.DisplayName -eq "Wake on Pattern Match") {
             Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Wake on Pattern Match" -DisplayValue "Disabled"
+        }
+
+        # WakeOnPatternMatch
+        if ($_.DisplayName -eq "WakeOnPatternMatch") {
+            Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "WakeOnPatternMatch" -DisplayValue "Disable"
         }
 
         # Global BG Scan blocking
@@ -91,6 +101,11 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "Native 802.11" } | For
             Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Roaming Aggressiveness" -DisplayValue "1. Lowest"
         }
 
+        # Roaming aggressiveness
+        if ($_.DisplayName -eq "Roaming aggressiveness") {
+            Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Roaming aggressiveness" -DisplayValue "1.Lowest"
+        }
+
         # Preferred Band
         if ($_.DisplayName -eq "Preferred Band") {
             Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Preferred Band" -DisplayValue "1. No Preference"
@@ -109,6 +124,11 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "Native 802.11" } | For
         # 802.11a/b/g Wireless Mode
         if ($_.DisplayName -eq "802.11a/b/g Wireless Mode") {
             Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "802.11a/b/g Wireless Mode" -DisplayValue "6. Dual Band 802.11a/b/g"
+        }
+
+        # Idle Power Down Restriction
+        if ($_.DisplayName -eq "Idle Power Down Restriction") {
+            Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Idle Power Down Restriction" -DisplayValue "Enabled"
         }
     }
 }
