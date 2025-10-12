@@ -54,13 +54,13 @@ public sealed partial class ApplicationsPage : Page
             new() { Text = "TIDAL", ImageSource = "ms-appx:///Assets/Fluent/Tidal.png" },
             new() { Text = "Amazon Music", ImageSource = "ms-appx:///Assets/Fluent/AmazonMusic.png" },
             new() { Text = "Deezer Music", ImageSource = "ms-appx:///Assets/Fluent/DeezerMusic.png" },
-            new() { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" },
+            new() { Text = "Spotify", ImageSource = "ms-appx:///Assets/Fluent/Spotify.png" }
         };
 
         Messaging.ItemsSource = new List<GridViewItem>
         {
-            new() { Text = "WhatsApp", ImageSource = "ms-appx:///Assets/Fluent/Whatsapp.png" },
-            new() { Text = "Discord", ImageSource = "ms-appx:///Assets/Fluent/Discord.png" }
+            new() { Text = "Discord", ImageSource = "ms-appx:///Assets/Fluent/Discord.png" },
+            new() { Text = "WhatsApp", ImageSource = "ms-appx:///Assets/Fluent/Whatsapp.png" }
         };
 
         Launchers.ItemsSource = new List<GridViewItem>
