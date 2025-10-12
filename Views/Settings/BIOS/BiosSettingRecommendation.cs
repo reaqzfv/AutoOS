@@ -63,8 +63,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "CPU C7 State Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Ring Down Bin", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Intel SpeedStep™", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Intel(R) SpeedStep(tm)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Race To Halt (RTH)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Voltage Optimization", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "TVB Voltage Optimizations", Type = "Option", RecommendedOption = "Disabled" },
@@ -142,6 +142,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Thermal Velocity Boost", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Enhanced Thermal Velocity Boost", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", Type = "Option", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Long Duration Package Power Limit", Type = "Value", RecommendedOption = "4095" },
         new BiosSettingRecommendation { SetupQuestion = "Package Power Time Window", Type = "Option", RecommendedOption = "448" },
@@ -296,6 +297,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "D0I3 Setting for HECI Disable", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable Fast PKG C State Ramp for IA Domain", Type = "Option", RecommendedOption = "FALSE" },
+        new BiosSettingRecommendation { SetupQuestion = "Disable Fast PKG C State Ramp for GT Domain", Type = "Option", RecommendedOption = "FALSE" },
+        new BiosSettingRecommendation { SetupQuestion = "Disable Fast PKG C State Ramp for SA Domain", Type = "Option", RecommendedOption = "FALSE" },
 
         new BiosSettingRecommendation { SetupQuestion = "BME DMA Mitigation", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PAVP Enable", Type = "Option", RecommendedOption = "Disabled" },
