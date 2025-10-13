@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using Windows.Storage;
+using Microsoft.Win32;
 
 namespace AutoOS.Views.Startup.Stages;
 
@@ -15,6 +16,7 @@ public static class StartupStage
            .Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
         bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "0";
         bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "0";
+        bool ETS = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
         bool WindowsUpdates = localSettings.Values["PauseWindowsUpdates"]?.ToString() == "0";
         bool Discord = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord"));
 
@@ -70,7 +72,7 @@ public static class StartupStage
             ("Launching LowAudioLatency", async () => await StartupActions.RunApplication("LocalState", "LowAudioLatency", "low_audio_latency_no_console.exe", ""), null),
 
             // disable event trace sessions (ets)
-            ("Disabling Event Trace Sessions (ETS)", async () => await StartupActions.RunNsudo("TrustedInstaller", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "ets-disable.reg")}\""), null),
+            ("Disabling Event Trace Sessions (ETS)", async () => await StartupActions.RunNsudo("TrustedInstaller", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "ets-disable.reg")}\""), () => ETS == false),
             
             // pause windows updates
             ("Pausing Windows Updates", async () => await StartupActions.RunPowerShellScript("pausewindowsupdates.ps1", ""), () => WindowsUpdates == true),
