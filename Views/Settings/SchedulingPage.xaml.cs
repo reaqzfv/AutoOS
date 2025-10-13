@@ -120,6 +120,7 @@ public sealed partial class SchedulingPage : Page
     private void GetAffinities()
     {
         var gpuAffinities = new List<int?>();
+        var nicAffinities = new List<int?>();
 
         foreach (var query in new[]
         {
@@ -128,7 +129,7 @@ public sealed partial class SchedulingPage : Page
             "SELECT PNPDeviceID FROM Win32_NetworkAdapter"
         })
         {
-            foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get())
+            foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get().Cast<ManagementObject>())
             {
                 string path = obj["PNPDeviceID"]?.ToString();
                 if (path?.StartsWith("PCI\\VEN_") != true)
@@ -165,29 +166,25 @@ public sealed partial class SchedulingPage : Page
                 }
                 else if (query.Contains("NetworkAdapter"))
                 {
-                    using var driverKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}");
-                    string driver = driverKey?.GetValue("Driver")?.ToString();
-                    if (string.IsNullOrEmpty(driver) || !driver.Contains('\\'))
-                        continue;
-
-                    using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}");
-                    if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14")
-                        continue;
-
-                    if (int.TryParse(classKey.GetValue("*RssBaseProcNumber")?.ToString(), out int rssCore))
-                    {
-                        if (affinityCore.HasValue && rssCore == affinityCore.Value)
-                            NIC.SelectedIndex = rssCore;
-                    }
+                    nicAffinities.Add(affinityCore);
                 }
             }
         }
 
+        // only if all video controllers share the same affinity
         if (gpuAffinities.Count > 0 &&
             gpuAffinities.All(a => a.HasValue) &&
             gpuAffinities.Select(a => a.Value).Distinct().Count() == 1)
         {
             GPU.SelectedIndex = gpuAffinities[0].Value;
+        }
+
+        // only if all network controllers share the same affinity
+        if (nicAffinities.Count > 0 &&
+            nicAffinities.All(a => a.HasValue) &&
+            nicAffinities.Select(a => a.Value).Distinct().Count() == 1)
+        {
+            NIC.SelectedIndex = nicAffinities[0].Value;
         }
 
         UpdateComboBoxState(GPU, XHCI, NIC);
@@ -492,17 +489,20 @@ public sealed partial class SchedulingPage : Page
             if (string.IsNullOrEmpty(driver) || !driver.Contains('\\')) continue;
 
             using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}", writable: true);
-            if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
+            string mediaType = classKey?.GetValue("*PhysicalMediaType")?.ToString();
 
-            // set rss values because NDIS drivers ignore device affinity
-            classKey.SetValue("*RSS", "0", RegistryValueKind.String);
-            classKey.SetValue("*RssBaseProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
-            classKey.SetValue("*RssMaxProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
-            classKey.SetValue("*MaxRssProcessors", "1", RegistryValueKind.String);
-            classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
-            classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
+            // set rss values because ndis drivers ignore device affinity
+            if (mediaType == "14")
+            {
+                classKey.SetValue("*RSS", "0", RegistryValueKind.String);
+                classKey.SetValue("*RssBaseProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
+                classKey.SetValue("*RssMaxProcNumber", NIC.SelectedIndex.ToString(), RegistryValueKind.String);
+                classKey.SetValue("*MaxRssProcessors", "1", RegistryValueKind.String);
+                classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
+                classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
+            }
 
-            // set device affinity because NetAdapterCx drivers ignore RSS registry keys
+            // set device affinity because netadaptercx drivers ignore rss registry keys
             using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}\Device Parameters\Interrupt Management\Affinity Policy", writable: true);
             if (affinityKey != null)
             {
@@ -517,21 +517,19 @@ public sealed partial class SchedulingPage : Page
                 affinityKey.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
             }
 
-            // restart nic
+            // restart nics
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = @"-Command ""Get-NetAdapter | Where { $_.PhysicalMediaType -eq '802.3' } | ForEach { Restart-NetAdapter -Name $_.Name }""",
+                    Arguments = @"-Command ""Get-NetAdapter | ForEach { Restart-NetAdapter -Name $_.Name }""",
                     CreateNoWindow = true
                 }
             };
 
             process.Start();
             await process.WaitForExitAsync();
-
-            break;
         }
 
         // reserve cpus if 6 cores or more

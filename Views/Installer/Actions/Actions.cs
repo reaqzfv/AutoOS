@@ -1121,15 +1121,18 @@ public static class ProcessActions
             if (string.IsNullOrEmpty(driver) || !driver.Contains('\\')) continue;
 
             using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}", writable: true);
-            if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14") continue;
+            string mediaType = classKey?.GetValue("*PhysicalMediaType")?.ToString();
 
             // set rss values because ndis drivers ignore device affinity
-            classKey.SetValue("*RSS", "0", RegistryValueKind.String);
-            classKey.SetValue("*RssBaseProcNumber", i.ToString(), RegistryValueKind.String);
-            classKey.SetValue("*RssMaxProcNumber", i.ToString(), RegistryValueKind.String);
-            classKey.SetValue("*MaxRssProcessors", "1", RegistryValueKind.String);
-            classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
-            classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
+            if (mediaType == "14")
+            {
+                classKey.SetValue("*RSS", "0", RegistryValueKind.String);
+                classKey.SetValue("*RssBaseProcNumber", i.ToString(), RegistryValueKind.String);
+                classKey.SetValue("*RssMaxProcNumber", i.ToString(), RegistryValueKind.String);
+                classKey.SetValue("*MaxRssProcessors", "1", RegistryValueKind.String);
+                classKey.SetValue("*RssBaseProcGroup", "0", RegistryValueKind.String);
+                classKey.SetValue("*RssMaxProcGroup", "0", RegistryValueKind.String);
+            }
 
             // set device affinity because netadaptercx drivers ignore rss registry keys
             using var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{pnp}\Device Parameters\Interrupt Management\Affinity Policy", writable: true);
@@ -1146,21 +1149,19 @@ public static class ProcessActions
                 affinityKey.SetValue("DevicePolicy", 4, RegistryValueKind.DWord);
             }
 
-            // restart nic
+            // restart nics
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = @"-Command ""Get-NetAdapter | Where { $_.PhysicalMediaType -eq '802.3' } | ForEach { Restart-NetAdapter -Name $_.Name }""",
+                    Arguments = @"-Command ""Get-NetAdapter | ForEach { Restart-NetAdapter -Name $_.Name }""",
                     CreateNoWindow = true
                 }
             };
 
             process.Start();
             await process.WaitForExitAsync();
-
-            break;
         }
     }
 
