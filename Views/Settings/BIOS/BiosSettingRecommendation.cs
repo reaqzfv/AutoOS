@@ -383,6 +383,7 @@ public static class BiosSettingRecommendationsList
 
         // AMD
         new BiosSettingRecommendation { SetupQuestion = "Power Down Enable", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "PowerDownEn", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DRAM Latency Enhance", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Context Restore", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Memory Fast Boot", Type = "Option", RecommendedOption = "Disabled" },
@@ -419,6 +420,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "SoC/Uncore OC Mode", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Prochot VRM Throttling", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "Prochot VRM Throttling", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPU PCIE ASPM Mode Control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "PCI Express Native Power Management", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIe ARI Enumeration", Type = "Option", RecommendedOption = "Disable" },
@@ -506,6 +509,10 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 1 Enable", Type = "Option", RecommendedOption = "Both Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 2 Enable", Type = "Option", RecommendedOption = "Both Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 3 Enable", Type = "Option", RecommendedOption = "Both Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Uart 0 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Uart 1 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Uart 2 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Uart 3 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Uart 0 Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Uart 1 Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Uart 2 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" },
@@ -569,6 +576,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ACPI SRAT L3 Cache As NUMA Domain", Type = "Option", RecommendedOption = "Disabled" }, // not sure
         new BiosSettingRecommendation { SetupQuestion = "L3 DFLL Stretch Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "STAPM", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "ABL Console Out Control", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "S0I3", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
@@ -597,7 +606,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Download & Install MyASUS service & app", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "MSI Driver Utility Installer", Type = "Option", RecommendedOption = "Disabled" },
 
-        new BiosSettingRecommendation { SetupQuestion = "Enable Hibernation", Type = "Value", RecommendedOption = "0" }, // required for wake on lan
+        //new BiosSettingRecommendation { SetupQuestion = "Enable Hibernation", Type = "Value", RecommendedOption = "0" }, // required for wake on lan and breaks hd audio for some
         //new BiosSettingRecommendation { SetupQuestion = "Tcc Activation Offset", Type = "Value", RecommendedOption = "0" }, // exists both as Auto Setting and as value setting i think only the value setting should be changed to 0 (default is 0 anyway)
         //new BiosSettingRecommendation { SetupQuestion = "LAN Wake From DeepSx", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
         //new BiosSettingRecommendation { SetupQuestion = "Wake on LAN Enable", Type = "Option", RecommendedOption = "Disabled" }, // required for wake on lan
