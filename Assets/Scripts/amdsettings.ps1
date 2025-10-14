@@ -1,4 +1,4 @@
-# Credits: imribiy
+# Credit: imribiy
 # https://github.com/imribiy/amd-gpu-tweaks
 
 Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like "PCI\VEN_*" } | ForEach-Object {
