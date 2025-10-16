@@ -68,19 +68,28 @@ public sealed partial class GraphicsPage : Page
 
                 NvidiaUpdateCheck.IsHitTestVisible = false;
 
+                // download the nvidia driver   
                 NvidiaUpdateCheck.CheckedContent = "Downloading the NVIDIA driver...";
-
                 await RunDownload(newestDownloadUrl, Path.GetTempPath(), "driver.exe");
 
+                // extract the driver
                 NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
-
                 await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver"));
 
-                NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
 
+                // strip the driver
+                NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
                 await ProcessActions.RunNvidiaStrip();
 
-                NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
+                // close obs studio
+                if (Process.GetProcessesByName("obs64").Length > 0)
+                {
+                    foreach (var process in Process.GetProcessesByName("obs64"))
+                    {
+                        process.Kill();
+                        process.WaitForExit();
+                    }
+                }
 
                 int gpuAffinity = -1;
 
@@ -108,15 +117,15 @@ public sealed partial class GraphicsPage : Page
                     }
                 }
 
+                // update driver
+                NvidiaUpdateCheck.CheckedContent = "Updating the NVIDIA driver...";
                 await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\driver\setup.exe"" /s");
-
                 await ProcessActions.Sleep(3000);
-
                 Nvidia_SettingsGroup.Description = "Current Version: " + (await Task.Run(() => Process.Start(new ProcessStartInfo("nvidia-smi", "--query-gpu=driver_version --format=csv,noheader") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEndAsync()))?.Trim();
 
+                // reapply gpu affinity
                 NvidiaUpdateCheck.CheckedContent = "Reapplying GPU Affinity...";
-
-                var process = new Process
+                var process2 = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
@@ -126,8 +135,12 @@ public sealed partial class GraphicsPage : Page
                     }
                 };
 
-                process.Start();
-                await process.WaitForExitAsync();
+                process2.Start();
+                await process2.WaitForExitAsync();
+
+                // launch obs studio
+                await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q" })?.WaitForExit());
+                await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
 
                 NvidiaUpdateCheck.IsHitTestVisible = true;
                 NvidiaUpdateCheck.IsChecked = false;

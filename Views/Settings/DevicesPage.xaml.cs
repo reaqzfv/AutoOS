@@ -59,7 +59,6 @@ public sealed partial class DevicesPage : Page
             if (devices.Count > 0)
             {
                 string pnpDeviceId = device["PNPDeviceID"]?.ToString();
-                string deviceName = device["Name"]?.ToString();
 
                 if (!string.IsNullOrEmpty(pnpDeviceId) && (pnpDeviceId.Contains("USB", StringComparison.OrdinalIgnoreCase) || pnpDeviceId.Contains("PCI", StringComparison.OrdinalIgnoreCase)))
                 {
