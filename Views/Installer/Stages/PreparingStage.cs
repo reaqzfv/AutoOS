@@ -50,8 +50,8 @@ public static class PreparingStage
     public static bool? Chrome;
     public static bool? Brave;
     public static bool? Vivaldi;
-    public static bool? Comet;
     public static bool? Arc;
+    public static bool? Comet;
     public static bool? Firefox;
     public static bool? Zen;
 
@@ -156,8 +156,8 @@ public static class PreparingStage
             Chrome = (localSettings.Values["Browser"]?.ToString().Contains("Chrome") ?? false);
             Brave = (localSettings.Values["Browser"]?.ToString().Contains("Brave") ?? false);
             Vivaldi = (localSettings.Values["Browser"]?.ToString().Contains("Vivaldi") ?? false);
-            Comet = (localSettings.Values["Browser"]?.ToString().Contains("Comet") ?? false);
             Arc = (localSettings.Values["Browser"]?.ToString().Contains("Arc") ?? false);
+            Comet = (localSettings.Values["Browser"]?.ToString().Contains("Comet") ?? false);
             Firefox = (localSettings.Values["Browser"]?.ToString().Contains("Firefox") ?? false);
             Zen = (localSettings.Values["Browser"]?.ToString().Contains("Zen") ?? false);
 

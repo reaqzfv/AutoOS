@@ -37,8 +37,8 @@ public sealed partial class BrowserPage : Page
             new() { Text = "Chrome", ImageSource = "ms-appx:///Assets/Fluent/Chrome.png" },
             new() { Text = "Brave", ImageSource = "ms-appx:///Assets/Fluent/Brave.png" },
             new() { Text = "Vivaldi", ImageSource = "ms-appx:///Assets/Fluent/Vivaldi.png" },
-            new() { Text = "Comet", ImageSource = "ms-appx:///Assets/Fluent/Comet.png" },
             new() { Text = "Arc", ImageSource = "ms-appx:///Assets/Fluent/Arc.png" },
+            new() { Text = "Comet", ImageSource = "ms-appx:///Assets/Fluent/Comet.png" },
             new() { Text = "Firefox", ImageSource = "ms-appx:///Assets/Fluent/Firefox.png" },
             new() { Text = "Zen", ImageSource = "ms-appx:///Assets/Fluent/Zen.png" }
         };
