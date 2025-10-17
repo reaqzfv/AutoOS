@@ -398,6 +398,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             {
                 // show importing
                 SwitchPresenter.Value = "Import";
+                Search.Text = string.Empty;
 
                 // import nvram
                 using var process = new Process
@@ -475,6 +476,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
     {
         // show importing
         SwitchPresenter.Value = "Import";
+        Search.Text = string.Empty;
 
         // import nvram
         using var process = new Process

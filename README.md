@@ -22,8 +22,8 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Toggle XHCI Interrupt Moderation without having to restart your PC
 - Toggle between service states with configured functionality
 - Apply all hidden BIOS Settings in one click
-- Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Automatically import Epic Games and Steam titles from old install
+- Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Stop processes when running your game to automatically stop all unnecessary services and executables
 
 ## ⚠️ Current Issues
