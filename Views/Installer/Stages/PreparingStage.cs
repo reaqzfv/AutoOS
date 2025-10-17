@@ -49,9 +49,11 @@ public static class PreparingStage
 
     public static bool? Chrome;
     public static bool? Brave;
+    public static bool? Vivaldi;
+    public static bool? Comet;
+    public static bool? Arc;
     public static bool? Firefox;
     public static bool? Zen;
-    public static bool? Arc;
 
     public static bool? uBlock;
     public static bool? SponsorBlock;
@@ -152,9 +154,11 @@ public static class PreparingStage
 
             Chrome = (localSettings.Values["Browser"]?.ToString().Contains("Chrome") ?? false);
             Brave = (localSettings.Values["Browser"]?.ToString().Contains("Brave") ?? false);
+            Vivaldi = (localSettings.Values["Browser"]?.ToString().Contains("Vivaldi") ?? false);
+            Comet = (localSettings.Values["Browser"]?.ToString().Contains("Comet") ?? false);
+            Arc = (localSettings.Values["Browser"]?.ToString().Contains("Arc") ?? false);
             Firefox = (localSettings.Values["Browser"]?.ToString().Contains("Firefox") ?? false);
             Zen = (localSettings.Values["Browser"]?.ToString().Contains("Zen") ?? false);
-            Arc = (localSettings.Values["Browser"]?.ToString().Contains("Arc") ?? false);
 
             uBlock = (localSettings.Values["Extensions"]?.ToString().Contains("uBlock Origin") ?? false);
             SponsorBlock = (localSettings.Values["Extensions"]?.ToString().Contains("SponsorBlock") ?? false);

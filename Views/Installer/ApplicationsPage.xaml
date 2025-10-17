@@ -95,9 +95,9 @@
                             </GridView.ItemTemplate>
                             <GridView.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <controls:StaggeredPanel ColumnSpacing="8"
+                                    <controls:StaggeredPanel ColumnSpacing="12"
                                                              DesiredColumnWidth="155"
-                                                             RowSpacing="8" />
+                                                             RowSpacing="12" />
                                 </ItemsPanelTemplate>
                             </GridView.ItemsPanel>
                         </GridView>

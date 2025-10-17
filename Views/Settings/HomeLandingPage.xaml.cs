@@ -3,13 +3,11 @@ using CommunityToolkit.WinUI.Controls;
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.Win32;
-using System.Diagnostics;
-using System.Management;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
+using System.Diagnostics;
 
 namespace AutoOS.Views.Settings
 {
@@ -107,92 +105,16 @@ namespace AutoOS.Views.Settings
 
             _ = updater.ShowAsync();
 
-            var gpuAffinities = new List<int?>();
-
-            foreach (var query in new[]
-            {
-                "SELECT PNPDeviceID FROM Win32_VideoController",
-                "SELECT PNPDeviceID FROM Win32_USBController",
-                "SELECT PNPDeviceID FROM Win32_NetworkAdapter"
-            })
-            {
-                foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get().Cast<ManagementObject>())
-                {
-                    string path = obj["PNPDeviceID"]?.ToString();
-                    if (path?.StartsWith("PCI\\VEN_") != true)
-                        continue;
-
-                    int? affinityCore = null;
-                    using (var affinityKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}\Device Parameters\Interrupt Management\Affinity Policy"))
-                    {
-                        if (affinityKey?.GetValue("AssignmentSetOverride") is byte[] value && value.Length > 0)
-                        {
-                            for (int i = 0; i < value.Length; i++)
-                            {
-                                for (int bit = 0; bit < 8; bit++)
-                                {
-                                    if ((value[i] & (1 << bit)) != 0)
-                                    {
-                                        affinityCore = i * 8 + bit;
-                                        break;
-                                    }
-                                }
-                                if (affinityCore.HasValue) break;
-                            }
-                        }
-                    }
-
-                    if (query.Contains("VideoController"))
-                    {
-                        gpuAffinities.Add(affinityCore);
-                    }
-                    else if (query.Contains("USBController"))
-                    {
-                        if (affinityCore.HasValue)
-                            localSettings.Values["XhciAffinity"] = affinityCore.Value;
-                    }
-                    else if (query.Contains("NetworkAdapter"))
-                    {
-                        using var driverKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Enum\{path}");
-                        string driver = driverKey?.GetValue("Driver")?.ToString();
-                        if (string.IsNullOrEmpty(driver) || !driver.Contains('\\'))
-                            continue;
-
-                        using var classKey = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{driver}");
-                        if (classKey?.GetValue("*PhysicalMediaType")?.ToString() != "14")
-                            continue;
-
-                        if (int.TryParse(classKey.GetValue("*RssBaseProcNumber")?.ToString(), out int rssCore))
-                        {
-                            if (affinityCore.HasValue && rssCore == affinityCore.Value)
-                                localSettings.Values["NicAffinity"] = rssCore;
-                        }
-                    }
-                }
-            }
-
-            if (gpuAffinities.Count > 0 &&
-                gpuAffinities.All(a => a.HasValue) &&
-                gpuAffinities.Select(a => a.Value).Distinct().Count() == 1)
-            {
-                localSettings.Values["GpuAffinity"] = gpuAffinities[0].Value;
-            }
-
-            bool Reserve = new ManagementObjectSearcher("SELECT NumberOfCores FROM Win32_Processor")
-                .Get()
-                .Cast<ManagementObject>()
-                .Sum(m => Convert.ToInt32(m["NumberOfCores"])) >= 6;
-
             string previousTitle = string.Empty;
+            
+            string edgeVersion = "";
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-               // apply nic affinity
-                ("Applying NIC Affinity", async () => await ProcessActions.ApplyNicAffinity(), null),
-
-                // reserve cpus
-                ("Reserving CPUs", async () => await ProcessActions.Sleep(1000), () => Reserve == true),
-                ("Reserving CPUs", async () => await ProcessActions.ReserveCpus(), () => Reserve == true)
+                // fix broken registry path
+                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{{9459C573-B17A-45AE-9F64-1857B5D58CEE}}"" /v ""StubPath"" /f"), null),
+                ("Fixing broken registry path", async () => edgeVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")).ProductVersion), null),
+                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{{9459C573-B17A-45AE-9F64-1857B5D58CEE}}"" /v ""StubPath"" /t REG_SZ /d ""\""C:\Program Files (x86)\Microsoft\Edge\Application\{edgeVersion}\Installer\setup.exe\"" --configure-user-settings --verbose-logging --system-level --msedge --channel=stable"" /f"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -256,8 +178,7 @@ namespace AutoOS.Views.Settings
 
             StatusText.Text = "Update complete.";
             ProgressBar.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
-            await RunRestart();
-            //updater.IsPrimaryButtonEnabled = true;
+            updater.IsPrimaryButtonEnabled = true;
         }
 
         public async Task RunDownload(string url, string path, string file = null)
@@ -341,26 +262,6 @@ namespace AutoOS.Views.Settings
             };
 
             await download.StartAsync();
-        }
-
-        public async Task RunRestart()
-        {
-            StatusText.Text = "Restarting in 3...";
-            await Task.Delay(1000);
-            StatusText.Text = "Restarting in 2...";
-            await Task.Delay(1000);
-            StatusText.Text = "Restarting in 1...";
-            await Task.Delay(1000);
-            StatusText.Text = "Restarting...";
-            await Task.Delay(750);
-            ProcessStartInfo processStartInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c shutdown /r /t 0",
-                UseShellExecute = false,
-                CreateNoWindow = true,
-            };
-            Process.Start(processStartInfo);
         }
     }
 }
