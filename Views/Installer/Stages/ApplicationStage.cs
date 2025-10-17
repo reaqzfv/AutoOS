@@ -21,6 +21,7 @@ public static class ApplicationStage
         bool? AlwaysShowTrayIcons = PreparingStage.AlwaysShowTrayIcons;
         bool? AppleMusic = PreparingStage.AppleMusic;
         bool? Tidal = PreparingStage.Tidal;
+        bool? Qobuz = PreparingStage.Qobuz;
         bool? AmazonMusic = PreparingStage.AmazonMusic;
         bool? DeezerMusic = PreparingStage.DeezerMusic;
         bool? Spotify = PreparingStage.Spotify;
@@ -43,11 +44,11 @@ public static class ApplicationStage
         string dolbyAccessVersion = "";
         string appleMusicVersion = "";
         string tidalVersion = "";
-        string spotifyVersion = "";
         string amazonMusicVersion = "";
         string deezerMusicVersion = "";
-        string whatsAppVersion = "";
+        string spotifyVersion = "";
         string discordVersion = "";
+        string whatsAppVersion = "";
 
         string scheduleMode = ScheduleMode switch
         {
@@ -241,6 +242,19 @@ public static class ApplicationStage
             // log in to tidal
             ("Please log in to your TIDAL account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\WiMPMusic.27241E05630EA_" + tidalVersion + @"_x86__kn85bz84x7te4\app", "TIDAL.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Tidal == true),
 
+            // download qobuz
+            ("Downloading Qobuz", async () => await ProcessActions.RunDownload("https://desktop.qobuz.com/releases/win32/x64/windows7_8_10/8.1.0-b019/Qobuz_Installer.exe", Path.GetTempPath(), "Qobuz_Installer.exe"), () => Qobuz == true),
+
+            // install qobuz
+            ("Installing Qobuz", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\Qobuz_Installer.exe"" -s"), () => Qobuz == true),
+
+            // pin qobuz to the taskbar
+            ("Pinning Qobuz to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", $@"-Type Link -Path ""{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"Microsoft\Windows\Start Menu\Programs\Qobuz\Qobuz.lnk")}"""), () => Qobuz == true),
+
+            // log in to qobuz
+            ("Please log in to your Qobuz account", async () => await ProcessActions.Sleep(1000), () => Qobuz == true),
+            ("Please log in to your Qobuz account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Qobuz", "Qobuz.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Qobuz == true),
+
             // download amazon music
             ("Downloading Amazon Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AmazonMobileLLC.AmazonMusic", "7fb9f901-50c2-4974-a65c-01b4cd17ca77", "appx", 0, false), () => AmazonMusic == true),
 
@@ -308,20 +322,6 @@ public static class ApplicationStage
             // disable spotify startup entry
             ("Disabling Spotify startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Spotify"" /t REG_BINARY /d ""01"" /f"), () => Spotify == true),
 
-            // download whatsapp
-            ("Downloading WhatsApp", async () => await ProcessActions.RunMicrosoftStoreDownload("5319275A.WhatsAppDesktop", "3dadc9b1-3603-496c-a6d1-bf2fda81df89", "msixbundle", 0, false), () => WhatsApp == true),
-
-            // install whatsapp
-            ("Installing WhatsApp", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\5319275A.WhatsAppDesktop (Package)\"" | Select-Object -First 1).FullName"), () => WhatsApp == true),
-            ("Installing WhatsApp", async () => whatsAppVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"5319275A.WhatsAppDesktop\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => WhatsApp == true),
-
-            // pin whatsapp to the taskbar
-            ("Pinning WhatsApp to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path 5319275A.WhatsAppDesktop_cv1g1gvanyjgm!App"), () => WhatsApp == true),
-
-            // log in to whatsapp
-            ("Please log in to your WhatsApp account", async () => await ProcessActions.Sleep(1000), () => WhatsApp == true),
-            ("Please log in to your WhatsApp account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\5319275A.WhatsAppDesktop_" + whatsAppVersion + "_x64__cv1g1gvanyjgm", "WhatsApp.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => WhatsApp == true),
-
             // download discord
             ("Downloading Discord", async () => await ProcessActions.RunDownload("https://discord.com/api/downloads/distributions/app/installers/latest?channel=stable&platform=win&arch=x64", Path.GetTempPath(), "DiscordSetup.exe"), () => Discord == true),
 
@@ -368,6 +368,20 @@ public static class ApplicationStage
             ("Debloating Discord", async () => await Task.Run(() => { try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord", "app-" + discordVersion, "modules", "discord_rpc-1"), true); } catch { } }), () => Discord == true),
             ("Debloating Discord", async () => await Task.Run(() => { try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord", "app-" + discordVersion, "modules", "discord_spellcheck-1"), true); } catch { } }), () => Discord == true),
             ("Debloating Discord", async () => await Task.Run(() => { try { Directory.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord", "app-" + discordVersion, "modules", "discord_zstd-1"), true); } catch { } }), () => Discord == true),
+
+            // download whatsapp
+            ("Downloading WhatsApp", async () => await ProcessActions.RunMicrosoftStoreDownload("5319275A.WhatsAppDesktop", "3dadc9b1-3603-496c-a6d1-bf2fda81df89", "msixbundle", 0, false), () => WhatsApp == true),
+
+            // install whatsapp
+            ("Installing WhatsApp", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\5319275A.WhatsAppDesktop (Package)\"" | Select-Object -First 1).FullName"), () => WhatsApp == true),
+            ("Installing WhatsApp", async () => whatsAppVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"5319275A.WhatsAppDesktop\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => WhatsApp == true),
+
+            // pin whatsapp to the taskbar
+            ("Pinning WhatsApp to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path 5319275A.WhatsAppDesktop_cv1g1gvanyjgm!App"), () => WhatsApp == true),
+
+            // log in to whatsapp
+            ("Please log in to your WhatsApp account", async () => await ProcessActions.Sleep(1000), () => WhatsApp == true),
+            ("Please log in to your WhatsApp account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\5319275A.WhatsAppDesktop_" + whatsAppVersion + "_x64__cv1g1gvanyjgm", "WhatsApp.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => WhatsApp == true),
 
             // download epic games launcher
             ("Downloading Epic Games Launcher", async () => await ProcessActions.RunDownload("https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi", Path.GetTempPath(), "EpicGamesLauncherInstaller.msi"), () => EpicGames == true),

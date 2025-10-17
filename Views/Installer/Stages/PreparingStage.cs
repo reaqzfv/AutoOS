@@ -71,14 +71,15 @@ public static class PreparingStage
     public static string LightTime;
     public static string DarkTime;
 
-    public static bool? Spotify;
     public static bool? AppleMusic;
+    public static bool? Tidal;
+    public static bool? Qobuz;
     public static bool? AmazonMusic;
     public static bool? DeezerMusic;
-    public static bool? Tidal;
+    public static bool? Spotify;
 
-    public static bool? WhatsApp;
     public static bool? Discord;
+    public static bool? WhatsApp;
     public static bool? EpicGames;
     public static bool? EpicGamesAccount;
     public static bool? EpicGamesGames;
@@ -178,12 +179,13 @@ public static class PreparingStage
 
             AppleMusic = (localSettings.Values["Music"]?.ToString().Contains("Apple Music") ?? false);
             Tidal = (localSettings.Values["Music"]?.ToString().Contains("TIDAL") ?? false);
+            Qobuz = (localSettings.Values["Music"]?.ToString().Contains("Qobuz") ?? false);
             AmazonMusic = (localSettings.Values["Music"]?.ToString().Contains("Amazon Music") ?? false);
             DeezerMusic = (localSettings.Values["Music"]?.ToString().Contains("Deezer Music") ?? false);
             Spotify = (localSettings.Values["Music"]?.ToString().Contains("Spotify") ?? false);
 
-            WhatsApp = (localSettings.Values["Messaging"]?.ToString().Contains("WhatsApp") ?? false);
             Discord = (localSettings.Values["Messaging"]?.ToString().Contains("Discord") ?? false);
+            WhatsApp = (localSettings.Values["Messaging"]?.ToString().Contains("WhatsApp") ?? false);
 
             EpicGames = (localSettings.Values["Launchers"]?.ToString().Contains("Epic Games") ?? false);
             Steam = (localSettings.Values["Launchers"]?.ToString().Contains("Steam") ?? false);
