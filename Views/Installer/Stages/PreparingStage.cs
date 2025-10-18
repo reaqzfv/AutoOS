@@ -71,6 +71,14 @@ public static class PreparingStage
     public static string LightTime;
     public static string DarkTime;
 
+    public static bool? Word;
+    public static bool? Excel;
+    public static bool? PowerPoint;
+    public static bool? OneNote;
+    public static bool? Teams;
+    public static bool? Outlook;
+    public static bool? OneDrive;
+    
     public static bool? AppleMusic;
     public static bool? Tidal;
     public static bool? Qobuz;
@@ -177,6 +185,14 @@ public static class PreparingStage
             ScheduleMode = localSettings.Values["ScheduleMode"]?.ToString();
             LightTime = localSettings.Values["LightTime"]?.ToString();
             DarkTime = localSettings.Values["DarkTime"]?.ToString();
+
+            Word = (localSettings.Values["Office"]?.ToString().Contains("Word") ?? false);
+            Excel = (localSettings.Values["Office"]?.ToString().Contains("Excel") ?? false);
+            PowerPoint = (localSettings.Values["Office"]?.ToString().Contains("PowerPoint") ?? false);
+            OneNote = (localSettings.Values["Office"]?.ToString().Contains("OneNote") ?? false);
+            Teams = (localSettings.Values["Office"]?.ToString().Contains("Teams") ?? false);
+            Outlook = (localSettings.Values["Office"]?.ToString().Contains("Outlook") ?? false);
+            OneDrive = (localSettings.Values["Office"]?.ToString().Contains("OneDrive") ?? false);
 
             AppleMusic = (localSettings.Values["Music"]?.ToString().Contains("Apple Music") ?? false);
             Tidal = (localSettings.Values["Music"]?.ToString().Contains("TIDAL") ?? false);

@@ -25,9 +25,7 @@
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
                 <dev:Card Title="Office"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}"
-                          Visibility="Collapsed">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Office"
                                   IsMultiSelectCheckBoxEnabled="False"
@@ -65,8 +63,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Music"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Music"
                                   IsMultiSelectCheckBoxEnabled="False"
@@ -104,8 +101,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Messaging"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Messaging"
                                   IsMultiSelectCheckBoxEnabled="False"
@@ -143,8 +139,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Launchers"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Launchers"
                                   IsMultiSelectCheckBoxEnabled="False"

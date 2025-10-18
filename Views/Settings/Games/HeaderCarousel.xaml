@@ -576,8 +576,7 @@
                                     </StackPanel>
                                     <!--  Description  -->
                                     <dev:Card Title="Description"
-                                              Margin="0,24,0,8"
-                                              Style="{StaticResource StoreCardStyle}">
+                                              Margin="0,24,0,8">
                                         <TextBlock Text="{TemplateBinding Description}"
                                                    TextWrapping="Wrap" />
                                     </dev:Card>
@@ -610,7 +609,6 @@
                                     <dev:Card x:Name="Screenshots_Card"
                                               Title="Screenshots"
                                               Margin="0,0,0,8"
-                                              Style="{StaticResource StoreCardStyle}"
                                               Visibility="Collapsed">
                                         <dev:Card.TitleContent>
                                             <Button Margin="0,4,16,4"
@@ -679,8 +677,7 @@
                                         </ItemsControl>
                                     </ScrollViewer>
                                     <dev:Card Title="Additional information"
-                                              Margin="0,0,0,8"
-                                              Style="{StaticResource StoreCardStyle}">
+                                              Margin="0,0,0,8">
                                         <ItemsRepeater x:Name="PART_ItemsRepeater"
                                                        ItemsSource="{Binding InfoItems, RelativeSource={RelativeSource TemplatedParent}}">
                                             <ItemsRepeater.Layout>
@@ -736,7 +733,6 @@
                                     <dev:Card x:Name="PresentationMode"
                                               Title="Settings"
                                               Margin="0,0,0,8"
-                                              Style="{StaticResource StoreCardStyle}"
                                               Visibility="Collapsed">
                                         <!--  Presentation Mode  -->
                                         <StackPanel>

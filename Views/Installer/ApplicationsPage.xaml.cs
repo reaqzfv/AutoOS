@@ -40,11 +40,10 @@ public sealed partial class ApplicationsPage : Page
         {
             new() { Text = "Word", ImageSource = "ms-appx:///Assets/Fluent/Word.png" },
             new() { Text = "Excel", ImageSource = "ms-appx:///Assets/Fluent/Excel.png" },
-            new() { Text = "Powerpoint", ImageSource = "ms-appx:///Assets/Fluent/Powerpoint.png" },
+            new() { Text = "PowerPoint", ImageSource = "ms-appx:///Assets/Fluent/Powerpoint.png" },
             new() { Text = "OneNote", ImageSource = "ms-appx:///Assets/Fluent/OneNote.png" },
             new() { Text = "Teams", ImageSource = "ms-appx:///Assets/Fluent/Teams.png" },
             new() { Text = "Outlook", ImageSource = "ms-appx:///Assets/Fluent/Outlook.png" },
-            new() { Text = "Sharepoint", ImageSource = "ms-appx:///Assets/Fluent/Sharepoint.png" },
             new() { Text = "OneDrive", ImageSource = "ms-appx:///Assets/Fluent/OneDrive.png" }
         };
 

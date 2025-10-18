@@ -25,8 +25,7 @@
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
                 <dev:Card Title="Browser"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Browsers"
                                   IsMultiSelectCheckBoxEnabled="False"
@@ -64,8 +63,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Extensions"
-                          Padding="24,24,24,12"
-                          Style="{StaticResource StoreCardStyle}">
+                          Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Extensions"
                                   IsMultiSelectCheckBoxEnabled="False"
