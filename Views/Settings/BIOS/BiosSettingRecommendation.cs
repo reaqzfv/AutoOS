@@ -99,10 +99,10 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Thermal Monitor", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CFG Lock", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU AES Instructions", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "VT-d", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel Virtualization Tech", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel (VMX) Virtualization Technology", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "VT-d", Type = "Option", RecommendedOption = "Enabled" }, // required for faceitt
+        new BiosSettingRecommendation { SetupQuestion = "Intel Virtualization Tech", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
+        new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
+        new BiosSettingRecommendation { SetupQuestion = "Intel (VMX) Virtualization Technology", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "L1 Substates", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "L1 Low", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Tcc Activation Offset", Type = "Value", RecommendedOption = "0" },
@@ -296,11 +296,11 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Remote Platform Erase Feature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Tunneling over USB4", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Discrete Thunderbolt(TM) Support", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "IGD VTD Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "IPU VTD Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "IOP VTD Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Three Strike Counter", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "IGD VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
+        new BiosSettingRecommendation { SetupQuestion = "IPU VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
+        new BiosSettingRecommendation { SetupQuestion = "IOP VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "Control Iommu Pre-boot Behavior", Type = "Option", RecommendedOption = "Disable IOMMU" },
+        new BiosSettingRecommendation { SetupQuestion = "Three Strike Counter", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "D0I3 Setting for HECI Disable", Type = "Option", RecommendedOption = "Enabled" },
