@@ -21,7 +21,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Easily update GPU driver with one click
 - Toggle XHCI Interrupt Moderation without having to restart your PC
 - Toggle between service states with configured functionality
-- Apply all hidden BIOS Settings in one click
+- Apply all hidden BIOS Settings (500+) in one click
 - Automatically import Epic Games and Steam titles from old install
 - Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
 - Stop processes when running your game to automatically stop all unnecessary services and executables
@@ -32,71 +32,95 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 🚀 Getting Started
 
 > [!NOTE]
-> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 9!
+> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 10!
 
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
 
-**Step 2:** Open CMD as Admin and don't close it until the installation is done.
+**Step 2:** Open PowerShell as Admin and don't close it until finished.
 
-**Step 3:** Open Disk Management.
+**Step 3:**  Paste this into the PowerShell window to check if your disk is using the GPT partition style. 
 
-**Step 4:** Find your your C: partition / biggest partition.
-
-**Step 5:** Right click on it and select "Shrink Volume".
-
-**Step 6:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher. If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer).
-
-**Step 7:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the CMD window (e.g. E:).
-
-```bat
-set TARGETDRIVE=
+```ps1
+$DISKNUMBER = (Get-Partition -DriveLetter C | Get-Disk).Number; (Get-Partition -DriveLetter C | Get-Disk).PartitionStyle
 ```
 
-**Step 8:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all into one folder. Then define this variable in the CMD window.
+If it outputs `MBR` you must first convert your disk to GPT using this command. After the conversion you want to make sure that you set `Boot Mode` to `UEFI` in your BIOS so that you will be able to boot.
 
-```bat
-set DRIVERDIR=
+```ps1
+mbr2gpt /convert /disk:$DISKNUMBER /allowFullOS
 ```
 
-**Step 9:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17782981069). (Latest build from UUPDump - see [uup-dump-get-windows-iso](https://github.com/tinodin/uup-dump-get-windows-iso) for details)
+**Step 4:**  Paste this into the PowerShell window to check if your disk is BitLocker encrypted. 
 
-**Step 10:** Extract the downloaded zip file.
-
-**Step 11:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the CMD window.
-
-```bat
-set EXTRACTED_ISO=
+```ps1
+(Get-BitLockerVolume -MountPoint "C:").VolumeStatus
 ```
 
-**Step 12:** Paste this into the CMD window to apply the `install.wim` to the new partition.
+If it outputs `FullyEncrypted` you must first disable BitLocker using this command.
 
-```bat
-DISM /Apply-Image /ImageFile:%EXTRACTED_ISO%\sources\install.wim /Index:1 /ApplyDir:%TARGETDRIVE%
+```ps1
+Disable-BitLocker -MountPoint "C:"
 ```
 
-**Step 13:** Paste this into the CMD window to create the `Panther` folder, then download [`unattend.xml`](https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml) and paste it into the folder (THIS IS IMPORTANT!).
+**Step 4:** Open Disk Management.
 
-```bat
-mkdir %TARGETDRIVE%\Windows\Panther && explorer %TARGETDRIVE%\Windows\Panther
+**Step 5:** Find your your C: partition / biggest partition.
+
+**Step 6:** Right click on it and select "Shrink Volume".
+
+**Step 7:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher 131072 (=128GB), 262144 (=256GB), 524288 (=512GB). If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer), then use the `Split` function to create a new partition.
+
+**Step 8:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `"E:"`).
+
+```ps1
+$TARGETDRIVE = ""
 ```
 
-**Step 14:** Paste this into the CMD window to install the drivers you downloaded before.
+**Step 9:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all `(.exe/.zip)` into one folder using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"I:\drivers"`).
 
-```bat
-DISM /Image:%TARGETDRIVE%\ /Add-Driver /Driver:%DRIVERDIR% /Recurse
+```ps1
+$DRIVERDIR = ""
 ```
 
-**Step 15:** Paste this into the CMD window to create the boot entry.
+**Step 10:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17782981069). Other ISOs are going to give you worse results.
 
-```bat
-bcdboot %TARGETDRIVE%\Windows & bcdedit /set {default} description "AutoOS" & label %TARGETDRIVE% AutoOS
+**Step 11:** Extract the downloaded zip file.
+
+**Step 12:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"C:\Users\user\Downloads\23H2\23H2"`).
+
+```ps1
+$EXTRACTED_ISO = ""
 ```
 
-**Step 16:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
+**Step 13:** Paste this into the PowerShell window to apply the `install.wim` to the new partition.
 
-**Step 17:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
+```ps1
+DISM /Apply-Image /ImageFile:$EXTRACTED_ISO\sources\install.wim /Index:1 /ApplyDir:$TARGETDRIVE
+```
 
-**Step 18:** Select your settings and click "Install AutoOS".
+**Step 14:** Paste this into the PowerShell window to install the drivers you downloaded before.
+
+```ps1
+DISM /Image:$TARGETDRIVE\ /Add-Driver /Driver:$DRIVERDIR /Recurse
+```
+
+**Step 15:** Paste this into the PowerShell window to create the `Panther` folder and download the `unattend.xml`.
+
+```ps1
+New-Item -ItemType Directory -Path $TARGETDRIVE\Windows\Panther -Force | Out-Null; Invoke-WebRequest -Uri "https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml" -OutFile "$TARGETDRIVE\Windows\Panther\unattend.xml"
+```
+
+**Step 16:** Paste this into the PowerShell window to create the boot entry.
+
+```ps1
+bcdboot $TARGETDRIVE\Windows; bcdedit /set "{default}" description "AutoOS"; label $TARGETDRIVE "AutoOS"
+```
+
+**Step 18:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
+
+**Step 19:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
+
+**Step 20:** Select your settings and click "Install AutoOS".
 
 ## 📷Screenshots
 ### Installer
@@ -224,6 +248,24 @@ bcdboot %TARGETDRIVE%\Windows & bcdedit /set {default} description "AutoOS" & la
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Settings.png"/></td>
 </tr>
 </table>
+
+## ⚙️ Build instructions
+
+### 1. 🖥️ Visual Studio 2026 Insiders
+
+Ensure that your installation includes the appropriate workloads:
+
+- On the **Workloads** tab of the Visual Studio installer, check:
+  - **.NET Desktop Development**
+  - **WinUI Application Development**
+
+
+### 2. 🔗 Clone the repository
+
+Clone the repository and run this in the terminal inside of Visual Studio.  
+```
+dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
+```
 
 ## 🙏 Credits
 
