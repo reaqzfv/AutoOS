@@ -77,10 +77,10 @@
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.MarkdownTextBlock" Version="0.1.251002-build.2316" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
     <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.250402" />
-    <PackageReference Include="DevWinUI" Version="9.1.0" />
-    <PackageReference Include="DevWinUI.Controls" Version="9.1.0" />
+    <PackageReference Include="DevWinUI" Version="9.2.0" />
+    <PackageReference Include="DevWinUI.Controls" Version="9.2.0" />
     <PackageReference Include="Downloader" Version="4.0.3" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.205">
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.217">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

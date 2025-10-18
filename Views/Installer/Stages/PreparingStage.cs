@@ -85,6 +85,7 @@ public static class PreparingStage
     public static bool? EpicGamesGames;
     public static bool? Steam;
     public static bool? SteamGames;
+    public static bool? RiotClient;
 
     public static bool? Scheduling;
     public static bool? Reserve;
@@ -189,6 +190,7 @@ public static class PreparingStage
 
             EpicGames = (localSettings.Values["Launchers"]?.ToString().Contains("Epic Games") ?? false);
             Steam = (localSettings.Values["Launchers"]?.ToString().Contains("Steam") ?? false);
+            RiotClient = (localSettings.Values["Launchers"]?.ToString().Contains("Riot Client") ?? false);
 
             Scheduling = (localSettings.Values["Affinities"]?.ToString() == "Automatic");
 

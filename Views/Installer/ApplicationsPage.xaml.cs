@@ -67,7 +67,8 @@ public sealed partial class ApplicationsPage : Page
         Launchers.ItemsSource = new List<GridViewItem>
         {
             new() { Text = "Epic Games", ImageSource = "ms-appx:///Assets/Fluent/EpicGames.png" },
-            new() { Text = "Steam", ImageSource = "ms-appx:///Assets/Fluent/Steam.png" }
+            new() { Text = "Steam", ImageSource = "ms-appx:///Assets/Fluent/Steam.png" },
+            new() { Text = "Riot Client", ImageSource = "ms-appx:///Assets/Fluent/RiotClient.png" }
         };
     }
 

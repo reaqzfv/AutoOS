@@ -32,6 +32,7 @@ public static class ApplicationStage
         bool? EpicGamesGames = PreparingStage.EpicGamesGames;
         bool? Steam = PreparingStage.Steam;
         bool? SteamGames = PreparingStage.SteamGames;
+        bool? RiotClient = PreparingStage.RiotClient;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -434,6 +435,18 @@ public static class ApplicationStage
             // disable steam startup entries
             ("Disabling Steam startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Steam Client Service"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop Steam Client Service"), () => Steam == true),
             ("Disabling Steam startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Steam"" /t REG_BINARY /d ""01"" /f"), () => Steam == true),
+
+             download riot client
+            ("Downloading Riot Client", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/lhjc10gc9i31bptzw6ism/Riot-Games.zip?rlkey=07n3ek47oaus1olu86u08yw04&st=t0vspqv4&dl=0", Path.GetTempPath(), "Riot Games.zip"), () => RiotClient == true),
+
+            // install riot client
+            ("Installing Riot Client", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "Riot Games.zip"), @"C:\"), () => RiotClient == true),
+
+            // log in to riot client
+            ("Please log in to your Riot account", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Riot Games\Riot Client\RiotClientServices.exe", WindowStyle = ProcessWindowStyle.Maximized }); while (Process.GetProcessesByName("RiotClientCrashHandler").Length == 0 || Process.GetProcessesByName("Riot Client").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("Riot Client").Length > 0) await Task.Delay(500); }), () => RiotClient == true),
+
+            // disable riot client startup entries
+            ("Disabling Riot Client startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""RiotClient"" /t REG_BINARY /d ""01"" /f"), () => RiotClient == true)
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
