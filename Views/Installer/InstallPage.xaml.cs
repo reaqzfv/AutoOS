@@ -46,7 +46,6 @@ public sealed partial class InstallPage : Page
         await SecurityStage.Run();
         await FileSystemStage.Run();
         await MemoryManagementStage.Run();
-        await EventTraceSessionsStage.Run();
         await ActivationStage.Run();
         await GraphicsStage.Run();
         await NetworkStage.Run();
@@ -61,6 +60,7 @@ public sealed partial class InstallPage : Page
         await GamesStage.Run();
         await SchedulingStage.Run();
         await ServicesStage.Run();
+        await EventTraceSessionsStage.Run();
         await CleanupStage.Run();
     }
 }
