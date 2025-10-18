@@ -223,6 +223,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "PCH ASPM", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "DMI ASPM", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB power delivery in Soft Off state (S5)", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "USB power delivery in S4 state", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Low Power S0 Idle Capability", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Sensor Standby", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Power Loss Notification Feature", Type = "Option", RecommendedOption = "Disabled" },
@@ -582,6 +583,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Hotplug Mode Control(Device6)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Hotplug Mode Control(Device7)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Hotplug Mode Control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Discrete GPU Hotplug Mode", Type = "Option", RecommendedOption = "Non-Hotplug Mode" },
         new BiosSettingRecommendation { SetupQuestion = "Chipset SATA Port Hot Plug", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Latency Killer", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SMM Isolation Support", Type = "Option", RecommendedOption = "Disabled" },
@@ -594,6 +596,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "STAPM", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ABL Console Out Control", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "S0I3", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SEV Control", Type = "Option", RecommendedOption = "Disable" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
@@ -621,6 +624,9 @@ public static class BiosSettingRecommendationsList
         // ads
         new BiosSettingRecommendation { SetupQuestion = "Download & Install ARMOURY CRATE app", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Download & Install MyASUS service & app", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Auto Install ASUS Utilities", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Download and Install ASUS DriverHub", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Auto BitLocker", Type = "Option", RecommendedOption = "Block Auto BitLocker" },
         new BiosSettingRecommendation { SetupQuestion = "MSI Driver Utility Installer", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Gigabyte Utilities Downloader", Type = "Option", RecommendedOption = "Disabled" },
 
