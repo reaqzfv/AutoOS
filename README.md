@@ -104,7 +104,7 @@ DISM /Image:$TARGETDRIVE\ /Add-Driver /Driver:$DRIVERDIR /Recurse
 **Step 15:** Paste this into the PowerShell window to create the `Panther` folder and download the `unattend.xml`.
 
 ```ps1
-New-Item -ItemType Directory -Path $TARGETDRIVE\Windows\Panther -Force | Out-Null; Invoke-WebRequest -Uri "https://github.com/tinodin/AutoOS/releases/latest/download/unattend.xml" -OutFile "$TARGETDRIVE\Windows\Panther\unattend.xml"
+New-Item -ItemType Directory -Path $TARGETDRIVE\Windows\Panther -Force | Out-Null; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/tinodin/AutoOS/master/unattend.xml" -OutFile $TARGETDRIVE\Windows\Panther\unattend.xml
 ```
 
 **Step 16:** Paste this into the PowerShell window to create the boot entry.

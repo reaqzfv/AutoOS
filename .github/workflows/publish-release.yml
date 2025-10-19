@@ -107,11 +107,11 @@ jobs:
       env:
         Platform: ${{ matrix.platform }}
     
-    # Add appinstaller and unattend
-    - name: Copy appinstaller and unattend to output folder
+    # Add appinstaller
+    - name: Copy appinstaller to output folder
       run: |
         $dest = "Packages/${{ env.APP_NAME }}_${{ steps.get-version.outputs.version }}_x64_Test"
-        Copy-Item -Path "${{ env.APP_NAME }}.appinstaller", "unattend.xml" -Destination $dest
+        Copy-Item -Path "${{ env.APP_NAME }}.appinstaller" -Destination $dest
       shell: pwsh
 
     # Remove PFX
