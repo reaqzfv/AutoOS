@@ -14,12 +14,14 @@ public sealed partial class GraphicsPage : Page
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
     private bool isInitializingHDCPState = true;
+    private bool isInitializingHDMIDPAudioState = true;
 
     public GraphicsPage()
     {
         InitializeComponent();
         LoadGpus();
         GetHDCPState();
+        GetHDMIDPAudioState();
     }
 
     private async void LoadGpus()
@@ -471,6 +473,88 @@ public sealed partial class GraphicsPage : Page
         var infoBar = new InfoBar
         {
             Title = HDCP.IsOn ? "Successfully enabled High-Bandwidth Digital Content Protection (HDCP)." : "Successfully disabled High-Bandwidth Digital Content Protection (HDCP).",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Success,
+            Margin = new Thickness(5)
+        };
+        GpuInfo.Children.Add(infoBar);
+
+        // delay
+        await Task.Delay(2000);
+
+        // remove infobar
+        GpuInfo.Children.Clear();
+    }
+
+    private async void GetHDMIDPAudioState()
+    {
+        var toggles = new[] { NVIDIA_HDMIDPAudio, AMD_HDMIDPAudio, INTEL_HDMIDPAudio };
+
+        foreach (var toggle in toggles)
+        {
+            toggle.IsOn = await Task.Run(() =>
+            {
+                return new ManagementObjectSearcher(
+                    "SELECT * FROM Win32_PnPEntity WHERE Description = 'High Definition Audio Device'")
+                       .Get()
+                       .Cast<ManagementObject>()
+                       .Any(device => device["Status"]?.ToString() == "OK");
+            });
+        }
+
+        isInitializingHDMIDPAudioState = false;
+    }
+
+    private async void HDMIDPAudio_Toggled(object sender, RoutedEventArgs e)
+    {
+        // return if still initializing
+        if (isInitializingHDMIDPAudioState) return;
+
+        var toggle = sender as ToggleSwitch;
+
+        // remove infobar
+        GpuInfo.Children.Clear();
+
+        // add infobar
+        GpuInfo.Children.Add(new InfoBar
+        {
+            Title = toggle.IsOn ? "Enabling High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio..." : "Disabling High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio...",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Informational,
+            Margin = new Thickness(5)
+        });
+
+        // toggle hdmi/dp audio
+        bool isOn = toggle.IsOn;
+
+        await Task.Run(() =>
+        {
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = @$"-ExecutionPolicy Bypass -Command ""Get-PnpDevice | Where-Object {{ $_.FriendlyName -eq 'High Definition Audio Device' }} | {(isOn ? "Enable" : "Disable")}-PnpDevice -Confirm:$false""",
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
+        });
+
+        // delay
+        await Task.Delay(400);
+
+        // remove infobar
+        GpuInfo.Children.Clear();
+
+        // add infobar
+        var infoBar = new InfoBar
+        {
+            Title = toggle.IsOn ? "Successfully enabled High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio." : "Successfully disabled High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio.",
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,

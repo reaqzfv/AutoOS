@@ -160,8 +160,6 @@ public sealed partial class DevicesPage : Page
 
     private async void GetHIDState()
     {
-        isInitializingHIDState = true;
-
         HID.IsOn = await Task.Run(() =>
         {
             return new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Description LIKE '%HID%'")
@@ -200,23 +198,22 @@ public sealed partial class DevicesPage : Page
         localSettings.Values["HumanInterfaceDevices"] = HID.IsOn ? 1 : 0;
 
         // toggle hid devices
-        string command = HID.IsOn
-                            ? "Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Enable-PnpDevice -Confirm:$false"
-                            : "Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false";
+        bool isOn = HID.IsOn;
 
         await Task.Run(() =>
         {
-            var processInfo = new ProcessStartInfo("powershell", $"-Command \"{command}\"")
+            var process = new Process
             {
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = @$"-ExecutionPolicy Bypass -Command ""Get-PnpDevice -Class HIDClass | Where-Object {{ $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard' }} | {(isOn ? "Enable" : "Disable")}-PnpDevice -Confirm:$false""",
+                    CreateNoWindow = true
+                }
             };
 
-            using (var process = Process.Start(processInfo))
-            {
-                process.WaitForExit();
-            }
+            process.Start();
+            process.WaitForExit();
         });
 
         // cleanup devices

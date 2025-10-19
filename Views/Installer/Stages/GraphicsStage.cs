@@ -16,6 +16,7 @@ public static class GraphicsStage
         bool? NVIDIA = PreparingStage.NVIDIA;
         bool? AMD = PreparingStage.AMD;
         bool? HDCP = PreparingStage.HDCP;
+        bool? HDMIDPAudio = PreparingStage.HDMIDPAudio;
         bool? AlwaysShowTrayIcons = PreparingStage.AlwaysShowTrayIcons;
         bool? MSI = PreparingStage.MSI;
         bool? CRU = PreparingStage.CRU;
@@ -224,6 +225,9 @@ public static class GraphicsStage
 
             // disable dynamic p-state
             ("Disabling dynamic p-state", async () => await ProcessActions.RunPowerShellScript("pstate.ps1", ""), () => NVIDIA == true),
+
+            // disable high-definition multimedia interface (hdmi)/displayport (dp) audio
+            ("Disabling High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio", async () => await ProcessActions.RunPowerShell("Get-PnpDevice | Where-Object { $_.FriendlyName -eq 'High Definition Audio Device' } | Disable-PnpDevice -Confirm:$false"), () => HDMIDPAudio == false),
 
             // download msi afterburner
             ("Downloading MSI Afterburner", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/6dvl62kgm3z38x49752bt/MSI-Afterburner.zip?rlkey=h2m2riyjisrb3ph0i8j0q4eu5&st=l87whmmi&dl=0", Path.GetTempPath(), "MSI Afterburner.zip"), null),

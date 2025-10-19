@@ -193,7 +193,7 @@ public sealed partial class InternetPage : Page
             Margin = new Thickness(5)
         });
 
-        // toggle power service
+        // toggle wol
         var process = new Process
         {
             StartInfo = new ProcessStartInfo

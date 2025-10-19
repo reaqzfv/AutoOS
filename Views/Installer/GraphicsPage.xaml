@@ -68,6 +68,11 @@
                             <ToggleSwitch x:Name="HDCP"
                                           Toggled="HDCP_Toggled" />
                         </dev:SettingsCard>
+                        <dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
+                                          Header="High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio">
+                            <ToggleSwitch x:Name="HDMIDPAudio"
+                                          Toggled="HDMIDPAudio_Toggled" />
+                        </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup Margin="0,0,0,10"

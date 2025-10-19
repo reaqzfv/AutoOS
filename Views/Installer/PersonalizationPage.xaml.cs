@@ -242,14 +242,14 @@ public sealed partial class PersonalizationPage : Page
 
     private void GetTrayIconsState()
     {
-        if (localSettings.Values["AlwaysShowTrayIcons"] is int value)
-        {
-            TrayIcons.IsChecked = value == 1;
-        }
-        else
+        if (!localSettings.Values.TryGetValue("AlwaysShowTrayIcons", out object value))
         {
             localSettings.Values["AlwaysShowTrayIcons"] = 1;
             TrayIcons.IsChecked = true;
+        }
+        else
+        {
+            TrayIcons.IsChecked = Convert.ToInt32(value) == 1;
         }
 
         isInitializingTrayIconsState = false;

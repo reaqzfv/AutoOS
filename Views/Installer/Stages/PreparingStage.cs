@@ -44,6 +44,7 @@ public static class PreparingStage
     public static bool? NVIDIA;
     public static bool? AMD;
     public static bool? HDCP;
+    public static bool? HDMIDPAudio;
     public static bool? MSI;
     public static bool? CRU;
 
@@ -159,6 +160,7 @@ public static class PreparingStage
             AMD = (localSettings.Values["GpuBrand"]?.ToString().Contains("AMD") ?? false);
 
             HDCP = (localSettings.Values["HighDefinitionContentProtection"]?.ToString() == "1");
+            HDMIDPAudio = (localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"]?.ToString() == "1");
             MSI = (localSettings.Values["MsiProfile"] != null);
             CRU = (localSettings.Values["CruProfile"] != null);
 

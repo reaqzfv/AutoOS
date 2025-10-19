@@ -6,6 +6,7 @@ public sealed partial class GraphicsPage : Page
 {
     private bool isInitializingBrandsState = true;
     private bool isInitializingHDCPState = true;
+    private bool isInitializingHDMIDPAudioState = true;
 
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -15,6 +16,7 @@ public sealed partial class GraphicsPage : Page
         GetItems();
         GetBrand();
         GetHDCPState();
+        GetHDMIDPAudioState();
         GetMsiProfile();
     }
 
@@ -85,6 +87,28 @@ public sealed partial class GraphicsPage : Page
         if (isInitializingHDCPState) return;
 
         localSettings.Values["HighBandwidthDigitalContentProtection"] = HDCP.IsOn ? 1 : 0;
+    }
+
+    private void GetHDMIDPAudioState()
+    {
+        if (!localSettings.Values.TryGetValue("HighDefinitionMultimediaInterface/DisplayPortAudio", out object value))
+        {
+            localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = 1;
+            HDMIDPAudio.IsOn = true;
+        }
+        else
+        {
+            HDMIDPAudio.IsOn = Convert.ToInt32(value) == 1;
+        }
+
+        isInitializingHDMIDPAudioState = false;
+    }
+
+    private void HDMIDPAudio_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (isInitializingHDMIDPAudioState) return;
+
+        localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = HDMIDPAudio.IsOn ? 1 : 0;
     }
 
     private void GetMsiProfile()
