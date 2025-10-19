@@ -242,4 +242,14 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Preamble Mode" }) {
         Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Preamble Mode" -DisplayValue "Short"
     }
+
+    # Downshift retries
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Downshift retries" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Downshift retries" -DisplayValue "0"
+    }
+
+    # Wake from power off state
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Wake from power off state" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Wake from power off state" -DisplayValue "Disabled"
+    }
 }

@@ -26,6 +26,11 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Enable PME" }) {
         Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Enable PME" -DisplayValue "Disabled"
     }
+
+    # Wake from power off state
+    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Wake from power off state" }) {
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Wake from power off state" -DisplayValue "Disabled"
+    }
 }
 
 # Disable allow the computer to turn off this device to save power
