@@ -70,13 +70,13 @@ Disable-BitLocker -MountPoint "C:"
 **Step 8:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `"E:"`).
 
 ```ps1
-$TARGETDRIVE = ""
+$TARGETDRIVE = 
 ```
 
 **Step 9:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all `(.exe/.zip)` into one folder using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"I:\drivers"`).
 
 ```ps1
-$DRIVERDIR = ""
+$DRIVERDIR = 
 ```
 
 **Step 10:** Download the latest Windows ISO from the artifact [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are going to give you worse results.
@@ -86,7 +86,7 @@ $DRIVERDIR = ""
 **Step 12:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"C:\Users\user\Downloads\23H2\23H2"`).
 
 ```ps1
-$EXTRACTED_ISO = ""
+$EXTRACTED_ISO = 
 ```
 
 **Step 13:** Paste this into the PowerShell window to apply the `install.wim` to the new partition.
