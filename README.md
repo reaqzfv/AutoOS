@@ -31,9 +31,6 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 
 ## 🚀 Getting Started
 
-> [!NOTE]
-> You must be signed in to GitHub in order to be able to download the artifact (Windows ISO) in Step 10!
-
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
 
 **Step 2:** Open PowerShell as Admin and don't close it until finished.
@@ -82,7 +79,7 @@ $TARGETDRIVE = ""
 $DRIVERDIR = ""
 ```
 
-**Step 10:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/18578835012). Other ISOs are going to give you worse results.
+**Step 10:** Download the latest Windows ISO from the artifact [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are going to give you worse results.
 
 **Step 11:** Extract the downloaded zip file.
 
