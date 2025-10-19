@@ -82,7 +82,7 @@ $TARGETDRIVE = ""
 $DRIVERDIR = ""
 ```
 
-**Step 10:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/17782981069). Other ISOs are going to give you worse results.
+**Step 10:** Download the latest Windows ISO from the artifact [here](https://github.com/tinodin/uup-dump-get-windows-iso/actions/runs/18578835012). Other ISOs are going to give you worse results.
 
 **Step 11:** Extract the downloaded zip file.
 
