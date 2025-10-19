@@ -249,7 +249,7 @@ public static class ApplicationStage
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office ClickToRun Service Monitor"" /Disable"), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Feature Updates"" /Disable"), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Feature Updates Logon"" /Disable"), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
-
+            ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Performance Monitor"" /Disable"), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\mso-minsb.16\CLSID"" /t REG_SZ /d ""{42089D2D-912D-4018-9087-2B87803E93FB}"" /f"), () => OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\mso-minsb.16"" /f"), () => OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\OneDrive Per-Machine Standalone Update Task"" /Disable"), () => OneDrive == true),
@@ -456,7 +456,6 @@ public static class ApplicationStage
 
             // import epic games launcher account
             ("Importing Epic Games Launcher Account", async () => await ProcessActions.RunImportEpicGamesLauncherAccount(), () => EpicGames == true && EpicGamesAccount == true),
-            ("Importing Epic Games Launcher Account", async () => await ProcessActions.Sleep(1000), () => EpicGames == true && EpicGamesAccount == true),
 
             // import epic games launcher games
             ("Importing Epic Games Launcher Games", async () => await ProcessActions.RunImportEpicGamesLauncherGames(), () => EpicGames == true && EpicGamesGames == true),

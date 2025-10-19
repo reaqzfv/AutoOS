@@ -724,6 +724,8 @@ public static class ProcessActions
             {
                 if (EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
                 {
+                    await Task.Delay(1000);
+
                     // close epic games launcher
                     EpicGamesHelper.CloseEpicGames();
 
