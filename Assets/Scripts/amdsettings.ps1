@@ -17,6 +17,7 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         New-ItemProperty -Path $classKey -Name "KMD_ChillEnabled" -Value 0 -PropertyType DWord -Force
         New-ItemProperty -Path $classKey -Name "KMD_DeLagEnabled" -Value 0 -PropertyType DWord -Force
         New-ItemProperty -Path $classKey -Name "ACE" -Value ([byte[]](0x30,0x00)) -PropertyType Binary -Force
+        New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD' -Force
         New-ItemProperty -Path $classKey\UMD -Name "AnisoDegree_SET" -Value ([byte[]](0x30,0x20,0x32,0x20,0x34,0x20,0x38,0x20,0x31,0x36,0x00)) -PropertyType Binary -Force
         New-ItemProperty -Path $classKey\UMD -Name "Main3D_SET" -Value ([byte[]](0x30,0x20,0x31,0x20,0x32,0x20,0x33,0x20,0x34,0x20,0x35,0x00)) -PropertyType Binary -Force
         New-ItemProperty -Path $classKey\UMD -Name "Tessellation_OPTION" -Value ([byte[]](0x32,0x00)) -PropertyType Binary -Force
@@ -60,6 +61,7 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         New-ItemProperty -Path $classKey\UMD -Name "ShaderCache" -PropertyType Binary -Value ([byte[]](0x31,0x00)) -Force
         New-ItemProperty -Path $classKey\UMD -Name "MLF" -PropertyType Binary -Value ([byte[]](0x30,0x00)) -Force
         New-ItemProperty -Path $classKey\UMD -Name "TruformMode_NA" -PropertyType Binary -Value ([byte[]](0x31,0x00)) -Force
+        New-Item -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\0000\UMD\DXVA' -Force
         New-ItemProperty -Path $classKey\UMD\DXVA -Name "LRTCEnable" -PropertyType Binary -Value ([byte[]](0x30,0x00,0x00,0x00)) -Force
         New-ItemProperty -Path $classKey\UMD\DXVA -Name "3to2Pulldown" -PropertyType Binary -Value ([byte[]](0x31,0x00,0x00,0x00)) -Force
         New-ItemProperty -Path $classKey\UMD\DXVA -Name "MosquitoNoiseRemoval_ENABLE" -PropertyType Binary -Value ([byte[]](0x30,0x00,0x00,0x00)) -Force
@@ -93,7 +95,6 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         New-ItemProperty -Path $classKey -Name "DisableBlockWrite" -PropertyType DWord -Value 0 -Force
         New-ItemProperty -Path $classKey -Name "PP_ThermalAutoThrottlingEnable" -PropertyType DWord -Value 0 -Force
         New-ItemProperty -Path $classKey -Name "DisableDrmdmaPowerGating" -PropertyType DWord -Value 1 -Force
-
-        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdwddmg" -Name "ChillEnabled" -PropertyType DWord -Value 0 -Force 
+        New-ItemProperty -Path "HKLM:\System\CurrentControlSet\Services\amdwddmg" -Name "ChillEnabled" -PropertyType DWord -Value 0 -Force
     }
 }
