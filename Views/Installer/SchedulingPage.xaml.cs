@@ -142,7 +142,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                GPU.SelectedIndex = isHyperThreadingEnabled ? 2 : 1;
+                GPU.SelectedIndex = (physicalCoreCount == 2 && isHyperThreadingEnabled) ? 1 : (isHyperThreadingEnabled ? 2 : 1);
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
 
@@ -152,7 +152,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                XHCI.SelectedIndex = GPU.SelectedIndex + (isHyperThreadingEnabled ? 2 : 1);
+                XHCI.SelectedIndex = GPU.SelectedIndex + ((physicalCoreCount == 2 && isHyperThreadingEnabled) ? 1 : (isHyperThreadingEnabled ? 2 : 1));
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
 
@@ -162,7 +162,7 @@ public sealed partial class SchedulingPage : Page
             }
             else
             {
-                NIC.SelectedIndex = XHCI.SelectedIndex + (isHyperThreadingEnabled ? 2 : 1);
+                NIC.SelectedIndex = XHCI.SelectedIndex + ((physicalCoreCount == 2 && isHyperThreadingEnabled) ? 1 : (isHyperThreadingEnabled ? 2 : 1));
             }
             UpdateComboBoxState(GPU, XHCI, NIC);
         }
