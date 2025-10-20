@@ -257,6 +257,7 @@ public static class ApplicationStage
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\FileSyncHelper"" /v Start /t REG_DWORD /d 4 /f & sc stop ""FileSyncHelper"""), () => OneDrive == true),
             ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\OneDrive Updater Service"" /v Start /t REG_DWORD /d 4 /f & sc stop ""OneDrive Updater Service"""), () => OneDrive == true),
 
+            // disable office telemetry
             ("Disabling Office telemetry", async () => await ProcessActions.RunPowerShellScript("disableofficetelemetry.ps1", ""), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
 
             // download dolby access
