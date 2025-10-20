@@ -489,7 +489,7 @@ public sealed partial class GraphicsPage : Page
 
     private async void GetHDMIDPAudioState()
     {
-        var toggles = new[] { NVIDIA_HDMIDPAudio, AMD_HDMIDPAudio, INTEL_HDMIDPAudio };
+        var toggles = new[] { NVIDIA_HDMIDPAudio, AMD_HDMIDPAudio};
 
         foreach (var toggle in toggles)
         {
@@ -502,6 +502,15 @@ public sealed partial class GraphicsPage : Page
                        .Any(device => device["Status"]?.ToString() == "OK");
             });
         }
+
+        INTEL_HDMIDPAudio.IsOn = await Task.Run(() =>
+        {
+            return new ManagementObjectSearcher(
+                "SELECT * FROM Win32_PnPEntity WHERE Description = 'Intel(R) Display Audio'")
+                   .Get()
+                   .Cast<ManagementObject>()
+                   .Any(device => device["Status"]?.ToString() == "OK");
+        });
 
         isInitializingHDMIDPAudioState = false;
     }
@@ -529,21 +538,42 @@ public sealed partial class GraphicsPage : Page
         // toggle hdmi/dp audio
         bool isOn = toggle.IsOn;
 
-        await Task.Run(() =>
+        if (toggle == NVIDIA_HDMIDPAudio || toggle == AMD_HDMIDPAudio)
         {
-            var process = new Process
+            await Task.Run(() =>
             {
-                StartInfo = new ProcessStartInfo
+                var process = new Process
                 {
-                    FileName = "powershell.exe",
-                    Arguments = @$"-ExecutionPolicy Bypass -Command ""Get-PnpDevice | Where-Object {{ $_.FriendlyName -eq 'High Definition Audio Device' }} | {(isOn ? "Enable" : "Disable")}-PnpDevice -Confirm:$false""",
-                    CreateNoWindow = true
-                }
-            };
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = @$"-ExecutionPolicy Bypass -Command ""Get-PnpDevice | Where-Object {{ $_.FriendlyName -eq 'High Definition Audio Device' }} | {(isOn ? "Enable" : "Disable")}-PnpDevice -Confirm:$false""",
+                        CreateNoWindow = true
+                    }
+                };
 
-            process.Start();
-            process.WaitForExit();
-        });
+                process.Start();
+                process.WaitForExit();
+            });
+        }
+        else if (toggle == INTEL_HDMIDPAudio)
+        {
+            await Task.Run(() =>
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "powershell.exe",
+                        Arguments = @$"-ExecutionPolicy Bypass -Command ""Get-PnpDevice | Where-Object {{ $_.FriendlyName -eq 'Intel(R) Display Audio' }} | {(isOn ? "Enable" : "Disable")}-PnpDevice -Confirm:$false""",
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                process.WaitForExit();
+            });
+        }
 
         // delay
         await Task.Delay(400);
