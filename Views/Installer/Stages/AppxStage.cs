@@ -15,7 +15,8 @@ public static class AppxStage
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // onedrive
-            ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c for %a in (""SysWOW64"" ""System32"") do (if exist ""%windir%\%~a\OneDriveSetup.exe"" (""%windir%\%~a\OneDriveSetup.exe"" /uninstall)) && reg delete ""HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"" /f"), null),
+            ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c taskkill /f /im ""OneDrive.exe"" & taskkill /f /im ""OneDrive.Sync.Service.exe"""), null),
+            ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c for %a in (""SysWOW64"" ""System32"") do (if exist ""%windir%\%~a\OneDriveSetup.exe"" (""%windir%\%~a\OneDriveSetup.exe"" /uninstall)) && reg delete ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"" /f"), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\ProgramData\Microsoft OneDrive"""), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c rmdir /s /q ""%LOCALAPPDATA%\Microsoft\OneDrive"""), null),
             ("Uninstalling OneDrive", async () => await ProcessActions.RunPowerShell(@"Get-ScheduledTask | Where-Object {$_.TaskName -like 'OneDrive Startup Task*'} | Unregister-ScheduledTask -Confirm:$false"), null),

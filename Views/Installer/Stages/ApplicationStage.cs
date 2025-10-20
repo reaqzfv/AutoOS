@@ -71,40 +71,40 @@ public static class ApplicationStage
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // download heif image extension
-            ("Downloading HEIF Image Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.HEIFImageExtension", "f4ccc4c1-6e9a-49a0-8f19-46f1717c7ba3", "appxbundle", 0, false), () => true),
+            ("Downloading HEIF Image Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.HEIFImageExtension", "f4ccc4c1-6e9a-49a0-8f19-46f1717c7ba3", "appxbundle", 0, false), null),
 
             // install heif image extension
-            ("Installing HEIF Image Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.HEIFImageExtension (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            ("Installing HEIF Image Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.HEIFImageExtension (Package)\"" | Select-Object -First 1).FullName"), null),
 
             // download mpeg-2 video extension
-            ("Downloading MPEG-2 Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.MPEG2VideoExtension", "886ca98c-991c-40d0-b374-1417d6d437a1", "appxbundle", 0, false), () => true),
+            ("Downloading MPEG-2 Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.MPEG2VideoExtension", "886ca98c-991c-40d0-b374-1417d6d437a1", "appxbundle", 0, false), null),
 
             // install mpeg-2 video extension
-            ("Installing MPEG-2 Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.MPEG2VideoExtension (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            ("Installing MPEG-2 Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.MPEG2VideoExtension (Package)\"" | Select-Object -First 1).FullName"), null),
 
             // download av1 video extension
-            ("Downloading AV1 Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.AV1VideoExtension", "6ff5769f-7177-4ca5-b6f4-939194121c82", "appxbundle", 0, false), () => true),
+            ("Downloading AV1 Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.AV1VideoExtension", "6ff5769f-7177-4ca5-b6f4-939194121c82", "appxbundle", 0, false), null),
 
             // install av1 video extension
-            ("Installing AV1 Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.AV1VideoExtension (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            ("Installing AV1 Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.AV1VideoExtension (Package)\"" | Select-Object -First 1).FullName"), null),
 
             // download avc encoder video extension
-            ("Downloading AVC Encoder Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.AVCEncoderVideoExtension", "4be34c88-8464-488e-97bb-70acee4a55a0" ,"appxbundle", 0, false), () => true),
+            ("Downloading AVC Encoder Video Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.AVCEncoderVideoExtension", "4be34c88-8464-488e-97bb-70acee4a55a0" ,"appxbundle", 0, false), null),
 
             // install avc encoder video extension
-            ("Installing AVC Encoder Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.AVCEncoderVideoExtension (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            ("Installing AVC Encoder Video Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.AVCEncoderVideoExtension (Package)\"" | Select-Object -First 1).FullName"), null),
 
             // download dolby vision extension
-            ("Downloading Dolby Vision Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyVisionAccess", "c143786a-e5c5-4dc3-a480-601c65c31538", "msixbundle", 0, false), () => true),
+            ("Downloading Dolby Vision Extension", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyVisionAccess", "c143786a-e5c5-4dc3-a480-601c65c31538", "msixbundle", 0, false), null),
 
             // install dolby vision extension
-            ("Installing Dolby Vision Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\DolbyLaboratories.DolbyVisionAccess (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            ("Installing Dolby Vision Extension", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\DolbyLaboratories.DolbyVisionAccess (Package)\"" | Select-Object -First 1).FullName"), null),
 
             //// download movies & tv
-            //("Downloading Movies & TV", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.ZuneVideo_8wekyb3d8bbwe", "64b22df1-5a9c-4c88-aa1f-42cefaf8b281", "appxbundle", 0, false), () => true),
+            //("Downloading Movies & TV", async () => await ProcessActions.RunMicrosoftStoreDownload("Microsoft.ZuneVideo_8wekyb3d8bbwe", "64b22df1-5a9c-4c88-aa1f-42cefaf8b281", "appxbundle", 0, false), null),
 
             //// install movies & tv
-            //("Installing Movies & TV", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.ZuneVideo_8wekyb3d8bbwe (Package)\"" | Select-Object -First 1).FullName"), () => true),
+            //("Installing Movies & TV", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\Microsoft.ZuneVideo_8wekyb3d8bbwe (Package)\"" | Select-Object -First 1).FullName"), null),
 
             // download icloud dependencies
             ("Downloading iCloud Dependencies", async () => await ProcessActions.RunMicrosoftStoreDownload("AppleInc.iCloud", "1e4f5d0e-4b36-4f9b-bfbc-9fec63fd0f1e", "", 0, true), () => iCloud == true),
