@@ -173,6 +173,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Per Core P State OS control mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "HwP Autonomous Per Core P State", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ASUS MultiCore Enhancement", Type = "Option", RecommendedOption = "Enabled  Remove All limits" },
+        new BiosSettingRecommendation { SetupQuestion = "GIGABYTE PerfDrive", Type = "Option", RecommendedOption = "Unleash" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Core Ratio", Type = "Option", RecommendedOption = "Sync All Cores" },
         //new BiosSettingRecommendation { SetupQuestion = "Efficient Core Ratio", Type = "Option", RecommendedOption = "Sync All Cores" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Ratio Mode", Type = "Option", RecommendedOption = "Fixed Mode" },
@@ -393,6 +394,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Wake on WLAN and BT Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", Type = "Option", RecommendedOption = "Disabled" }, // (hard to disable)
         new BiosSettingRecommendation { SetupQuestion = "USB S5 Wakeup Support", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Wake From Thunderbolt(TM) Devices", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Wake From Thunderbolt(TM) Devices", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "DeepSx Wake on WLAN and BT Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "WoV (Wake on Voice)", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "USB Provisioning of AMT", Type = "Option", RecommendedOption = "Disabled" },
