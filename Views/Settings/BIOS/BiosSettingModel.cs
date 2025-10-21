@@ -85,6 +85,7 @@ public partial class BiosSettingModel : INotifyPropertyChanged
     }
 
     // ─────── UI Conditions ───────
+    public bool HasHelpString => !string.IsNullOrEmpty(HelpString);
     public bool HasDefault => !string.IsNullOrEmpty(BiosDefault);
     public bool HasOptions => Options.Count > 0;
     public bool HasValueField => Value != null && !HasOptions;

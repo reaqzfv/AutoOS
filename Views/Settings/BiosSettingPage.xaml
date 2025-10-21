@@ -416,7 +416,8 @@
                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Text="{x:Bind HelpString}"
-                                                           TextWrapping="Wrap" />
+                                                           TextWrapping="Wrap"
+                                                           Visibility="{x:Bind HasHelpString, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                 <!--  BIOS Default  -->
                                                 <TextBlock Margin="0,2,0,0"
                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
@@ -514,7 +515,8 @@
                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Text="{x:Bind HelpString}"
-                                                           TextWrapping="Wrap" />
+                                                           TextWrapping="Wrap"
+                                                           Visibility="{x:Bind HasHelpString, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                 <!--  BIOS Default  -->
                                                 <TextBlock Margin="0,2,0,0"
                                                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
