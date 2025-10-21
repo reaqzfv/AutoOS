@@ -77,111 +77,111 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         // show exporting
         SwitchPresenter.Value = "Export";
 
-        //// export nvram
-        //using var process = new Process
-        //{
-        //    StartInfo = new ProcessStartInfo
-        //    {
-        //        FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
-        //        Arguments = @$"/o /s ""{nvram}""",
-        //        UseShellExecute = false,
-        //        CreateNoWindow = true,
-        //        RedirectStandardError = true,
-        //        RedirectStandardOutput = true
-        //    }
-        //};
+        // export nvram
+        using var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
+                Arguments = @$"/o /s ""{nvram}""",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true
+            }
+        };
 
-        //process.Start();
-        //string errorOutput = await process.StandardError.ReadToEndAsync();
-        //string output = await process.StandardOutput.ReadToEndAsync();
-        //await process.WaitForExitAsync();
+        process.Start();
+        string errorOutput = await process.StandardError.ReadToEndAsync();
+        string output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
 
-        //string manufacturer = "Unknown";
-        //string product = "Unknown";
+        string manufacturer = "Unknown";
+        string product = "Unknown";
 
-        //using (var searcher = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard"))
-        //{
-        //    foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
-        //    {
-        //        manufacturer = mo["Manufacturer"]?.ToString().ToLowerInvariant() ?? "Unknown";
-        //        product = mo["Product"]?.ToString().ToUpperInvariant() ?? "Unknown";
-        //    }
-        //}
+        using (var searcher = new ManagementObjectSearcher("SELECT Manufacturer, Product FROM Win32_BaseBoard"))
+        {
+            foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
+            {
+                manufacturer = mo["Manufacturer"]?.ToString().ToLowerInvariant() ?? "Unknown";
+                product = mo["Product"]?.ToString().ToUpperInvariant() ?? "Unknown";
+            }
+        }
 
-        //if (output.Contains("AMISCE is not supported on this system.", StringComparison.OrdinalIgnoreCase) || errorOutput.Contains("BIOS not compatible", StringComparison.OrdinalIgnoreCase))
-        //{
-        //    SwitchPresenter.Value = "Unsupported";
-        //}
-        //else if (errorOutput.Contains("WARNING: HII data does not have setup questions information", StringComparison.OrdinalIgnoreCase))
-        //{
-        //    if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
-        //    {
-        //        var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
+        if (output.Contains("AMISCE is not supported on this system.", StringComparison.OrdinalIgnoreCase) || errorOutput.Contains("BIOS not compatible", StringComparison.OrdinalIgnoreCase))
+        {
+            SwitchPresenter.Value = "Unsupported";
+        }
+        else if (errorOutput.Contains("WARNING: HII data does not have setup questions information", StringComparison.OrdinalIgnoreCase))
+        {
+            if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+            {
+                var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
 
-        //        if (protectedChipsets.Any(c => product.Contains(c)))
-        //        {
-        //            SwitchPresenter.Value = "HII Resources (Protected)";
-        //        }
-        //        else
-        //        {
-        //            SwitchPresenter.Value = "HII Resources (Regular)";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        SwitchPresenter.Value = "HII Resources (Other)";
-        //    }
-        //}
-        //else if (errorOutput.Contains("Platform identification failed.", StringComparison.OrdinalIgnoreCase))
-        //{
-        //    // export nvram
-        //    using var process2 = new Process
-        //    {
-        //        StartInfo = new ProcessStartInfo
-        //        {
-        //            FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
-        //            Arguments = @$"/o /s ""{nvram}"" /d",
-        //            UseShellExecute = false,
-        //            CreateNoWindow = true,
-        //            RedirectStandardError = true,
-        //            RedirectStandardOutput = true
-        //        }
-        //    };
+                if (protectedChipsets.Any(c => product.Contains(c)))
+                {
+                    SwitchPresenter.Value = "HII Resources (Protected)";
+                }
+                else
+                {
+                    SwitchPresenter.Value = "HII Resources (Regular)";
+                }
+            }
+            else
+            {
+                SwitchPresenter.Value = "HII Resources (Other)";
+            }
+        }
+        else if (errorOutput.Contains("Platform identification failed.", StringComparison.OrdinalIgnoreCase))
+        {
+            // export nvram
+            using var process2 = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "SCEWIN_64.exe"),
+                    Arguments = @$"/o /s ""{nvram}"" /d",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
+                }
+            };
 
-        //    process2.Start();
-        //    errorOutput = await process2.StandardError.ReadToEndAsync();
-        //    output = await process2.StandardOutput.ReadToEndAsync();
-        //    await process2.WaitForExitAsync();
-        //}
+            process2.Start();
+            errorOutput = await process2.StandardError.ReadToEndAsync();
+            output = await process2.StandardOutput.ReadToEndAsync();
+            await process2.WaitForExitAsync();
+        }
 
-        //if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
-        //{
-        //    if (new FileInfo(nvram).Length > 100 * 1024)
-        //    {
-        //        // reset ui
-        //        RecommendedChanges.Visibility = Visibility.Visible;
-        //        RecommendedChanges.IsExpanded = true;
-        //        AllSettings.IsExpanded = false;
+        if (errorOutput.Contains("Script file exported successfully.", StringComparison.OrdinalIgnoreCase))
+        {
+            if (new FileInfo(nvram).Length > 100 * 1024)
+            {
+                // reset ui
+                RecommendedChanges.Visibility = Visibility.Visible;
+                RecommendedChanges.IsExpanded = true;
+                AllSettings.IsExpanded = false;
 
-        //        // backup nvram.txt
-        //        string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
+                // backup nvram.txt
+                string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
 
-        //        if (!Directory.Exists(backupRoot))
-        //            await LogBiosSettings();
+                if (!Directory.Exists(backupRoot))
+                    await LogBiosSettings();
 
-        //        string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
-        //        string backupDir = Path.Combine(backupRoot, timestamp);
+                string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                string backupDir = Path.Combine(backupRoot, timestamp);
 
-        //        Directory.CreateDirectory(backupDir);
-        //        File.Copy(nvram, Path.Combine(backupDir, "nvram.txt"), false);
+                Directory.CreateDirectory(backupDir);
+                File.Copy(nvram, Path.Combine(backupDir, "nvram.txt"), false);
 
-        //        var backupFolders = Directory.GetDirectories(backupRoot)
-        //            .OrderByDescending(dir => dir)
-        //            .Skip(50)
-        //            .ToList();
+                var backupFolders = Directory.GetDirectories(backupRoot)
+                    .OrderByDescending(dir => dir)
+                    .Skip(50)
+                    .ToList();
 
-        //        foreach (var folder in backupFolders)
-        //            Directory.Delete(folder, true);
+                foreach (var folder in backupFolders)
+                    Directory.Delete(folder, true);
 
                 // parse nvram.txt
                 List<BiosSettingModel> parsedList;
@@ -300,28 +300,28 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 SwitchPresenter.Value = "Loaded";
                 Search.IsEnabled = true;
                 Backup.IsEnabled = true;
-        //    }
-        //    else
-        //    {
-        //        if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
-        //        {
-        //            var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
+            }
+            else
+            {
+                if (manufacturer.Contains("asus") || manufacturer.Contains("asustek"))
+                {
+                    var protectedChipsets = new[] { "Z790", "B760", "H770", "X870", "X670", "B650", "A620" };
 
-        //            if (protectedChipsets.Any(c => product.Contains(c)))
-        //            {
-        //                SwitchPresenter.Value = "HII Resources (Protected)";
-        //            }
-        //            else
-        //            {
-        //                SwitchPresenter.Value = "HII Resources (Regular)";
-        //            }
-        //        }
-        //        else
-        //        {
-        //            SwitchPresenter.Value = "HII Resources (Other)";
-        //        }
-        //    }
-        //}
+                    if (protectedChipsets.Any(c => product.Contains(c)))
+                    {
+                        SwitchPresenter.Value = "HII Resources (Protected)";
+                    }
+                    else
+                    {
+                        SwitchPresenter.Value = "HII Resources (Regular)";
+                    }
+                }
+                else
+                {
+                    SwitchPresenter.Value = "HII Resources (Other)";
+                }
+            }
+        }
     }
 
     private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
