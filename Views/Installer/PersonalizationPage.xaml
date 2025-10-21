@@ -47,9 +47,10 @@
                         </GridView>
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Header="Mode"
+                        <dev:SettingsCard x:Name="Mode"
+                                          Header="Mode"
                                           HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},
-                                                                    Glyph=&#xEA37;}">
+                                                                    Glyph=&#xE823;}">
                             <ComboBox x:Name="ScheduleMode"
                                       SelectionChanged="ScheduleMode_SelectionChanged">
                                 <ComboBoxItem Content="Always Light" />
@@ -61,7 +62,8 @@
                         <dev:SettingsCard x:Name="LightTimeCard"
                                           Header="Light mode time"
                                           HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},
-                                                                    Glyph=&#xE706;}">
+                                                                    Glyph=&#xE706;}"
+                                          Visibility="Collapsed">
                             <TimePicker x:Name="LightTime"
                                         ClockIdentifier="24HourClock"
                                         TimeChanged="LightMode_TimeChanged" />
@@ -69,10 +71,17 @@
                         <dev:SettingsCard x:Name="DarkTimeCard"
                                           Header="Dark mode time"
                                           HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},
-                                                                    Glyph=&#xE708;}">
+                                                                    Glyph=&#xE708;}"
+                                          Visibility="Collapsed">
                             <TimePicker x:Name="DarkTime"
                                         ClockIdentifier="24HourClock"
                                         TimeChanged="DarkMode_TimeChanged" />
+                        </dev:SettingsCard>
+                        <dev:SettingsCard x:Name="TimelineCard"
+                                          HorizontalContentAlignment="Stretch"
+                                          ContentAlignment="Vertical"
+                                          Visibility="Collapsed">
+                            <dev:Timeline x:Name="TimeLine" />
                         </dev:SettingsCard>
                         <dev:SettingsCard Header="Legacy context menu"
                                           HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},

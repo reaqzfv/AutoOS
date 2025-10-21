@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Windows.Devices.Geolocation;
 using Windows.Storage;
 
 namespace AutoOS.Views.Installer;
@@ -103,7 +104,7 @@ public sealed partial class PersonalizationPage : Page
     {
         Themes.ItemsSource = new List<ThemeItem>
         {
-            new ThemeItem { ImageSource1 = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg", ImageSource2 = @"C:\Windows\Web\Wallpaper\Windows\img19.jpg" }
+            new() { ImageSource1 = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg", ImageSource2 = @"C:\Windows\Web\Wallpaper\Windows\img19.jpg" }
         };
     }
 
@@ -125,15 +126,66 @@ public sealed partial class PersonalizationPage : Page
         if (isInitializingThemeState) return;
     }
 
-    private void GetSchedule()
+    public static async Task<Geoposition> GetGeoLocationAsync()
     {
-        // load mode
-        if (localSettings.Values["ScheduleMode"] is not string)
-        {
-            localSettings.Values["ScheduleMode"] = "Sunset to sunrise";
-        }
+        return await GetGeoLocationAsync(PositionAccuracy.Default, null);
+    }
 
-        ScheduleMode.SelectedIndex = (localSettings.Values["ScheduleMode"] as string) switch
+    public static async Task<Geoposition> GetGeoLocationAsync(PositionAccuracy accuracy)
+    {
+        return await GetGeoLocationAsync(accuracy, null);
+    }
+
+    public static async Task<Geoposition> GetGeoLocationAsync(PositionAccuracy accuracy, uint? desiredAccuracyInMeters)
+    {
+        try
+        {
+            var accessStatus = await Geolocator.RequestAccessAsync();
+            if (accessStatus != GeolocationAccessStatus.Allowed)
+            {
+                throw new InvalidOperationException($"Location access failed: {accessStatus}");
+            }
+
+            var geolocator = new Geolocator { DesiredAccuracy = accuracy };
+
+            if (desiredAccuracyInMeters.HasValue)
+                geolocator.DesiredAccuracyInMeters = desiredAccuracyInMeters;
+
+            return await geolocator.GetGeopositionAsync();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private async Task UpdateTheme()
+    {
+        var now = DateTime.Now.TimeOfDay;
+        bool shouldBeLight;
+
+        if (TimeLine.StartTime <= TimeLine.EndTime)
+        {
+            shouldBeLight = now >= TimeLine.StartTime && now <= TimeLine.EndTime;
+        }
+        else
+        {
+            shouldBeLight = now >= TimeLine.StartTime || now <= TimeLine.EndTime;
+        }
+        bool currentlyLight = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize")?.GetValue("SystemUsesLightTheme") is int value && value != 0;
+
+        if (shouldBeLight && !currentlyLight)
+            await ApplyTheme(@"C:\Windows\Resources\Themes\aero.theme");
+        else if (!shouldBeLight && currentlyLight)
+            await ApplyTheme(@"C:\Windows\Resources\Themes\dark.theme");
+    }
+
+    private async Task GetSchedule()
+    {
+        string scheduleMode = localSettings.Values["ScheduleMode"] as string ?? "Sunset to sunrise";
+        localSettings.Values["ScheduleMode"] = scheduleMode;
+
+        ScheduleMode.SelectedIndex = scheduleMode switch
         {
             "Always Light" => 0,
             "Always Dark" => 1,
@@ -143,28 +195,39 @@ public sealed partial class PersonalizationPage : Page
         };
 
         // load custom hours
-        if (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lightTime))
-        {
-            LightTime.Time = lightTime;
-        }
-        else
-        {
-            localSettings.Values["LightTime"] = "07:00";
-            LightTime.Time = TimeSpan.Parse("07:00");
-        }
+        LightTime.Time = (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lt))
+                         ? lt
+                         : TimeSpan.Parse("07:00");
+        localSettings.Values["LightTime"] = LightTime.Time.ToString(@"hh\:mm");
 
-        if (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var darkTime))
+        DarkTime.Time = (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var dt))
+                        ? dt
+                        : TimeSpan.Parse("19:00");
+        localSettings.Values["DarkTime"] = DarkTime.Time.ToString(@"hh\:mm");
+
+        // calculate sunrise sunset
+        var pos = await GetGeoLocationAsync();
+        var sunTimes = SunTimesHelper.CalculateSunriseSunset(pos.Coordinate.Point.Position.Latitude, pos.Coordinate.Point.Position.Longitude,
+            DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+
+        TimeLine.Sunrise = new TimeSpan(sunTimes.SunriseHour, sunTimes.SunriseMinute, 0);
+        TimeLine.Sunset = new TimeSpan(sunTimes.SunsetHour, sunTimes.SunsetMinute, 0);
+
+        // set timeline
+        if (scheduleMode == "Sunset to sunrise")
         {
-            DarkTime.Time = darkTime;
+            TimeLine.StartTime = new TimeSpan(sunTimes.SunriseHour, sunTimes.SunriseMinute, 0);
+            TimeLine.EndTime = new TimeSpan(sunTimes.SunsetHour, sunTimes.SunsetMinute, 0);
+            await UpdateTheme();
         }
-        else
+        else if (scheduleMode == "Custom hours")
         {
-            localSettings.Values["DarkTime"] = "19:00";
-            DarkTime.Time = TimeSpan.Parse("19:00");
+            TimeLine.StartTime = LightTime.Time;
+            TimeLine.EndTime = DarkTime.Time;
         }
 
         UpdateTimeCardsVisibility();
-
+        await UpdateTheme();
         isInitializingSchedule = false;
     }
 
@@ -173,38 +236,44 @@ public sealed partial class PersonalizationPage : Page
         if (isInitializingSchedule) return;
 
         string selected = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
+        localSettings.Values["ScheduleMode"] = selected;
+
+        UpdateTimeCardsVisibility();
 
         if (selected == "Always Light")
-        {
             await ApplyTheme(@"C:\Windows\Resources\Themes\aero.theme");
-        }
         else if (selected == "Always Dark")
-        {
             await ApplyTheme(@"C:\Windows\Resources\Themes\dark.theme");
-        }
-
-        localSettings.Values["ScheduleMode"] = selected;
-        UpdateTimeCardsVisibility();
+        else
+            await GetSchedule();
     }
 
-    private void UpdateTimeCardsVisibility()
-    {
-        LightTimeCard.Visibility = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
-        DarkTimeCard.Visibility = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
-    }
-
-    private void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    private async void LightMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
     {
         if (isInitializingSchedule) return;
 
         localSettings.Values["LightTime"] = e.NewTime.ToString(@"hh\:mm");
+        TimeLine.StartTime = e.NewTime;
+        await UpdateTheme();
     }
 
-    private void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+    private async void DarkMode_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
     {
         if (isInitializingSchedule) return;
 
         localSettings.Values["DarkTime"] = e.NewTime.ToString(@"hh\:mm");
+        TimeLine.EndTime = e.NewTime;
+        await UpdateTheme();
+    }
+
+    private void UpdateTimeCardsVisibility()
+    {
+        var mode = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
+
+        //Mode.IsExpanded = (mode == "Custom hours" || mode == "Sunset to sunrise");
+        LightTimeCard.Visibility = mode == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
+        DarkTimeCard.Visibility = mode == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
+        TimelineCard.Visibility = (mode == "Custom hours" || mode == "Sunset to sunrise") ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void GetContextMenuState()

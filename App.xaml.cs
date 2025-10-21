@@ -79,7 +79,7 @@ namespace AutoOS
                 MainWindow.AppWindow.SetIcon("Assets/AppIcon.ico");
 
                 ThemeService = new ThemeService().Initialize(MainWindow);
-
+                
                 MainWindow.Activate();
             }
         }
