@@ -1,6 +1,5 @@
 ﻿using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
-using Windows.UI;
 
 namespace AutoOS.Views.Settings;
 

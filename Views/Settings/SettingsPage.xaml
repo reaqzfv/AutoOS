@@ -46,7 +46,7 @@
                             <ComboBoxItem Content="Mica Alt"
                                           Tag="MicaAlt" />
                             <ComboBoxItem Content="Acrylic"
-                                          Tag="Acrylic" />r
+                                          Tag="Acrylic" />
                         </ComboBox>
                     </dev:SettingsCard>
                     <dev:SettingsCard ActionIcon="{dev:BitmapIcon Source=Assets/Fluent/External.png}"

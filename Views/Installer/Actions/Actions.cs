@@ -403,6 +403,11 @@ public static class ProcessActions
                   .Cast<ManagementObject>();
         string gpus = string.Join(", ", gpuObjs.Select(g => g["Name"]?.ToString() ?? ""));
 
+        using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+        string build = key.GetValue("CurrentBuild")?.ToString() ?? "";
+        string ubr = key.GetValue("UBR")?.ToString() ?? "";
+        string osVersion = $"{build}.{ubr}";
+
         var psi = new ProcessStartInfo
         {
             FileName = "powershell",
@@ -425,7 +430,7 @@ public static class ProcessActions
         using var client = new HttpClient();
         using var form = new MultipartFormDataContent
             {
-                { new StringContent($"{cpuName}\n{motherboard}\n{gpus}"), "content" },
+                { new StringContent($"{cpuName}\n{motherboard}\n{gpus}\n{osVersion}"), "content" },
                 { new ByteArrayContent(Encoding.UTF8.GetBytes(psOutput.TrimStart('\r', '\n'))), "file", "advancednetworksettings.txt" }
             };
 
