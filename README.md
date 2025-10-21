@@ -34,9 +34,9 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 > [!NOTE]
 > If you want to change the display language of Windows, do so **after** AutoOS is fully set up.
 
-**Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
+**Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) to receive installation support and stay informed about future updates or changes.
 
-**Step 2:** Open PowerShell as Admin and don't close it until finished.
+**Step 2:** Open PowerShell as Admin and don't close it until the end.
 
 **Step 3:**  Paste this into the PowerShell window to check if your disk is using the GPT partition style. 
 
@@ -44,7 +44,9 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 $DISKNUMBER = (Get-Partition -DriveLetter C | Get-Disk).Number; (Get-Partition -DriveLetter C | Get-Disk).PartitionStyle
 ```
 
-If it outputs `MBR` you must first convert your disk to GPT using this command. After the conversion you want to make sure that you set `Boot Mode` to `UEFI` in your BIOS so that you will be able to boot.
+If the output is `GPT` move on to step 4. 
+
+If the output is `MBR` you must first convert your disk to GPT using this command. After the conversion you want to make sure that you set `Boot Mode` to `UEFI` in your BIOS so that you will be able to boot.
 
 ```ps1
 mbr2gpt /convert /disk:$DISKNUMBER /allowFullOS
@@ -56,37 +58,35 @@ mbr2gpt /convert /disk:$DISKNUMBER /allowFullOS
 (Get-BitLockerVolume -MountPoint "C:").VolumeStatus
 ```
 
-If it outputs `FullyEncrypted` you must first disable BitLocker using this command.
+If the output is `FullyDecrypted` move on to step 5. 
+
+If the output is `FullyEncrypted` you must first disable BitLocker using this command.
 
 ```ps1
 Disable-BitLocker -MountPoint "C:"
 ```
 
-**Step 4:** Open Disk Management.
+**Step 5:** Open Disk Management.
 
-**Step 5:** Find your your C: partition / biggest partition.
+**Step 6:** Find your your C: partition / biggest partition.
 
-**Step 6:** Right click on it and select "Shrink Volume".
+**Step 7:** Right click on it and select `Shrink Volume`.
 
-**Step 7:** In "Enter the amount of space to shrink in MB:" input at least 65536 (=64GB) or higher 131072 (=128GB), 262144 (=256GB), 524288 (=512GB). If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer), then use the `Split` function to create a new partition.
+**Step 8:** In `Enter the amount of space to shrink in MB:` input at least 65536 (=64GB) or higher 131072 (=128GB), 262144 (=256GB), 524288 (=512GB). 
 
-**Step 8:** Right click on the "Unallocated" partition and select "New Simple Volume". Then just click next until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `"E:"`).
+If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer), then use the `Split` function to create a new partition.
+
+**Step 9:** Right click on the `Unallocated` partition and select `New Simple Volume`. Then just click `next` until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `"E:"`).
 
 ```ps1
 $TARGETDRIVE = 
 ```
 
-**Step 9:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver. Extract them all `(.exe/.zip)` into one folder using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"I:\drivers"`).
-
-```ps1
-$DRIVERDIR = 
-```
-
-**Step 10:** Download the latest Windows ISO from the artifact [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are going to give you worse results.
+**Step 10:** Download the latest Windows ISO from [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are currently not supported and are going to give you worse results.
 
 **Step 11:** Extract the downloaded zip file.
 
-**Step 12:** Extract the ISO file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"C:\Users\user\Downloads\23H2\23H2"`).
+**Step 12:** Extract the **ISO** file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"C:\Users\user\Downloads\23H2\23H2"`).
 
 ```ps1
 $EXTRACTED_ISO = 
@@ -98,25 +98,31 @@ $EXTRACTED_ISO =
 DISM /Apply-Image /ImageFile:$EXTRACTED_ISO\sources\install.wim /Index:1 /ApplyDir:$TARGETDRIVE
 ```
 
-**Step 14:** Paste this into the PowerShell window to install the drivers you downloaded before.
+**Step 14:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver if there is any. Extract them all `(.exe/.zip)` into one folder using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"I:\drivers"`).
+
+```ps1
+$DRIVERDIR = 
+```
+
+**Step 15:** Paste this into the PowerShell window to install the drivers.
 
 ```ps1
 DISM /Image:$TARGETDRIVE\ /Add-Driver /Driver:$DRIVERDIR /Recurse
 ```
 
-**Step 15:** Paste this into the PowerShell window to create the `Panther` folder and download the `unattend.xml`.
+**Step 16:** Paste this into the PowerShell window to create the `Panther` folder and download the `unattend.xml` file.
 
 ```ps1
 New-Item -ItemType Directory -Path $TARGETDRIVE\Windows\Panther -Force | Out-Null; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/tinodin/AutoOS/master/unattend.xml" -OutFile $TARGETDRIVE\Windows\Panther\unattend.xml
 ```
 
-**Step 16:** Paste this into the PowerShell window to create the boot entry.
+**Step 17:** Paste this into the PowerShell window to create the boot entry for AutoOS.
 
 ```ps1
 bcdboot $TARGETDRIVE\Windows; bcdedit /set "{default}" description "AutoOS"; label $TARGETDRIVE "AutoOS"
 ```
 
-**Step 18:** Restart your computer and boot into the default option. Then wait for Windows to finish installing.
+**Step 18:** Restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
 
 **Step 19:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
