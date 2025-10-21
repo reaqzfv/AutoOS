@@ -32,7 +32,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 ## 🚀 Getting Started
 
 > [!NOTE]
-> If you want to change the display language of Windows, do so **after** AutoOS is fully setup.
+> If you want to change the display language of Windows, do so **after** AutoOS is fully set up.
 
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) so I can assist you with any issues while installing and get notified about new updates/changes.
 
