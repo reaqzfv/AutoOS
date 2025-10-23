@@ -126,39 +126,6 @@ public sealed partial class PersonalizationPage : Page
         if (isInitializingThemeState) return;
     }
 
-    public static async Task<Geoposition> GetGeoLocationAsync()
-    {
-        return await GetGeoLocationAsync(PositionAccuracy.Default, null);
-    }
-
-    public static async Task<Geoposition> GetGeoLocationAsync(PositionAccuracy accuracy)
-    {
-        return await GetGeoLocationAsync(accuracy, null);
-    }
-
-    public static async Task<Geoposition> GetGeoLocationAsync(PositionAccuracy accuracy, uint? desiredAccuracyInMeters)
-    {
-        try
-        {
-            var accessStatus = await Geolocator.RequestAccessAsync();
-            if (accessStatus != GeolocationAccessStatus.Allowed)
-            {
-                throw new InvalidOperationException($"Location access failed: {accessStatus}");
-            }
-
-            var geolocator = new Geolocator { DesiredAccuracy = accuracy };
-
-            if (desiredAccuracyInMeters.HasValue)
-                geolocator.DesiredAccuracyInMeters = desiredAccuracyInMeters;
-
-            return await geolocator.GetGeopositionAsync();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-    }
-
     private async Task UpdateTheme()
     {
         var now = DateTime.Now.TimeOfDay;
@@ -206,7 +173,7 @@ public sealed partial class PersonalizationPage : Page
         localSettings.Values["DarkTime"] = DarkTime.Time.ToString(@"hh\:mm");
 
         // calculate sunrise sunset
-        var pos = await GetGeoLocationAsync();
+        var pos = await LocationHelper.GetGeoLocationAsync();
         var sunTimes = SunTimesHelper.CalculateSunriseSunset(pos.Coordinate.Point.Position.Latitude, pos.Coordinate.Point.Position.Longitude,
             DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
