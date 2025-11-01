@@ -237,7 +237,6 @@ public sealed partial class PersonalizationPage : Page
     {
         var mode = (ScheduleMode.SelectedItem as ComboBoxItem)?.Content as string;
 
-        //Mode.IsExpanded = (mode == "Custom hours" || mode == "Sunset to sunrise");
         LightTimeCard.Visibility = mode == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
         DarkTimeCard.Visibility = mode == "Custom hours" ? Visibility.Visible : Visibility.Collapsed;
         TimelineCard.Visibility = (mode == "Custom hours" || mode == "Sunset to sunrise") ? Visibility.Visible : Visibility.Collapsed;
