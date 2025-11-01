@@ -7,7 +7,7 @@ namespace AutoOS.Views.Installer
         public HomeLandingPage()
         {
             InitializeComponent();
-            this.Loaded += HomeLandingPage_Loaded;
+            //this.Loaded += HomeLandingPage_Loaded;
         }
 
         private async void HomeLandingPage_Loaded(object sender, RoutedEventArgs e)
