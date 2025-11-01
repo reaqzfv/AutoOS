@@ -7,7 +7,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
-using System.Diagnostics;
 
 namespace AutoOS.Views.Settings
 {
@@ -107,53 +106,10 @@ namespace AutoOS.Views.Settings
 
             string previousTitle = string.Empty;
             
-            string edgeVersion = "";
-            bool Office = Directory.Exists(@"C:\Program Files\Microsoft Office");
-            bool AMD = (localSettings.Values["GpuBrand"]?.ToString().Contains("AMD") ?? false);
-
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                // fix broken registry path
-                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{{9459C573-B17A-45AE-9F64-1857B5D58CEE}}"" /v ""StubPath"" /f"), null),
-                ("Fixing broken registry path", async () => edgeVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")).ProductVersion), null),
-                ("Fixing broken registry path", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{{9459C573-B17A-45AE-9F64-1857B5D58CEE}}"" /v ""StubPath"" /t REG_SZ /d ""\""C:\Program Files (x86)\Microsoft\Edge\Application\{edgeVersion}\Installer\setup.exe\"" --configure-user-settings --verbose-logging --system-level --msedge --channel=stable"" /f"), null),
-
-                // disable office startup entries
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Filter\AutorunsDisabled\text/xml\CLSID"" /t REG_SZ /d ""{807583E5-5146-11D5-A672-00B0D022E945}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Filter\text/xml"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\mso-minsb-roaming.16\CLSID"" /t REG_SZ /d ""{83C25742-A9F7-49FB-9138-434302C88D07}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\mso-minsb-roaming.16"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\mso-minsb.16\CLSID"" /t REG_SZ /d ""{42089D2D-912D-4018-9087-2B87803E93FB}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\mso-minsb.16"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\osf-roaming.16\CLSID"" /t REG_SZ /d ""{42089D2D-912D-4018-9087-2B87803E93FB}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\osf-roaming.16"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\AutorunsDisabled\osf.16\CLSID"" /t REG_SZ /d ""{5504BE45-A83B-4808-900A-3A5C36E7F77A}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_CLASSES_ROOT\PROTOCOLS\Handler\osf.16"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""(Default)"" /t REG_SZ /d ""Lync Click to Call BHO"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""NoExplorer"" /t REG_SZ /d ""1"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""(Default)"" /t REG_SZ /d ""Lync Click to Call"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""MenuText"" /t REG_SZ /d ""Lync Click to Call"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""Icon"" /t REG_SZ /d ""C:\Program Files\Microsoft Office\root\VFS\ProgramFilesX86\Microsoft Office\Office16\lync.exe,1"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""HotIcon"" /t REG_SZ /d ""C:\Program Files\Microsoft Office\root\VFS\ProgramFilesX86\Microsoft Office\Office16\lync.exe,1"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""CLSID"" /t REG_SZ /d ""{1FBA04EE-3024-11d2-8F1F-0000F87ABD16}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""ClsidExtension"" /t REG_SZ /d ""{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""Default Visible"" /t REG_SZ /d ""Yes"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\AutorunsDisabled\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /v ""ButtonText"" /t REG_SZ /d ""Lync Click to Call"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Internet Explorer\Extensions\{31D09BA0-12F5-4CCE-BE8A-2923E76605DA}"" /f"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Actions Server"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Automatic Updates 2.0"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Background Push Maintenance"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office ClickToRun Service Monitor"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Feature Updates"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Feature Updates Logon"" /Disable"), () => Office == true),
-                ("Disabling Office startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /Change /TN ""\Microsoft\Office\Office Performance Monitor"" /Disable"), () => Office == true),
-
-                // disable office telemetry
-                ("Disabling Office telemetry", async () => await ProcessActions.RunPowerShellScript("disableofficetelemetry.ps1", ""), () => Office == true),
-
-                // configure amd settings
-                ("Configuring AMD settings", async () => await ProcessActions.RunPowerShellScript("amdsettings.ps1", ""), () => AMD == true),
+                // enable vulnerable driver blocklist
+                ("Enable vulnerable driver blocklist", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"" /v VulnerableDriverBlocklistEnable /t REG_DWORD /d 1 /f"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
