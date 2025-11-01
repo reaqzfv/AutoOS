@@ -317,7 +317,7 @@ Thank you for creating [DevWinUI](https://github.com/ghost1372/DevWinUI). It ins
 ---
 
 **rgl (Rui Lopes):**  
-Thank you for creating [uup-dump-get-windows-iso](https://github.com/rgl/uup-dump-get-windows-iso), which I adaptet to automatically build the latest Windows release in order to speed up and simplify AutoOS installation.
+Thank you for creating [uup-dump-get-windows-iso](https://github.com/rgl/uup-dump-get-windows-iso), which I adapted to automatically build the latest Windows release in order to speed up and simplify AutoOS installation.
 
 ---
 
@@ -338,35 +338,35 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Licensed under the **MIT License**.
    - Source: [Orbmu2k/nvidiaProfileInspector](https://github.com/Orbmu2k/nvidiaProfileInspector)
 
-3. **RadeonSoftwareSlimmer**
+3. **LowAudioLatency**
+    - Licensed under the **MIT License**.
+    - Source: [sppdl/LowAudioLatency](https://github.com/spddl/LowAudioLatency)
+
+4. **RadeonSoftwareSlimmer**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [GSDragoon/RadeonSoftwareSlimmer](https://github.com/GSDragoon/RadeonSoftwareSlimmer)
    - Changes: Added command line options for preinstall
    - Fork: [tinodin/RadeonSoftwareSlimmer](https://github.com/tinodin/RadeonSoftwareSlimmer)
 
-4. **TimerResolution**
+5. **TimerResolution**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/TimerResolution](https://github.com/valleyofdoom/TimerResolution)
 
-5. **AutoGpuAffinity**
+6. **AutoGpuAffinity**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)
    - Changes: Added functionality to also apply the affinity to the parent of the GPU and output the 3 best performing CPUs
    - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/AutoGpuAffinity)
 
-6. **Service List Builder**
+7. **Service List Builder**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/service-list-builder](https://github.com/valleyofdoom/service-list-builder)
    - Changes: Removed `shutdown /r /t 0` from created lists, added `--output-dir` switch because of MSIX restrictions.
    - Fork: [tinodin/service-list-builder](https://github.com/tinodin/service-list-builder)
 
-7. **Chiptool**
+8. **Chiptool**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [LuSlower/chiptool](https://github.com/LuSlower/chiptool)
-
-8. **LowAudioLatency**
-    - Have to ask for explicit permission from [sppdl](https://github.com/spddl)
-    - Source: [sppdl/LowAudioLatency](https://github.com/spddl/LowAudioLatency)
 
 9. **7-Zip**
 ```
