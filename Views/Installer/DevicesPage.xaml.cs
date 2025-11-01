@@ -16,6 +16,21 @@ public sealed partial class DevicesPage : Page
         GetBluetoothState();
         GetHIDState();
         GetIMODState();
+
+        // copy chiptool to localstate because of permissions
+        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Chiptool");
+        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool");
+
+        if (!Directory.Exists(destinationPath))
+        {
+            Directory.CreateDirectory(destinationPath);
+
+            foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
+
+            foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
+        }
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)

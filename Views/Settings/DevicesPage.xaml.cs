@@ -244,103 +244,77 @@ public sealed partial class DevicesPage : Page
         // hide toggle switch
         IMOD.Visibility = Visibility.Collapsed;
 
-        var query = new SelectQuery("SELECT * FROM Win32_SystemDriver WHERE Name = 'EasyAntiCheat_EOSSys'");
-        using (var searcher = new ManagementObjectSearcher(query))
+        // copy chiptool to localstate because of permissions
+        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Chiptool");
+        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool");
+
+        if (!Directory.Exists(destinationPath))
         {
-            var driver = searcher.Get().Cast<ManagementObject>().FirstOrDefault();
-            if (driver != null && driver["State"]?.ToString() == "Running")
-            {
-                // add infobar
-                DevicesInfo.Children.Add(new InfoBar
-                {
-                    Title = "Failed to run RWEverything because it is already running or an anticheat is blocking the driver.",
-                    IsClosable = false,
-                    IsOpen = true,
-                    Severity = InfoBarSeverity.Error,
-                    Margin = new Thickness(5)
-                });
+            Directory.CreateDirectory(destinationPath);
 
-                // disable the switch
-                IMOD.IsEnabled = false;
+            foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
 
-                // hide progress ring
-                imodProgress.Visibility = Visibility.Collapsed;
-
-                // show toggle
-                IMOD.Visibility = Visibility.Visible;
-
-                isInitializingIMODState = false;
-
-                return;
-            }
-            else
-            {
-                // check state
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c takeown /f \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}\" & icacls \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}\" /grant Everyone:F /T /C /Q",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "powershell.exe",
-                        Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' -status '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}'\"",
-                        CreateNoWindow = true,
-                        RedirectStandardOutput = true
-                    }
-                };
-
-                process.Start();
-
-                string output = await process.StandardOutput.ReadToEndAsync();
-
-                if (output.Contains("ENABLED"))
-                {
-                    localSettings.Values["XhciInterruptModeration"] = 1;
-
-                    IMOD.IsOn = true;
-                }
-                else if (output.Contains("FAILED"))
-                {
-                    // resort to setting
-                    if ((int?)localSettings.Values["XhciInterruptModeration"] == 1)
-                    {
-                        IMOD.IsOn = true;
-                    }
-
-                    IMOD.IsEnabled = false;
-
-                    // hide progress ring
-                    imodProgress.Visibility = Visibility.Collapsed;
-
-                    // show toggle
-                    IMOD.Visibility = Visibility.Visible;
-
-                    // add infobar
-                    DevicesInfo.Children.Add(new InfoBar
-                    {
-                        Title = "Failed to run RWEverything because it is already running or an anticheat is blocking the driver.",
-                        IsClosable = false,
-                        IsOpen = true,
-                        Severity = InfoBarSeverity.Error,
-                        Margin = new Thickness(5)
-                    });
-                }
-
-                // hide progress ring
-                imodProgress.Visibility = Visibility.Collapsed;
-
-                // show toggle
-                IMOD.Visibility = Visibility.Visible;
-
-                isInitializingIMODState = false;
-            }
+            foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
         }
+
+        // check state
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' -status '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'\"",
+                CreateNoWindow = true,
+                RedirectStandardOutput = true
+            }
+        };
+
+        process.Start();
+
+        string output = await process.StandardOutput.ReadToEndAsync();
+
+        if (output.Contains("ENABLED"))
+        {
+            localSettings.Values["XhciInterruptModeration"] = 1;
+
+            IMOD.IsOn = true;
+        }
+        else if (output.Contains("FAILED"))
+        {
+            // resort to setting
+            if ((int?)localSettings.Values["XhciInterruptModeration"] == 1)
+            {
+                IMOD.IsOn = true;
+            }
+
+            IMOD.IsEnabled = false;
+
+            // hide progress ring
+            imodProgress.Visibility = Visibility.Collapsed;
+
+            // show toggle
+            IMOD.Visibility = Visibility.Visible;
+
+            // add infobar
+            DevicesInfo.Children.Add(new InfoBar
+            {
+                Title = "Failed to check XHCI Interrupt Moderation (IMOD) status.",
+                IsClosable = false,
+                IsOpen = true,
+                Severity = InfoBarSeverity.Error,
+                Margin = new Thickness(5)
+            });
+        }
+
+        // hide progress ring
+        imodProgress.Visibility = Visibility.Collapsed;
+
+        // show toggle
+        IMOD.Visibility = Visibility.Visible;
+
+        isInitializingIMODState = false;
     }
 
     private async void IMOD_Toggled(object sender, RoutedEventArgs e)
@@ -366,69 +340,34 @@ public sealed partial class DevicesPage : Page
             StartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' {(IMOD.IsOn ? "-enable" : "-disable")} '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "RwEverything", "Rw.exe")}'\"",
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
+                Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' {(IMOD.IsOn ? "-enable" : "-disable")} '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'\"",
+                CreateNoWindow = true
             }
         };
 
         process.Start();
-
-        string output = await process.StandardOutput.ReadToEndAsync();
-        string error = await process.StandardError.ReadToEndAsync();
         await process.WaitForExitAsync();
 
-        // handle error
-        if (error.Contains("Exception") || !output.Contains("Write"))
+        // toggle setting
+        localSettings.Values["XhciInterruptModeration"] = IMOD.IsOn ? 1 : 0;
+
+        // remove infobar
+        DevicesInfo.Children.Clear();
+
+        // add infobar
+        DevicesInfo.Children.Add(new InfoBar
         {
-            // toggle back
-            isInitializingIMODState = true;
-            IMOD.IsOn = !IMOD.IsOn;
-            isInitializingIMODState = false;
+            Title = IMOD.IsOn ? "Successfully enabled XHCI Interrupt Moderation (IMOD)." : "Successfully disabled XHCI Interrupt Moderation (IMOD).",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Success,
+            Margin = new Thickness(5)
+        });
 
-            // remove infobar
-            DevicesInfo.Children.Clear();
+        // delay
+        await Task.Delay(2000);
 
-            // add infobar
-            DevicesInfo.Children.Add(new InfoBar
-            {
-                Title = "Failed to run RWEverything because it is already running or an anticheat is blocking the driver.",
-                IsClosable = false,
-                IsOpen = true,
-                Severity = InfoBarSeverity.Error,
-                Margin = new Thickness(5)
-            });
-
-            // delay
-            await Task.Delay(2000);
-
-            // remove infobar
-            DevicesInfo.Children.Clear();
-        }
-        else
-        {
-            // toggle setting
-            localSettings.Values["XhciInterruptModeration"] = IMOD.IsOn ? 1 : 0;
-
-            // remove infobar
-            DevicesInfo.Children.Clear();
-
-            // add infobar
-            DevicesInfo.Children.Add(new InfoBar
-            {
-                Title = IMOD.IsOn ? "Successfully enabled XHCI Interrupt Moderation (IMOD)." : "Successfully disabled XHCI Interrupt Moderation (IMOD).",
-                IsClosable = false,
-                IsOpen = true,
-                Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
-            });
-
-            // delay
-            await Task.Delay(2000);
-
-            // remove infobar
-            DevicesInfo.Children.Clear();
-        }
+        // remove infobar
+        DevicesInfo.Children.Clear();
     }
 }

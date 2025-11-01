@@ -3,7 +3,7 @@ param(
     [switch]$save,
     [switch]$enable,
     [switch]$disable,
-    [string]$rwePath
+    [string]$chiptoolPath
 )
 
 $globalInterval = 0x0
@@ -16,10 +16,10 @@ function Dec-To-Hex($decimal) {
 }
 
 function Get-Value-From-Address($address) {
-    $address = Dec-To-Hex -decimal ([uint64]$address)
-    $stdout = & $rwePath /Min /NoLogo /Stdout /Command="R32 $($address)" | Out-String
-    $splitString = $stdout -split " "
-    return [uint64]$splitString[-1]
+    $addressHex = "0x{0:X}" -f ([uint64]$address)
+    $stdout = & $chiptoolPath "--rdmem" "32" $addressHex | Out-String
+    $tokens = ($stdout -split '\s+') | Where-Object { $_ -match '^0x' }
+    return [uint64]::Parse($tokens[-1].Substring(2), [System.Globalization.NumberStyles]::HexNumber)
 }
 
 function Show-Interrupt-Status() {
@@ -45,7 +45,7 @@ function Show-Interrupt-Status() {
             $currentInterrupterAddress = $runtimeAddress + 0x24 + (0x20 * $i)
             $formattedInterrupterAddress = Dec-To-Hex -decimal $currentInterrupterAddress
             $defaultInterval = Get-Value-From-Address -address $currentInterrupterAddress
-            $formattedDefaultInterval = Dec-To-Hex -decimal $defaultInterval
+            $formattedDefaultInterval = "0x{0:X8}" -f $defaultInterval
 
             Write-Host "`nInterrupter Address: $formattedInterrupterAddress, Current Interval: $formattedDefaultInterval"
 
@@ -97,8 +97,6 @@ function Save-Interrupt-Interval($interrupterAddress, $defaultInterval) {
     Write-Host "Saved Interrupter Address: $hexInterrupterAddress, Interval: $hexDefaultInterval"
 }
 
-
-
 function Enable-Interrupt-Moderation() {
     $regKey = "HKCU:\SOFTWARE\AutoOS\XHCI Interrupter Addresses"
 
@@ -111,9 +109,9 @@ function Enable-Interrupt-Moderation() {
         $address = $_.PSChildName
         $defaultInterval = Get-ItemProperty -Path $_.PSPath -Name "DefaultInterval" | Select-Object -ExpandProperty DefaultInterval
 
-        $formattedInterval = [string]::Format("0x{0:X}", $defaultInterval)
+        $formattedInterval = "0x{0:X8}" -f $defaultInterval
         Write-Host "`nEnabling for Interrupter Address: $address, Interval: $formattedInterval"
-        & $rwePath /Min /NoLogo /Stdout /Command="W32 $address $formattedInterval" | Write-Host
+        & $chiptoolPath "--wrmem" "32" $address $formattedInterval | Write-Host
     }
 }
 
@@ -139,9 +137,9 @@ function Disable-Interrupt-Moderation() {
             $currentInterrupterAddress = $runtimeAddress + 0x24 + (0x20 * $i)
             $formattedInterrupterAddress = Dec-To-Hex -decimal $currentInterrupterAddress
 
-            $formattedInterval = [string]::Format("0x{0:X}", $globalInterval)
+            $formattedInterval = "0x{0:X8}" -f $globalInterval
             Write-Host "`nDisabling for Interrupter Address: $formattedInterrupterAddress, Interval: $formattedInterval"
-            & $rwePath /Min /NoLogo /Stdout /Command="W32 $formattedInterrupterAddress $formattedInterval" | Write-Host
+            & $chiptoolPath "--wrmem" "32" $formattedInterrupterAddress $formattedInterval | Write-Host
         }
     }
 }

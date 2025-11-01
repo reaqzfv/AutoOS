@@ -360,11 +360,15 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Changes: Removed `shutdown /r /t 0` from created lists, added `--output-dir` switch because of MSIX restrictions.
    - Fork: [tinodin/service-list-builder](https://github.com/tinodin/service-list-builder)
 
-7. **LowAudioLatency**
+7. **Chiptool**
+   - Licensed under the **GNU General Public License v3.0**.
+   - Source: [LuSlower/chiptool](https://github.com/LuSlower/chiptool)
+
+8. **LowAudioLatency**
     - Have to ask for explicit permission from [sppdl](https://github.com/spddl)
     - Source: [sppdl/LowAudioLatency](https://github.com/spddl/LowAudioLatency)
 
-8. **7-Zip**
+9. **7-Zip**
 ```
   7-Zip
   ~~~~~
@@ -515,7 +519,7 @@ The license for original unRAR code has the following restriction:
 ```
 - Source: [7-Zip](https://www.7-zip.org)
  
-9. **Custom Resolution Utility (CRU)**
+10. **Custom Resolution Utility (CRU)**
 ```
 Copyright (C) 2012-2022 ToastyX
 https://monitortests.com/custom-resolution-utility
@@ -533,7 +537,7 @@ OTHER LIABILITY IN CONNECTION WITH THE USE OF THE SOFTWARE.
 ```
 - Source: [Custom Resolution Utility (CRU)](https://monitortests.com/custom-resolution-utility)
 
-10. **DeviceCleanup**
+11. **DeviceCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -546,7 +550,7 @@ Not allowed:
 ```
 - Source: [DeviceCleanup](https://www.uwe-sieber.de/misc_tools.html#devicecleanup)
 
-11. **DriveCleanup**
+12. **DriveCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -558,9 +562,3 @@ Not allowed:
 - offer for download by means of a "downloader" software
 ```
 - Source: [DriveCleanup](https://www.uwe-sieber.de/drivetools.html#drivecleanup)
-
-12. **RwEverything**
-- Have to ask for permission ._.
-```
-This utility should not be bundled (in any form) in commercial or consumer products.
-```
