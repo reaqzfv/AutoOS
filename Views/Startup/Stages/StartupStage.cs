@@ -24,8 +24,8 @@ public static class StartupStage
 
         string previousTitle = string.Empty;
 
-        // copy timerresolution and lowaudiolatency to localstate
-        foreach (var folderName in new[] { "TimerResolution", "LowAudioLatency" })
+        // copy chiptool, timerresolution and lowaudiolatency to localstate
+        foreach (var folderName in new[] { "Chiptool", "TimerResolution", "LowAudioLatency" })
         {
             string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName);
             string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), folderName);
