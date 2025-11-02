@@ -444,8 +444,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ITBT RTD3", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DeepSx Power Policies", Type = "Option", RecommendedOption = "Disabled" },
 
-        new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" },
-        new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" },
+        //new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" }, cause bsod (unmountable boot volume) for some people
+        //new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" }, cause bsod (unmountable boot volume) for some people
         new BiosSettingRecommendation { SetupQuestion = "PEG0 Max Payload size", Type = "Option", RecommendedOption = "256" },
         new BiosSettingRecommendation { SetupQuestion = "PEG0 Max Payload size", Type = "Option", RecommendedOption = "256 TLP" },
         new BiosSettingRecommendation { SetupQuestion = "PEG1 Max Payload size", Type = "Option", RecommendedOption = "256" },

@@ -11,10 +11,9 @@ public static class StartupStage
     private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
     public static async Task Run()
     {
-        bool MSI = Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") &&
-           Directory.GetFiles(@"C:\Program Files (x86)\MSI Afterburner\Profiles\")
-           .Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
+        bool MSI = Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") && Directory.GetFiles(@"C:\Program Files (x86)\MSI Afterburner\Profiles\").Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
         bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "0";
+        bool NEED_IMOD_SAVE = Registry.CurrentUser.OpenSubKey(@"Software\AutoOS\XHCI Interrupter Addresses") == null;
         bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "0";
         bool ETS = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
         bool WindowsUpdates = localSettings.Values["PauseWindowsUpdates"]?.ToString() == "0";
@@ -58,6 +57,9 @@ public static class StartupStage
 
             // disable hid devices
             ("Disabling Human Interface Devices (HID)", async () => await StartupActions.RunPowerShell("Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false"), () => HID == true),
+
+            // save xhci interrupt moderation (imod) data
+            ("Saving XHCI Interrupt Moderation (IMOD) data", async () => await StartupActions.RunPowerShellScript("imod.ps1", $"-save \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}\""), () => NEED_IMOD_SAVE == true),
 
             // disable xhci interrupt moderation
             ("Disabling XHCI Interrupt Moderation (IMOD)", async () => await StartupActions.RunPowerShellScript("imod.ps1", $"-disable \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}\""), () => IMOD == true),

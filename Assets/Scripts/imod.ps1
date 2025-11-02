@@ -92,8 +92,8 @@ function Save-Interrupt-Interval($interrupterAddress, $defaultInterval) {
 
     New-ItemProperty -Path $regPath -Name "DefaultInterval" -Value $defaultInterval -PropertyType DWord -Force
 
-    $hexInterrupterAddress = [string]::Format("0x{0:X}", [int64]$interrupterAddress)
-    $hexDefaultInterval = [string]::Format("0x{0:X}", $defaultInterval)
+    $hexInterrupterAddress = "0x{0:X8}" -f [int64]$interrupterAddress
+    $hexDefaultInterval = "0x{0:X8}" -f $defaultInterval
     Write-Host "Saved Interrupter Address: $hexInterrupterAddress, Interval: $hexDefaultInterval"
 }
 
