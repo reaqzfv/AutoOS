@@ -78,7 +78,6 @@ public sealed partial class GraphicsPage : Page
                 NvidiaUpdateCheck.CheckedContent = "Extracting the NVIDIA driver...";
                 await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "driver.exe"), Path.Combine(Path.GetTempPath(), "driver"));
 
-
                 // strip the driver
                 NvidiaUpdateCheck.CheckedContent = "Stripping the NVIDIA driver...";
                 await ProcessActions.RunNvidiaStrip();
