@@ -108,8 +108,8 @@ namespace AutoOS.Views.Settings
             
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                // enable vulnerable driver blocklist
-                ("Enable vulnerable driver blocklist", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config"" /v VulnerableDriverBlocklistEnable /t REG_DWORD /d 1 /f"), null),
+                // remove tscsyncpolicy
+                ("Remove tscsyncpolicy", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"bcdedit /deletevalue tscsyncpolicy"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
