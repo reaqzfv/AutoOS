@@ -1,9 +1,17 @@
-﻿using Microsoft.Win32;
+﻿using AutoOS.Views.Installer.Actions;
+using System.Runtime.InteropServices;
+using Microsoft.Win32;
+using Windows.Storage;
 
 namespace AutoOS.Views.Installer
 {
     public sealed partial class HomeLandingPage : Page
     {
+        [LibraryImport("user32.dll")]
+        private static partial void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+        private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
         public HomeLandingPage()
         {
             InitializeComponent();
@@ -30,7 +38,6 @@ namespace AutoOS.Views.Installer
                     };
                     await dialog.ShowAsync();
                     Application.Current.Exit();
-                    return;
                 }
             }
 
@@ -51,6 +58,22 @@ namespace AutoOS.Views.Installer
                     await dialog.ShowAsync();
                     Application.Current.Exit();
                 }
+            }
+
+            // enable app access to location
+            await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"" /v ""Value"" /t REG_SZ /d ""Allow"" /f");
+            await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location"" /v ""Value"" /t REG_SZ /d ""Allow"" /f");
+            await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity"" /v ""Value"" /t REG_SZ /d ""Allow"" /f");
+            await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\activity"" /v ""Value"" /t REG_SZ /d ""Allow"" /f");
+
+            // switch keyboard layout
+            if (!(localSettings.Values["HasChangedLayout"] as bool? == true))
+            {
+                keybd_event(0x5B, 0, 0x0001, UIntPtr.Zero);
+                keybd_event(0x20, 0, 0x0001, UIntPtr.Zero);
+                keybd_event(0x20, 0, 0x0002, UIntPtr.Zero);
+                keybd_event(0x5B, 0, 0x0002, UIntPtr.Zero);
+                localSettings.Values["HasChangedLayout"] = true;
             }
         }
     }

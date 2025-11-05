@@ -573,15 +573,6 @@ $languageMap = @{
     "vi-VN" = @{ Language = "Vietnamese (Vietnam)"; Tag = "vi-VN"; GeoId = 251; Timezone = "SE Asia Standard Time" }
 }
 
-Add-Type -TypeDefinition @"
-using System;
-using System.Runtime.InteropServices;
-public class KeyboardSimulator {
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-}
-"@
-
 Function Get-IPLocation {
     [CmdletBinding()]
     [OutputType([PSCustomObject])]
@@ -636,12 +627,6 @@ $list = (Get-WinUserLanguageList).InputMethodTips
 Set-ItemProperty -Path "HKCU:\Control Panel\International\User Profile" -Name "InputMethodOverride" -Value $list[1]
 Set-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "1" -Value ($list[1].Split(':')[1])
 Set-ItemProperty -Path "HKCU:\Keyboard Layout\Preload" -Name "2" -Value ($list[0].Split(':')[1])
-
-# Set as active
-[KeyboardSimulator]::keybd_event(0x5B, 0, 0x1, [UIntPtr]::Zero)
-[KeyboardSimulator]::keybd_event(0x20, 0, 0x1, [UIntPtr]::Zero)
-[KeyboardSimulator]::keybd_event(0x20, 0, 0x2, [UIntPtr]::Zero)
-[KeyboardSimulator]::keybd_event(0x5B, 0, 0x2, [UIntPtr]::Zero)
 
 # Sync time
 net start w32time

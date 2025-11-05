@@ -10,7 +10,7 @@ public static class ScheduledTasksStage
         InstallPage.Status.Text = "Configuring Scheduled Tasks...";
 
         string previousTitle = string.Empty;
-        int stagePercentage = 2;
+        int stagePercentage = 4;
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {       

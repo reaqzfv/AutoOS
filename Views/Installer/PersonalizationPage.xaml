@@ -78,6 +78,7 @@
                                         TimeChanged="DarkMode_TimeChanged" />
                         </dev:SettingsCard>
                         <dev:SettingsCard x:Name="TimelineCard"
+                                          Padding="24,8"
                                           HorizontalContentAlignment="Stretch"
                                           ContentAlignment="Vertical"
                                           Visibility="Collapsed">

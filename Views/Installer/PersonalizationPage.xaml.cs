@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Windows.Devices.Geolocation;
 using Windows.Storage;
 
 namespace AutoOS.Views.Installer;

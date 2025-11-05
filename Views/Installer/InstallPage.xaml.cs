@@ -40,7 +40,6 @@ public sealed partial class InstallPage : Page
         ResumeButton = ResumeButtonItem;
 
         await PreparingStage.Run();
-        await TimeDateRegionStage.Run();
         await PowerStage.Run();
         await RegistryStage.Run();
         await SecurityStage.Run();
