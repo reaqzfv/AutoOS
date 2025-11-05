@@ -114,7 +114,10 @@ namespace AutoOS.Views.Settings
                 // remove timerresolution
                 ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"taskkill /f /im SetTimerResolution.exe"), null),
                 ("Remove TimerResolution", async () => await Task.Run(() => Directory.Delete(Path.Combine(PathHelper.GetAppDataFolderPath(), "TimerResolution"), true)), null),
-                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v SerializeTimerExpiration /f"), null)
+                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v SerializeTimerExpiration /f"), null),
+            
+                // update vencord plugins
+                ("Update Vencord Plugins", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "settings.json"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vencord", "settings", "settings.json"), true)), null)
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
