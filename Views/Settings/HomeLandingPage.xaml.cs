@@ -110,6 +110,11 @@ namespace AutoOS.Views.Settings
             {
                 // remove tscsyncpolicy
                 ("Remove tscsyncpolicy", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"bcdedit /deletevalue tscsyncpolicy"), null),
+
+                // remove timerresolution
+                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"taskkill /f /im SetTimerResolution.exe"), null),
+                ("Remove TimerResolution", async () => await Task.Run(() => Directory.Delete(Path.Combine(PathHelper.GetAppDataFolderPath(), "TimerResolution"), true)), null),
+                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v SerializeTimerExpiration /f"), null)
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

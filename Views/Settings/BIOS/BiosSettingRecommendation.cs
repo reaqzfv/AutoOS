@@ -178,6 +178,7 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "Efficient Core Ratio", Type = "Option", RecommendedOption = "Sync All Cores" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU Ratio Mode", Type = "Option", RecommendedOption = "Fixed Mode" },
         //new BiosSettingRecommendation { SetupQuestion = "CPU SVID Support", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SVID Behavior", Type = "Option", RecommendedOption = "Auto" },
         new BiosSettingRecommendation { SetupQuestion = "PMIC Voltages", Type = "Option", RecommendedOption = "Sync All PMICs" },
         new BiosSettingRecommendation { SetupQuestion = "MCH Full Check", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "VRM Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },

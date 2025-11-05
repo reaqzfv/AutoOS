@@ -278,16 +278,14 @@ dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_pack
 **Amitxv / Valleyofdoom:**  
 Thank you for your [PC-Tuning Guide](https://github.com/valleyofdoom/PC-Tuning) and your useful utilities:  
 - [AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)  
-- [service-list-builder](https://github.com/valleyofdoom/service-list-builder)  
-- [TimerResolution](https://github.com/valleyofdoom/TimerResolution)  
-- [ReservedCpuSets](https://github.com/valleyofdoom/ReservedCpuSets)  
+- [service-list-builder](https://github.com/valleyofdoom/service-list-builder)
 
 Without your guide this project wouldn't exist. It inspired me to attempt to automate it and ultimately start this project.
 
 ---
 
 **Revi Team:**  
-Thank you for [SVCGROUP.ps1](https://github.com/meetrevision/playbook/blob/main/src/Executables/SVCGROUP.ps1), [useful registry keys](https://github.com/meetrevision/playbook/tree/main/src/Configuration/Tasks/registry) and for first introducing me to custom ISOs. Without the ReviOS project I don't know if I would have ever gotten into tweaking Windows.
+Thank you for [SVCGROUP.ps1](https://github.com/meetrevision/playbook/blob/main/src/Executables/SVCGROUP.ps1), [useful registry keys](https://github.com/meetrevision/playbook/tree/main/src/Configuration/Tasks/registry) and for first introducing me to custom ISOs.
 
 ---
 
@@ -348,27 +346,23 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Changes: Added command line options for preinstall
    - Fork: [tinodin/RadeonSoftwareSlimmer](https://github.com/tinodin/RadeonSoftwareSlimmer)
 
-5. **TimerResolution**
-   - Licensed under the **GNU General Public License v3.0**.
-   - Source: [valleyofdoom/TimerResolution](https://github.com/valleyofdoom/TimerResolution)
-
-6. **AutoGpuAffinity**
+5. **AutoGpuAffinity**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)
    - Changes: Added functionality to also apply the affinity to the parent of the GPU and output the 3 best performing CPUs
    - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/AutoGpuAffinity)
 
-7. **Service List Builder**
+6. **Service List Builder**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/service-list-builder](https://github.com/valleyofdoom/service-list-builder)
    - Changes: Removed `shutdown /r /t 0` from created lists, added `--output-dir` switch because of MSIX restrictions.
    - Fork: [tinodin/service-list-builder](https://github.com/tinodin/service-list-builder)
 
-8. **Chiptool**
+7. **Chiptool**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [LuSlower/chiptool](https://github.com/LuSlower/chiptool)
 
-9. **7-Zip**
+8. **7-Zip**
 ```
   7-Zip
   ~~~~~
@@ -519,7 +513,7 @@ The license for original unRAR code has the following restriction:
 ```
 - Source: [7-Zip](https://www.7-zip.org)
  
-10. **Custom Resolution Utility (CRU)**
+9. **Custom Resolution Utility (CRU)**
 ```
 Copyright (C) 2012-2022 ToastyX
 https://monitortests.com/custom-resolution-utility
@@ -537,7 +531,7 @@ OTHER LIABILITY IN CONNECTION WITH THE USE OF THE SOFTWARE.
 ```
 - Source: [Custom Resolution Utility (CRU)](https://monitortests.com/custom-resolution-utility)
 
-11. **DeviceCleanup**
+10. **DeviceCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -550,7 +544,7 @@ Not allowed:
 ```
 - Source: [DeviceCleanup](https://www.uwe-sieber.de/misc_tools.html#devicecleanup)
 
-12. **DriveCleanup**
+11. **DriveCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial

@@ -23,8 +23,8 @@ public static class StartupStage
 
         string previousTitle = string.Empty;
 
-        // copy chiptool, timerresolution and lowaudiolatency to localstate
-        foreach (var folderName in new[] { "Chiptool", "TimerResolution", "LowAudioLatency" })
+        // copy chiptool and lowaudiolatency to localstate
+        foreach (var folderName in new[] { "Chiptool", "LowAudioLatency" })
         {
             string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", folderName);
             string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), folderName);
@@ -66,9 +66,6 @@ public static class StartupStage
 
             // disable device power management
             ("Disabling device power management", async () => await StartupActions.RunPowerShellScript("devicepowermanagement.ps1", ""), null),
-
-            // apply timer resolution
-            ("Applying Timer Resolution", async () => await StartupActions.RunApplication("LocalState", "TimerResolution", "SetTimerResolution.exe", "--resolution 5067 --no-console"), null),
 
             // launch lowaudiolatency
             ("Launching LowAudioLatency", async () => await StartupActions.RunApplication("LocalState", "LowAudioLatency", "low_audio_latency_no_console.exe", ""), null),
