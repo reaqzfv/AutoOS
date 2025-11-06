@@ -507,6 +507,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Phy Low Power Disable", Type = "Option", RecommendedOption = "1" },
         new BiosSettingRecommendation { SetupQuestion = "DRAM Read Link ECC Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DRAM Write Link ECC Enable", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "DRAM UECC Retry", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "DRAM scrub time", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Global C-state Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DF Cstates", Type = "Option", RecommendedOption = "Disabled" },
@@ -545,8 +547,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Adaptive S4", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LCLK DPM", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LCLK DPM Enhanced PCIe Detection", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "CPPC", Type = "Option", RecommendedOption = "Enabled" }, // might have to test disabled
-        new BiosSettingRecommendation { SetupQuestion = "CPPC Preferred Cores", Type = "Option", RecommendedOption = "Enabled" }, // might have to test disabled
+        new BiosSettingRecommendation { SetupQuestion = "CPPC", Type = "Option", RecommendedOption = "Enabled" },
+        new BiosSettingRecommendation { SetupQuestion = "CPPC Preferred Cores", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPPC Dynamic Preferred Cores", Type = "Option", RecommendedOption = "Cache", Condition = () => Ryzen9 == true || RyzenX3D == true },
         new BiosSettingRecommendation { SetupQuestion = "X3D Gaming Mode", Type = "Option", RecommendedOption = "Enabled", Condition = () => Ryzen9 == true },
         new BiosSettingRecommendation { SetupQuestion = "X3D Gaming Mode", Type = "Option", RecommendedOption = "Disabled", Condition = () => Ryzen9 == false },
@@ -604,6 +606,10 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "AMD Cool'n'Quiet", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PX Dynamic Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Fixed SOC Pstate", Type = "Option", RecommendedOption = "P0" },
+        new BiosSettingRecommendation { SetupQuestion = "CRB test", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Streaming Stores Control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Poison scrubber control", Type = "Option", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "DMAr Support", Type = "Option", RecommendedOption = "Disabled" }, // might break iommu
 
         new BiosSettingRecommendation { SetupQuestion = "PSPP Policy", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "I2C 0 Enable", Type = "Option", RecommendedOption = "Disabled" },
@@ -694,12 +700,22 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Parallel(LPT) Port", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Power Supply Idle Control", Type = "Option", RecommendedOption = "Typical Current Idle" },
         new BiosSettingRecommendation { SetupQuestion = "ACS Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "ACPI SRAT L3 Cache As NUMA Domain", Type = "Option", RecommendedOption = "Disabled" }, // not sure
+        new BiosSettingRecommendation { SetupQuestion = "ACPI SRAT L3 Cache As NUMA Domain", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "L3 DFLL Stretch Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "STAPM", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ABL Console Out Control", Type = "Option", RecommendedOption = "Disable" },
         new BiosSettingRecommendation { SetupQuestion = "S0I3", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "SEV Control", Type = "Option", RecommendedOption = "Disable" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 0 NBIO 0 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 0 NBIO 1 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 0 NBIO 2 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 0 NBIO 3 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 1 NBIO 0 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 1 NBIO 1 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 1 NBIO 2 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "Socket 1 NBIO 3 Target DPM Level", Type = "Option", RecommendedOption = "2" },
+        new BiosSettingRecommendation { SetupQuestion = "SMU and PSP Debug Mode", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Core Watchdog Timer Enable", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },

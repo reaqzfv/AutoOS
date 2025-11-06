@@ -29,12 +29,12 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
 
     # Large Send Offload V2 (IPv4)
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Large Send Offload V2 (IPv4)" }) {
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Large Send Offload V2 (IPv4)" -DisplayValue "Disabled"
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Large Send Offload V2 (IPv4)" -DisplayValue "Enabled"
     }
 
     # Large Send Offload V2 (IPv6)
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Large Send Offload V2 (IPv6)" }) {
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Large Send Offload V2 (IPv6)" -DisplayValue "Disabled"
+        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Large Send Offload V2 (IPv6)" -DisplayValue "Enabled"
     }
 
     # Wake from S0ix on Magic Packet
