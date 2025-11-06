@@ -41,6 +41,9 @@ public static class DeviceStage
             // set msi mode to undefined for all devices
             ("Setting MSI mode to undefined for all devices", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for /f ""tokens=*"" %i in ('reg query ""HKLM\SYSTEM\CurrentControlSet\Enum\PCI""^| findstr ""HKEY""') do for /f ""tokens=*"" %a in ('reg query ""%i""^| findstr ""HKEY""') do reg delete ""%a\Device Parameters\Interrupt Management\Affinity Policy"" /v ""DevicePriority"" /f"), null),
 
+            // disable asmedia usb controllers
+            ("Disabling ASMedia USB controllers", async () => await ProcessActions.RunPowerShell(@"Get-PnpDevice -FriendlyName ""*ASMedia USB*"" | Disable-PnpDevice -Confirm:$false"), null),
+
             // disable hid devices
             ("Disabling Human Interface Devices (HID)", async () => await ProcessActions.RunPowerShell("Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false"), () => HID == false),
 
