@@ -609,6 +609,11 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "CRB test", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Streaming Stores Control", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Poison scrubber control", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "L1 Stream HW Prefetcher", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "L2 Stream HW Prefetcher", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "L1 Stride Prefetcher", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "L1 Region Prefetcher", Type = "Option", RecommendedOption = "Enable" },
+        new BiosSettingRecommendation { SetupQuestion = "L2 Up/Down Prefetcher", Type = "Option", RecommendedOption = "Enable" },
         //new BiosSettingRecommendation { SetupQuestion = "DMAr Support", Type = "Option", RecommendedOption = "Disabled" }, // might break iommu
 
         new BiosSettingRecommendation { SetupQuestion = "PSPP Policy", Type = "Option", RecommendedOption = "Disabled" },
@@ -716,6 +721,9 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Socket 1 NBIO 3 Target DPM Level", Type = "Option", RecommendedOption = "2" },
         new BiosSettingRecommendation { SetupQuestion = "SMU and PSP Debug Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Core Watchdog Timer Enable", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SATA Partial State Capability", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SATA Slumber State Capability", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "GPP Serial Debug Bus Enable", Type = "Option", RecommendedOption = "Disabled" },
 
         new BiosSettingRecommendation { SetupQuestion = "Thunderbolt Wake Up Command", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake Up Event By", Type = "Option", RecommendedOption = "BIOS" },
