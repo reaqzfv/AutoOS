@@ -45,7 +45,7 @@ namespace AutoOS.Views.Installer
             string ubrStr = key.GetValue("UBR")?.ToString() ?? "";
             if (int.TryParse(buildStr, out int build) && int.TryParse(ubrStr, out int ubr))
             {
-                if (build != 22631 || (build == 22631 && ubr < 5000))
+                if (build != 22631 || (build == 22631 && ubr < 6100))
                 {
                     var dialog = new ContentDialog
                     {
