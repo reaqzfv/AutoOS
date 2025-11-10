@@ -76,7 +76,7 @@ Disable-BitLocker -MountPoint "C:"
 
 If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer), then use the `Split` function to create a new partition.
 
-**Step 9:** Right click on the `Unallocated` partition and select `New Simple Volume`. Then just click `next` until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `"E:"`).
+**Step 9:** Right click on the `Unallocated` partition and select `New Simple Volume`. Then just click `next` until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `$TARGETDRIVE = "E:"`).
 
 ```ps1
 $TARGETDRIVE = 
@@ -86,7 +86,7 @@ $TARGETDRIVE =
 
 **Step 11:** Extract the downloaded zip file.
 
-**Step 12:** Extract the **ISO** file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"C:\Users\user\Downloads\23H2\23H2"`).
+**Step 12:** Extract the **ISO** file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `$EXTRACTED_ISO = "C:\Users\user\Downloads\23H2\23H2"`).
 
 ```ps1
 $EXTRACTED_ISO = 
@@ -98,7 +98,7 @@ $EXTRACTED_ISO =
 DISM /Apply-Image /ImageFile:$EXTRACTED_ISO\sources\install.wim /Index:1 /ApplyDir:$TARGETDRIVE
 ```
 
-**Step 14:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts you may also need the disk driver if there is any. Extract them all `(.exe/.zip)` into one folder using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `"I:\drivers"`).
+**Step 14:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts and laptops you may also need the disk driver (Intel Rapid Storage Technology Driver). Extract all `.zip` files. For `.exe` files, there may be an extract option in the setup, otherwise use 7-Zip, NanaZip, or WinRAR to extract them. Then move all extracted folders into one folder and define this variable in the PowerShell window (e.g. `$DRIVERDIR = "C:\Users\user\Downloads\drivers"`).
 
 ```ps1
 $DRIVERDIR = 
