@@ -29,7 +29,7 @@
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Energy.png}">
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard x:Name="Idle_SettingsCard"
-                                          Description="Disabling leads to a lower latency at the expense of higher temperatures and power consumption. Do not disable if you have hyperthreading enabled."
+                                          Description="Disabling leads to a lower latency at the expense of higher temperatures and power consumption. Do not disable if you already have high temperatures or have Hyper-Threading enabled on Intel."
                                           Header="Idle States">
                             <ToggleSwitch x:Name="IdleStates"
                                           Toggled="IdleStates_Toggled" />
