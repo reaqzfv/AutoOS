@@ -2,25 +2,25 @@
 
 namespace AutoOS.Views.Installer;
 
-public sealed partial class BrowserPage : Page
+public sealed partial class BrowsersPage : Page
 {
     private bool isInitializingBrowsersState = true;
     private bool isInitializingExtensionsState = true;
 
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-    public BrowserPage()
+    public BrowsersPage()
     {
         InitializeComponent();
         GetItems();
-        GetBrowser();
+        GetBrowsers();
         GetExtensions();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
-        MainWindow.Instance.MarkVisited(nameof(BrowserPage));
+        MainWindow.Instance.MarkVisited(nameof(BrowsersPage));
         MainWindow.Instance.CheckAllPagesVisited();
     }
 
@@ -59,13 +59,13 @@ public sealed partial class BrowserPage : Page
         };
     }
 
-    private void GetBrowser()
+    private void GetBrowsers()
     {
-        var selectedBrowser = localSettings.Values["Browser"] as string;
-        var browserItems = Browsers.ItemsSource as List<GridViewItem>;
+        var selectedBrowsers = localSettings.Values["Browsers"] as string;
+        var BrowsersItems = Browsers.ItemsSource as List<GridViewItem>;
         Browsers.SelectedItems.AddRange(
-            selectedBrowser?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(e => browserItems?.FirstOrDefault(ext => ext.Text == e))
+            selectedBrowsers?.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(e => BrowsersItems?.FirstOrDefault(ext => ext.Text == e))
             .Where(ext => ext != null) ?? Enumerable.Empty<GridViewItem>()
         );
 
@@ -76,12 +76,12 @@ public sealed partial class BrowserPage : Page
     {
         if (isInitializingBrowsersState) return;
 
-        var selectedBrowser = Browsers.SelectedItems
+        var selectedBrowsers = Browsers.SelectedItems
             .Cast<GridViewItem>()
             .Select(item => item.Text)
             .ToArray();
 
-        localSettings.Values["Browser"] = string.Join(", ", selectedBrowser);
+        localSettings.Values["Browsers"] = string.Join(", ", selectedBrowsers);
     }
 
     private void GetExtensions()

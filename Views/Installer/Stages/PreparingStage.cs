@@ -40,7 +40,8 @@ public static class PreparingStage
     public static bool? IMOD;
 
     public static bool? Intel10th;
-    public static bool? Intel11th;
+    public static bool? Intel14th;
+    public static bool? IntelArc;
     public static bool? NVIDIA;
     public static bool? AMD;
     public static bool? HDCP;
@@ -155,7 +156,8 @@ public static class PreparingStage
             IMOD = (localSettings.Values["XhciInterruptModeration"]?.ToString() == "1");
 
             Intel10th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® 7th-10th Gen Processor Graphics") ?? false);
-            Intel11th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® Arc™ & Iris® Xe Graphics") ?? false);
+            Intel14th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® 11th-14th Gen Processor Graphics") ?? false);
+            IntelArc = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® Arc™ & Iris® Xe Graphics") ?? false);
             NVIDIA = (localSettings.Values["GpuBrand"]?.ToString().Contains("NVIDIA") ?? false);
             AMD = (localSettings.Values["GpuBrand"]?.ToString().Contains("AMD") ?? false);
 

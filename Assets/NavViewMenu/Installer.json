@@ -24,10 +24,10 @@
           "HideItem": true
         },
         {
-          "UniqueId": "AutoOS.Views.Installer.BrowserPage",
-          "Title": "Browser",
-          "Subtitle": "Browser",
-          "ImagePath": "ms-appx:///Assets/Fluent/Browser.png",
+          "UniqueId": "AutoOS.Views.Installer.BrowsersPage",
+          "Title": "Browsers",
+          "Subtitle": "Browsers",
+          "ImagePath": "ms-appx:///Assets/Fluent/Browsers.png",
           "HideItem": true
         },
         {

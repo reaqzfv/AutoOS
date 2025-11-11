@@ -24,7 +24,7 @@
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
                 <dev:SettingsGroup Margin="0,0,0,10"
-                                   Header="Theme">
+                                   Header="Themes">
                     <dev:SettingsGroup.Content>
                         <GridView x:Name="Themes"
                                   Margin="0,0,0,-12"
@@ -33,14 +33,16 @@
                             <GridView.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal">
-                                        <Image Width="190"
-                                               Height="130"
-                                               Source="{Binding ImageSource1}"
-                                               Stretch="UniformToFill" />
-                                        <Image Width="190"
-                                               Height="130"
-                                               Source="{Binding ImageSource2}"
-                                               Stretch="UniformToFill" />
+                                        <Image Height="128"
+                                               Source="{Binding LightTheme}"
+                                               Stretch="Uniform"
+                                               ToolTipService.Placement="Top"
+                                               ToolTipService.ToolTip="Light Mode" />
+                                        <Image Height="128"
+                                               Source="{Binding DarkTheme}"
+                                               Stretch="Uniform"
+                                               ToolTipService.Placement="Top"
+                                               ToolTipService.ToolTip="Dark Mode" />
                                     </StackPanel>
                                 </DataTemplate>
                             </GridView.ItemTemplate>
@@ -78,7 +80,6 @@
                                         TimeChanged="DarkMode_TimeChanged" />
                         </dev:SettingsCard>
                         <dev:SettingsCard x:Name="TimelineCard"
-                                          Padding="24,8"
                                           HorizontalContentAlignment="Stretch"
                                           ContentAlignment="Vertical"
                                           Visibility="Collapsed">

@@ -64,8 +64,8 @@ public sealed partial class PersonalizationPage : Page
 
     public class ThemeItem
     {
-        public string ImageSource1 { get; set; }
-        public string ImageSource2 { get; set; }
+        public string LightTheme { get; set; }
+        public string DarkTheme { get; set; }
     }
 
     public static Task ApplyTheme(string themePath)
@@ -103,7 +103,7 @@ public sealed partial class PersonalizationPage : Page
     {
         Themes.ItemsSource = new List<ThemeItem>
         {
-            new() { ImageSource1 = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg", ImageSource2 = @"C:\Windows\Web\Wallpaper\Windows\img19.jpg" }
+            new() { LightTheme = @"C:\Windows\Web\Wallpaper\Windows\img0.jpg", DarkTheme = @"C:\Windows\Web\Wallpaper\Windows\img19.jpg" }
         };
     }
 
