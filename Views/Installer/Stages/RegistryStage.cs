@@ -247,7 +247,7 @@ public static class RegistryStage
             ("Disabling automatic folder type discovery", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\Shell\Bags\AllFolders\Shell"" /v FolderType /t REG_SZ /d ""NotSpecified"" /f"), null),
 
             // disable jpeg wallpaper compression
-            ("Disabling jpeg wallpaper compression", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Desktop"" /v JPEGImportQuality /t REG_DWORD /d 100 /f"), null),
+            ("Disabling JPEG wallpaper compression", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Desktop"" /v JPEGImportQuality /t REG_DWORD /d 100 /f"), null),
 
             // disable tracking recent files
             ("Disabling tracking of recent files", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced"" /v Start_TrackDocs /t REG_DWORD /d 0 /f"), null),

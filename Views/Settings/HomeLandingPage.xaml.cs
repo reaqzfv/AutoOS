@@ -74,7 +74,7 @@ namespace AutoOS.Views.Settings
 
                 }
 
-                await Update();
+                //await Update();
                 localSettings.Values["Version"] = currentVersion;
             }
         }
@@ -108,20 +108,7 @@ namespace AutoOS.Views.Settings
             
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                // remove tscsyncpolicy
-                ("Remove tscsyncpolicy", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"bcdedit /deletevalue tscsyncpolicy"), null),
 
-                // remove timerresolution
-                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"taskkill /f /im SetTimerResolution.exe"), null),
-                ("Remove TimerResolution", async () => await Task.Run(() => Directory.Delete(Path.Combine(PathHelper.GetAppDataFolderPath(), "TimerResolution"), true)), null),
-                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v SerializeTimerExpiration /f"), null),
-                ("Remove TimerResolution", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v GlobalTimerResolutionRequests /f"), null),
-            
-                // update vencord plugins
-                ("Update Vencord Plugins", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "settings.json"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vencord", "settings", "settings.json"), true)), null),
-
-                // disable asmedia usb controllers
-                ("Disabling ASMedia USB controllers", async () => await ProcessActions.RunPowerShell(@"Get-PnpDevice -FriendlyName ""*ASMedia USB*"" | Disable-PnpDevice -Confirm:$false"), null)
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
