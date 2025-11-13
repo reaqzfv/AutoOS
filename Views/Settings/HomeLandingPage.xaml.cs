@@ -105,10 +105,11 @@ namespace AutoOS.Views.Settings
             _ = updater.ShowAsync();
 
             string previousTitle = string.Empty;
-            
+
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-
+                ("Fixing Office telemetry breaking OneDrive upload", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg delete ""HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Common\Internet"" /v serviceleveloptions /f"), null),
+                ("Fixing Office telemetry breaking OneDrive upload", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg delete ""HKEY_CURRENT_USER\Software\Policies\Microsoft\Office\16.0\Common\Internet"" /v serviceleveloptions /f"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

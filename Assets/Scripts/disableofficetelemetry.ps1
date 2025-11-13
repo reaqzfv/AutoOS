@@ -1,6 +1,6 @@
 ﻿# Credit: abbodi1406
 # Source: https://github.com/abbodi1406/WHD/blob/master/scripts/OC2R_DisableTelemetry.ps1
-# Modified: Removed all disableboottoofficestart keys so that you still launch to the home page
+# Modified: Removed disableboottoofficestart so that you still launch to the home page + Removed serviceleveloptions so that uploading new documents to OneDrive still works 
 
 New-Item 'HKCU:\Software\Microsoft\Office\Common\ClientTelemetry' -Force -EA 0
 New-Item 'HKCU:\Software\Microsoft\Office\16.0\Common' -Force -EA 0
@@ -50,7 +50,7 @@ New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Feedback' 'include
 New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Feedback' 'includeemail' -Value 0 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Feedback' 'surveyenabled' -Value 0 -Type DWord -Force
 # New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Internet' 'disableboottoofficestart' -Value 1 -Type DWord -Force
-New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Internet' 'serviceleveloptions' -Value 0 -Type DWord -Force
+# New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Internet' 'serviceleveloptions' -Value 0 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\Internet' 'useonlinecontent' -Value 0 -Type DWord -Force
 # New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\PTWatson' 'disableboottoofficestart' -Value 1 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Microsoft\Office\16.0\Common\PTWatson' 'PTWOptIn' -Value 0 -Type DWord -Force
@@ -97,7 +97,7 @@ New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Feedback'
 New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Feedback' 'includeemail' -Value 0 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Feedback' 'surveyenabled' -Value 0 -Type DWord -Force
 # New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Internet' 'disableboottoofficestart' -Value 1 -Type DWord -Force
-New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Internet' 'serviceleveloptions' -Value 0 -Type DWord -Force
+# New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Internet' 'serviceleveloptions' -Value 0 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\Internet' 'useonlinecontent' -Value 0 -Type DWord -Force
 # New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\PTWatson' 'disableboottoofficestart' -Value 1 -Type DWord -Force
 New-ItemProperty 'HKCU:\Software\Policies\Microsoft\Office\16.0\Common\PTWatson' 'PTWOptIn' -Value 0 -Type DWord -Force
