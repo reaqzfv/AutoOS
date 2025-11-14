@@ -660,7 +660,11 @@ public static class ProcessActions
                 if (!Directory.Exists(usersPath)) return Array.Empty<string>();
 
                 return Directory.GetDirectories(usersPath)
-                    .Select(userDir => Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "Windows", "GameUserSettings.ini"))
+                    .Select(userDir =>
+                        File.Exists(Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "WindowsEditor", "GameUserSettings.ini"))
+                        ? Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "WindowsEditor", "GameUserSettings.ini")
+                        : Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "Windows", "GameUserSettings.ini")
+                    )
                     .Where(File.Exists);
             })
             .Select(path => new FileInfo(path))
@@ -682,7 +686,8 @@ public static class ProcessActions
                     newestFilePath = file.FullName;
 
                     // copy the file
-                    Directory.CreateDirectory(EpicGamesHelper.EpicGamesAccountDir);
+                    Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"EpicGamesLauncher\Saved\Config\WindowsEditor"));
+                    //Directory.CreateDirectory(EpicGamesHelper.EpicGamesAccountDir);
                     File.Copy(newestFilePath, EpicGamesHelper.ActiveEpicGamesAccountPath, true);
 
                     // disable tray and notifications

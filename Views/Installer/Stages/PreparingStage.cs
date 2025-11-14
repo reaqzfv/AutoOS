@@ -222,7 +222,11 @@ public static class PreparingStage
                     if (!Directory.Exists(usersPath)) return Array.Empty<string>();
 
                     return Directory.GetDirectories(usersPath)
-                        .Select(userDir => Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "Windows", "GameUserSettings.ini"))
+                        .Select(userDir =>
+                            File.Exists(Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "WindowsEditor", "GameUserSettings.ini"))
+                            ? Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "WindowsEditor", "GameUserSettings.ini")
+                            : Path.Combine(userDir, "AppData", "Local", "EpicGamesLauncher", "Saved", "Config", "Windows", "GameUserSettings.ini")
+                        )
                         .Where(File.Exists);
                 })
                 .Select(path => new FileInfo(path))
