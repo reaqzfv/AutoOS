@@ -54,7 +54,7 @@ public sealed partial class InstallPage : Page
         await OptionalFeatureStage.Run();
         await AppxStage.Run();
         await RuntimesStage.Run();
-        await BrowserStage.Run();
+        await BrowsersStage.Run();
         await ApplicationStage.Run();
         await GamesStage.Run();
         await SchedulingStage.Run();
