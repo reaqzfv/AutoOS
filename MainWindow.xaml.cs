@@ -68,7 +68,7 @@ namespace AutoOS.Views
         [
             "PersonalizationPage",
             "ApplicationsPage",
-            "BrowserPage",
+            "BrowsersPage",
             "DisplayPage",
             "GraphicsPage",
             "SchedulingPage",

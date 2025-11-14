@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace AutoOS.Views.Installer.Stages;
 
-public static class BrowserStage
+public static class BrowsersStage
 {
     public static async Task Run()
     {

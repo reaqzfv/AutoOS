@@ -166,13 +166,13 @@ public static class PreparingStage
             MSI = (localSettings.Values["MsiProfile"] != null);
             CRU = (localSettings.Values["CruProfile"] != null);
 
-            Chrome = (localSettings.Values["Browser"]?.ToString().Contains("Chrome") ?? false);
-            Brave = (localSettings.Values["Browser"]?.ToString().Contains("Brave") ?? false);
-            Vivaldi = (localSettings.Values["Browser"]?.ToString().Contains("Vivaldi") ?? false);
-            Arc = (localSettings.Values["Browser"]?.ToString().Contains("Arc") ?? false);
-            Comet = (localSettings.Values["Browser"]?.ToString().Contains("Comet") ?? false);
-            Firefox = (localSettings.Values["Browser"]?.ToString().Contains("Firefox") ?? false);
-            Zen = (localSettings.Values["Browser"]?.ToString().Contains("Zen") ?? false);
+            Chrome = (localSettings.Values["Browsers"]?.ToString().Contains("Chrome") ?? false);
+            Brave = (localSettings.Values["Browsers"]?.ToString().Contains("Brave") ?? false);
+            Vivaldi = (localSettings.Values["Browsers"]?.ToString().Contains("Vivaldi") ?? false);
+            Arc = (localSettings.Values["Browsers"]?.ToString().Contains("Arc") ?? false);
+            Comet = (localSettings.Values["Browsers"]?.ToString().Contains("Comet") ?? false);
+            Firefox = (localSettings.Values["Browsers"]?.ToString().Contains("Firefox") ?? false);
+            Zen = (localSettings.Values["Browsers"]?.ToString().Contains("Zen") ?? false);
 
             uBlock = (localSettings.Values["Extensions"]?.ToString().Contains("uBlock Origin") ?? false);
             SponsorBlock = (localSettings.Values["Extensions"]?.ToString().Contains("SponsorBlock") ?? false);
