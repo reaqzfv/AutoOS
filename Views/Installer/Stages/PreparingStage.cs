@@ -268,8 +268,6 @@ public static class PreparingStage
                 })
                 .FirstOrDefault(false);
 
-            Rename = "System Product Name".Equals(Registry.GetValue(@"HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS", "SystemProductName", "")?.ToString(), StringComparison.Ordinal);
-
             Desktop = new ManagementObjectSearcher("SELECT * FROM Win32_SystemEnclosure")
                 .Get()
                 .Cast<ManagementObject>()
