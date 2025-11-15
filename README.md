@@ -36,97 +36,33 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) to receive installation support and stay informed about future updates or changes.
 
-**Step 2:** Open PowerShell as Admin and don't close it until the end.
+**Step 2:** Download the latest Windows 23H2 ISO from [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are currently not supported.
 
-**Step 3:**  Paste this into the PowerShell window to check if your disk is using the GPT partition style. 
+**Step 3:** Extract the downloaded zip file.
 
-```ps1
-$DISKNUMBER = (Get-Partition -DriveLetter C | Get-Disk).Number; (Get-Partition -DriveLetter C | Get-Disk).PartitionStyle
-```
+**Step 4:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts and laptops you may also need the disk driver (Intel Rapid Storage Technology Driver) otherwise you may get a bluescreen. 
 
-If the output is `GPT` move on to step 4. 
+Extract all `.zip` files (for `.exe` files, there may be an extract option in the setup, otherwise use 7-Zip, NanaZip, or WinRAR to extract them) and move all extracted folders into one folder.
 
-If the output is `MBR` you must first convert your disk to GPT using this command. After the conversion you want to make sure that you set `Boot Mode` to `UEFI` in your BIOS so that you will be able to boot.
+**Step 5:** Open PowerShell **as Administrator**.
 
-```ps1
-mbr2gpt /convert /disk:$DISKNUMBER /allowFullOS
-```
-
-**Step 4:**  Paste this into the PowerShell window to check if your disk is BitLocker encrypted. 
+**Step 6:** Paste this into the PowerShell window to allow running scripts.
 
 ```ps1
-(Get-BitLockerVolume -MountPoint "C:").VolumeStatus
+Set-ExecutionPolicy Unrestricted -Force
 ```
 
-If the output is `FullyDecrypted` move on to step 5. 
-
-If the output is `FullyEncrypted` you must first disable BitLocker using this command.
+**Step 7:** Paste this into the PowerShell window to download and run the deployment script.
 
 ```ps1
-Disable-BitLocker -MountPoint "C:"
+irm https://raw.githubusercontent.com/tinodin/AutoOS/master/deploy.ps1 | iex
 ```
 
-**Step 5:** Open Disk Management.
+**Step 8:** Once the script finished, restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
 
-**Step 6:** Find your your C: partition / biggest partition.
+**Step 9:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
-**Step 7:** Right click on it and select `Shrink Volume`.
-
-**Step 8:** In `Enter the amount of space to shrink in MB:` input at least 65536 (=64GB) or higher 131072 (=128GB), 262144 (=256GB), 524288 (=512GB). 
-
-If you can't shrink that much space, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer), then use the `Split` function to create a new partition.
-
-**Step 9:** Right click on the `Unallocated` partition and select `New Simple Volume`. Then just click `next` until you have a "New Volume". Then define this variable in the PowerShell window (e.g. `$TARGETDRIVE = "E:"`).
-
-```ps1
-$TARGETDRIVE = 
-```
-
-**Step 10:** Download the latest Windows ISO from [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are currently not supported and are going to give you worse results.
-
-**Step 11:** Extract the downloaded zip file.
-
-**Step 12:** Extract the **ISO** file using 7-Zip / NanaZip / WinRar etc. Then define this variable in the PowerShell window (e.g. `$EXTRACTED_ISO = "C:\Users\user\Downloads\23H2\23H2"`).
-
-```ps1
-$EXTRACTED_ISO = 
-```
-
-**Step 13:** Paste this into the PowerShell window to apply the `install.wim` to the new partition.
-
-```ps1
-DISM /Apply-Image /ImageFile:$EXTRACTED_ISO\sources\install.wim /Index:1 /ApplyDir:$TARGETDRIVE
-```
-
-**Step 14:** Go to the Drivers / Support page or your Mainboard / PC and download your LAN, Wi-Fi and Bluetooth driver (No Audio, Chipset, or anything else). On prebuilts and laptops you may also need the disk driver (Intel Rapid Storage Technology Driver). Extract all `.zip` files. For `.exe` files, there may be an extract option in the setup, otherwise use 7-Zip, NanaZip, or WinRAR to extract them. Then move all extracted folders into one folder and define this variable in the PowerShell window (e.g. `$DRIVERDIR = "C:\Users\user\Downloads\drivers"`).
-
-```ps1
-$DRIVERDIR = 
-```
-
-**Step 15:** Paste this into the PowerShell window to install the drivers.
-
-```ps1
-DISM /Image:$TARGETDRIVE\ /Add-Driver /Driver:$DRIVERDIR /Recurse
-```
-
-**Step 16:** Paste this into the PowerShell window to create the `Panther` folder and download the `unattend.xml` file.
-
-```ps1
-New-Item -ItemType Directory -Path $TARGETDRIVE\Windows\Panther -Force | Out-Null; Invoke-WebRequest -Uri "https://raw.githubusercontent.com/tinodin/AutoOS/master/unattend.xml" -OutFile $TARGETDRIVE\Windows\Panther\unattend.xml
-```
-
-**Step 17:** Paste this into the PowerShell window to create the boot entry for AutoOS.
-
-```ps1
-bcdboot $TARGETDRIVE\Windows; bcdedit /set "{default}" description "AutoOS"; label $TARGETDRIVE "AutoOS"
-```
-
-**Step 18:** Restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
-
-**Step 19:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
-
-**Step 20:** Select your settings and click "Install AutoOS".
+**Step 10:** Select your settings and click "Install AutoOS".
 
 ## 📷Screenshots
 ### Installer

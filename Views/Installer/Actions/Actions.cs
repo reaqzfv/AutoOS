@@ -820,10 +820,9 @@ public static class ProcessActions
             return;
 
         var jsonObject = JsonNode.Parse(jsonContent);
-        var installationList = jsonObject?["InstallationList"] as JsonArray;
 
         // return if install list is empty
-        if (foundFiles.Count == 0 || installationList == null || installationList.Count == 0)
+        if (foundFiles.Count == 0 || jsonObject?["InstallationList"] is not JsonArray installationList || installationList.Count == 0)
         {
             return;
         }
@@ -1099,7 +1098,7 @@ public static class ProcessActions
             var i = Convert.ToInt32(localSettings.Values["XhciAffinity"]);
             var query = "SELECT PNPDeviceID FROM Win32_USBController";
 
-            foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get())
+            foreach (ManagementObject obj in new ManagementObjectSearcher(query).Get().Cast<ManagementObject>())
             {
                 if (obj["PNPDeviceID"]?.ToString()?.StartsWith("PCI\\VEN_") == true)
                 {
