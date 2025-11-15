@@ -176,18 +176,18 @@ namespace AutoOS.Helpers
                         var gameData = JsonDocument.Parse(await httpClient.GetStringAsync($"https://store.steampowered.com/api/appdetails?appids={gameId}&l=english", _)).RootElement.GetProperty(gameId);
 
                         // get playtime data
-                        var playTimeData = XDocument.Parse(await httpClient.GetStringAsync($"https://steamcommunity.com/profiles/{GetSteam64ID()}/games?tab=all&xml=1", _));
+                        //var playTimeData = XDocument.Parse(await httpClient.GetStringAsync($"https://steamcommunity.com/profiles/{GetSteam64ID()}/?tab=all&xml=1", _));
 
-                        string playTime = playTimeData.Descendants("game")
-                            .Where(game => (string)game.Element("appID") == gameId)
-                            .Select(game =>
-                            {
-                                var hoursStr = (string)game.Element("hoursOnRecord");
-                                return double.TryParse(hoursStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var h)
-                                    ? $"{(int)h}h {(int)((h - (int)h) * 60)}min"
-                                    : null;
-                            })
-                            .FirstOrDefault() ?? "0m";
+                        //string playTime = playTimeData.Descendants("game")
+                        //    .Where(game => (string)game.Element("appID") == gameId)
+                        //    .Select(game =>
+                        //    {
+                        //        var hoursStr = (string)game.Element("hoursOnRecord");
+                        //        return double.TryParse(hoursStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var h)
+                        //            ? $"{(int)h}h {(int)((h - (int)h) * 60)}min"
+                        //            : null;
+                        //    })
+                        //    .FirstOrDefault() ?? "0m";
 
                         // get review data
                         var reviewData = JsonDocument.Parse(await httpClient.GetStringAsync($"https://store.steampowered.com/appreviews/{gameId}?json=1", _)).RootElement.GetProperty("query_summary");
@@ -245,7 +245,8 @@ namespace AutoOS.Helpers
                                 Rating = totalPositive + totalNegative > 0
                                             ? Math.Round(5.0 * totalPositive / (totalPositive + totalNegative), 1)
                                             : 0.0,
-                                PlayTime = playTime,
+                                //PlayTime = playTime,
+                                PlayTime = "0m",
                                 AgeRatingUrl = !string.IsNullOrEmpty(rating) ? $"{ratingBaseUrl}{rating.ToLowerInvariant()}.png" : null,
                                 AgeRatingTitle = !string.IsNullOrEmpty(rating) ? (ratingTitles.TryGetValue(rating.ToLowerInvariant(), out var title) ? title : rating) : null,
                                 AgeRatingDescription = !string.IsNullOrEmpty(descriptors) ? descriptors : null,
