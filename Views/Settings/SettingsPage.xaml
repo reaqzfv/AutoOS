@@ -85,12 +85,18 @@
                     </dev:SettingsCard>
                 </dev:SimpleSettingsGroup>
                 <dev:SimpleSettingsGroup Header="Startup">
-                    <dev:SettingsCard Description="Completely hides the AutoOS Startup window."
+                    <dev:SettingsCard Description="Enable to completely hide the AutoOS Startup window."
                                       Header="Launch minimized"
                                       HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},
                                                                 Glyph=&#xE73F;}">
                         <ToggleSwitch x:Name="LaunchMinimized"
                                       Toggled="LaunchMinimized_Toggled" />
+                    </dev:SettingsCard>
+                    <dev:SettingsCard Description="Toggle launching OBS Studio on startup."
+                                      Header="Launch OBS Studio"
+                                      HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Obs.png}">
+                        <ToggleSwitch x:Name="LaunchOBS"
+                                      Toggled="LaunchOBS_Toggled" />
                     </dev:SettingsCard>
                 </dev:SimpleSettingsGroup>
                 <dev:SimpleSettingsGroup Header="About">

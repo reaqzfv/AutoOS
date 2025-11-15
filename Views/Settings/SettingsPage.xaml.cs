@@ -118,11 +118,17 @@ public sealed partial class SettingsPage : Page
         }
 
         LaunchMinimized.IsOn = (bool?)ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] ?? false;
+        LaunchOBS.IsOn = (bool?)ApplicationData.Current.LocalSettings.Values["LaunchOBS"] ?? true;
     }
 
     private void LaunchMinimized_Toggled(object sender, RoutedEventArgs e)
     {
         ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] = LaunchMinimized.IsOn;
+    }
+
+    private void LaunchOBS_Toggled(object sender, RoutedEventArgs e)
+    {
+        ApplicationData.Current.LocalSettings.Values["LaunchOBS"] = LaunchOBS.IsOn;
     }
 }
 

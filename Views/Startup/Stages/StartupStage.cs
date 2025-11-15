@@ -12,6 +12,7 @@ public static class StartupStage
     public static async Task Run()
     {
         bool MSI = Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") && Directory.GetFiles(@"C:\Program Files (x86)\MSI Afterburner\Profiles\").Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
+        bool OBS = !(localSettings.Values["LaunchOBS"] as bool? == false);
         bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "0";
         bool NEED_IMOD_SAVE = Registry.CurrentUser.OpenSubKey(@"Software\AutoOS\XHCI Interrupter Addresses") == null;
         bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "0";
@@ -52,8 +53,8 @@ public static class StartupStage
             ("Applying MSI Afterburner profile", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe", Arguments = "/Profile1 /q" })), () => MSI == true),
 
             // launch obs studio
-            ("Launching OBS Studio", async () => await StartupActions.RunNsudo("CurrentUser", @"cmd /c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q"), null),
-            ("Launching OBS Studio", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" })), null),
+            ("Launching OBS Studio", async () => await StartupActions.RunNsudo("CurrentUser", @"cmd /c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q"), () => OBS == true),
+            ("Launching OBS Studio", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" })), () => OBS == true),
 
             // disable hid devices
             ("Disabling Human Interface Devices (HID)", async () => await StartupActions.RunPowerShell("Get-PnpDevice -Class HIDClass | Where-Object { $_.FriendlyName -match 'HID-compliant (consumer control device|device|game controller|system controller|vendor-defined device)' -and $_.FriendlyName -notmatch 'Mouse|Keyboard'} | Disable-PnpDevice -Confirm:$false"), () => HID == true),
