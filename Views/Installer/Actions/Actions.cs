@@ -430,7 +430,7 @@ public static class ProcessActions
         using var client = new HttpClient();
         using var form = new MultipartFormDataContent
             {
-                { new StringContent($"{cpuName}\n{motherboard}\n{gpus}\n{osVersion}"), "content" },
+                { new StringContent($"{cpuName}\n{motherboard}\n{gpus}\n{osVersion}\n{ProcessInfoHelper.Version}"), "content" },
                 { new ByteArrayContent(Encoding.UTF8.GetBytes(psOutput.TrimStart('\r', '\n'))), "file", "advancednetworksettings.txt" }
             };
 

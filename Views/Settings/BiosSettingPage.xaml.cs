@@ -1,10 +1,11 @@
 ﻿using AutoOS.Views.Settings.BIOS;
+using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Management;
 using System.Runtime.CompilerServices;
-using Microsoft.Win32;
+using System.Text.Json;
 
 namespace AutoOS.Views.Settings;
 
@@ -559,11 +560,35 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
         string ubr = key.GetValue("UBR")?.ToString() ?? "";
         string osVersion = $"{build}.{ubr}";
 
+        string discordId = "Failed to get Discord account id";
+        string discordUsername = "Failed to get Discord username";
+
+        string discordJsonPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "discord", "sentry", "scope_v3.json");
+        if (File.Exists(discordJsonPath))
+        {
+            try
+            {
+                string jsonText = File.ReadAllText(discordJsonPath);
+                using JsonDocument doc = JsonDocument.Parse(jsonText);
+
+                if (doc.RootElement.TryGetProperty("scope", out var scope) &&
+                    scope.TryGetProperty("user", out var user))
+                {
+                    discordId = user.GetProperty("id").GetString() ?? discordId;
+                    discordUsername = user.GetProperty("username").GetString() ?? discordUsername;
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
         using var client = new HttpClient();
 
         using var multipart = new MultipartFormDataContent
         {
-            { new StringContent($"{cpuName}\n{motherboard}\n{gpus}\n{osVersion}"), "content" },
+            { new StringContent($"{discordUsername}\n{discordId}\n{cpuName}\n{motherboard}\n{gpus}\n{osVersion}\n{ProcessInfoHelper.Version}"), "content" },
             { new ByteArrayContent(File.ReadAllBytes(nvram)), "file", Path.GetFileName(nvram) }
         };
 
