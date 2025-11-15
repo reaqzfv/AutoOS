@@ -120,6 +120,7 @@ public sealed partial class SchedulingPage : Page
     private void GetAffinities()
     {
         var gpuAffinities = new List<int?>();
+        var xhciAffinities = new List<int?>();
         var nicAffinities = new List<int?>();
 
         foreach (var query in new[]
@@ -161,8 +162,7 @@ public sealed partial class SchedulingPage : Page
                 }
                 else if (query.Contains("USBController"))
                 {
-                    if (affinityCore.HasValue)
-                        XHCI.SelectedIndex = affinityCore.Value;
+                    xhciAffinities.Add(affinityCore);
                 }
                 else if (query.Contains("NetworkAdapter"))
                 {
@@ -176,7 +176,19 @@ public sealed partial class SchedulingPage : Page
             gpuAffinities.All(a => a.HasValue) &&
             gpuAffinities.Select(a => a.Value).Distinct().Count() == 1)
         {
-            GPU.SelectedIndex = gpuAffinities[0].Value;
+            int index = gpuAffinities[0].Value;
+            if (index >= 0 && index < logicalCoreCount)
+                GPU.SelectedIndex = index;
+        }
+
+        // only if all xhci controllers share the same affinity
+        if (xhciAffinities.Count > 0 &&
+            xhciAffinities.All(a => a.HasValue) &&
+            xhciAffinities.Select(a => a.Value).Distinct().Count() == 1)
+        {
+            int index = xhciAffinities[0].Value;
+            if (index >= 0 && index < logicalCoreCount)
+                XHCI.SelectedIndex = index;
         }
 
         // only if all network controllers share the same affinity
@@ -184,7 +196,9 @@ public sealed partial class SchedulingPage : Page
             nicAffinities.All(a => a.HasValue) &&
             nicAffinities.Select(a => a.Value).Distinct().Count() == 1)
         {
-            NIC.SelectedIndex = nicAffinities[0].Value;
+            int index = nicAffinities[0].Value;
+            if (index >= 0 && index < logicalCoreCount)
+                NIC.SelectedIndex = index;
         }
 
         UpdateComboBoxState(GPU, XHCI, NIC);
