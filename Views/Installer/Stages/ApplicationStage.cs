@@ -123,6 +123,13 @@ public static class ApplicationStage
             ("Please log in to your iCloud account", async () => await ProcessActions.Sleep(1000), () => iCloud == true),
             ("Please log in to your iCloud account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\AppleInc.iCloud_" + icloudVersion + "_x64__nzyj5cx40ttqa", "iCloud", "iCloudHome.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => iCloud == true),
 
+            // disable icloud startup entries
+            ("Disabling iCloud startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\AppleInc.iCloud_nzyj5cx40ttqa\iCloudHomeStartupTask"" /v State /t REG_DWORD /d 1 /f"), () => iCloud == true),
+            ("Disabling iCloud startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\AppleInc.iCloud_nzyj5cx40ttqa\iCloudDriveStartupTask"" /v State /t REG_DWORD /d 1 /f"), () => iCloud == true),
+            ("Disabling iCloud startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\AppleInc.iCloud_nzyj5cx40ttqa\iCloudCKKSStartupTask"" /v State /t REG_DWORD /d 1 /f"), () => iCloud == true),
+            ("Disabling iCloud startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\AppleInc.iCloud_nzyj5cx40ttqa\iCloudPhotosStartupTask"" /v State /t REG_DWORD /d 1 /f"), () => iCloud == true),
+            ("Disabling iCloud startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\AppleInc.iCloud_nzyj5cx40ttqa\iCloudPhotoStreamsStartupTask"" /v State /t REG_DWORD /d 1 /f"), () => iCloud == true),
+
             // download bitwarden
             ("Downloading Bitwarden", async () => await ProcessActions.RunMicrosoftStoreDownload("8bitSolutionsLLC.bitwardendesktop", "98b94e11-5303-4222-8c4b-8e039b5f9d31", "appx", 0, false), () => Bitwarden == true),
 
