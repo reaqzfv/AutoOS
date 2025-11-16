@@ -172,4 +172,5 @@ Write-Host "===== AutoOS Deployment Completed Successfully! ====="
 Write-Host "Press Enter to exit..."
 if ($Host.Name -eq 'ConsoleHost') {
     [void][System.Console]::ReadLine()
+    Stop-Process -Id $PID
 }
