@@ -1,7 +1,10 @@
-﻿using Microsoft.Win32;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Windowing;
+using Microsoft.Win32;
 using Microsoft.Windows.AppLifecycle;
 using Windows.Graphics;
 using Windows.Storage;
+using WinRT.Interop;
 
 namespace AutoOS
 {
@@ -27,6 +30,10 @@ namespace AutoOS
             // Enables Multicore JIT with the specified profile
             System.Runtime.ProfileOptimization.SetProfileRoot(Constants.RootDirectoryPath);
             System.Runtime.ProfileOptimization.StartProfile("Startup.Profile");
+
+            Application.Current.UnhandledException += Current_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -67,6 +74,8 @@ namespace AutoOS
 
                     ThemeService = new ThemeService().Initialize(MainWindow);
 
+                    AppWindow.GetFromWindowId(Win32Interop.GetWindowIdFromWindow(WindowNative.GetWindowHandle(MainWindow))).Closing += AppWindow_Closing;
+
                     WindowHelper.ResizeAndCenterWindowToPercentageOfWorkArea(MainWindow, 92);
 
                     MainWindow.Activate();
@@ -78,9 +87,70 @@ namespace AutoOS
                 MainWindow.Title = MainWindow.AppWindow.Title = "AutoOS Installer";
                 MainWindow.AppWindow.SetIcon("Assets/AppIcon.ico");
 
+                AppWindow.GetFromWindowId(Win32Interop.GetWindowIdFromWindow(WindowNative.GetWindowHandle(MainWindow))).Closing += AppWindow_Closing;
+
                 ThemeService = new ThemeService().Initialize(MainWindow);
                 
                 MainWindow.Activate();
+            }
+        }
+
+        private async void Current_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            await ShowCrashDialogAsync(e.Exception);
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                _ = ShowCrashDialogAsync(ex);
+            }
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            e.SetObserved();
+            _ = ShowCrashDialogAsync(e.Exception);
+        }
+
+        private static async Task ShowCrashDialogAsync(Exception ex)
+        {
+            await MainWindow.DispatcherQueue.EnqueueAsync(() =>
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Unexpected Error",
+                    Content = $"AutoOS encountered an error:\n{ex.Message}",
+                    CloseButtonText = "OK",
+                    DefaultButton = ContentDialogButton.Close,
+                    XamlRoot = MainWindow.Content.XamlRoot
+                };
+
+                return dialog.ShowAsync().AsTask();
+            });
+        }
+
+        private async void AppWindow_Closing(AppWindow sender, AppWindowClosingEventArgs args)
+        {
+            args.Cancel = true;
+
+            var dialog = new ContentDialog
+            {
+                Title = "Close AutoOS?",
+                Content = "Are you sure that you want to close AutoOS?",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = MainWindow.Content.XamlRoot
+            };
+
+            var result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                Current.Exit();
             }
         }
     }

@@ -14,11 +14,14 @@ using System.Text.RegularExpressions;
 using ValveKeyValue;
 using Windows.Graphics;
 using Windows.Storage;
+using WinRT.Interop;
 
 namespace AutoOS.Views.Installer.Actions;
 
 public static class ProcessActions
 {
+    public static IntPtr WindowHandle { get; private set; }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct DEVMODE
     {
@@ -123,8 +126,10 @@ public static class ProcessActions
 
     public static async Task RunConnectionCheck()
     {
+        WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
         InstallPage.Info.Severity = InfoBarSeverity.Warning;
         InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCautionBrush"];
+        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Paused);
         InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCautionBrush"];
 
         await Task.Delay(1000);
@@ -140,6 +145,7 @@ public static class ProcessActions
                     {
                         InstallPage.Info.Severity = InfoBarSeverity.Informational;
                         InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
                         InstallPage.ProgressRingControl.Foreground = null;
                         InstallPage.Info.Title = "Internet connection successfully established...";
                         await Task.Delay(500);
