@@ -74,8 +74,6 @@ namespace AutoOS
 
                     ThemeService = new ThemeService().Initialize(MainWindow);
 
-                    AppWindow.GetFromWindowId(Win32Interop.GetWindowIdFromWindow(WindowNative.GetWindowHandle(MainWindow))).Closing += AppWindow_Closing;
-
                     WindowHelper.ResizeAndCenterWindowToPercentageOfWorkArea(MainWindow, 92);
 
                     MainWindow.Activate();
