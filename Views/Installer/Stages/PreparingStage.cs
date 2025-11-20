@@ -6,11 +6,13 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using ValveKeyValue;
 using Windows.Storage;
+using WinRT.Interop;
 
 namespace AutoOS.Views.Installer.Stages;
 
 public static class PreparingStage
 {
+    public static IntPtr WindowHandle { get; private set; }
     public static bool? Desktop;
     public static bool? IdleStates;
 
@@ -104,11 +106,13 @@ public static class PreparingStage
 
     public static async Task Run()
     {
+        WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
         InstallPage.Status.Text = "Preparing...";
         InstallPage.Info.Title = "Please wait...";
 
         InstallPage.Info.Severity = InfoBarSeverity.Warning;
         InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCautionBrush"];
+        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Paused);
         InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCautionBrush"];
 
         await Task.Run(() =>
@@ -300,6 +304,7 @@ public static class PreparingStage
 
         InstallPage.Info.Severity = InfoBarSeverity.Informational;
         InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
         InstallPage.ProgressRingControl.Foreground = null;
     }
 }

@@ -3,14 +3,17 @@ using AutoOS.Views.Installer.Actions;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using Windows.Storage;
+using WinRT.Interop;
 
 namespace AutoOS.Views.Installer.Stages;
 
 public static class GraphicsStage
 {
     private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    public static IntPtr WindowHandle { get; private set; }
     public static async Task Run()
     {
+        WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
         bool? Intel10th = PreparingStage.Intel10th;
         bool? Intel14th = PreparingStage.Intel14th;
         bool? IntelArc = PreparingStage.IntelArc;
@@ -312,6 +315,7 @@ public static class GraphicsStage
                         InstallPage.Info.Title += ": " + ex.Message;
                         InstallPage.Info.Severity = InfoBarSeverity.Error;
                         InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Error);
                         InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
                         InstallPage.ProgressRingControl.Visibility = Visibility.Collapsed;
                         InstallPage.ResumeButton.Visibility = Visibility.Visible;
@@ -323,6 +327,7 @@ public static class GraphicsStage
                             tcs.TrySetResult(true);
                             InstallPage.Info.Severity = InfoBarSeverity.Informational;
                             InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                            TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
                             InstallPage.ProgressRingControl.Foreground = null;
                             InstallPage.ProgressRingControl.Visibility = Visibility.Visible;
                             InstallPage.ResumeButton.Visibility = Visibility.Collapsed;
@@ -333,6 +338,7 @@ public static class GraphicsStage
                 }
 
                 InstallPage.Progress.Value += incrementPerTitle;
+                TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
                 await Task.Delay(150);
                 currentGroup.Clear();
             }
@@ -355,6 +361,7 @@ public static class GraphicsStage
                     InstallPage.Info.Title += ": " + ex.Message;
                     InstallPage.Info.Severity = InfoBarSeverity.Error;
                     InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                    TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Error);
                     InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
                     InstallPage.ProgressRingControl.Visibility = Visibility.Collapsed;
                     InstallPage.ResumeButton.Visibility = Visibility.Visible;
@@ -366,6 +373,7 @@ public static class GraphicsStage
                         tcs.TrySetResult(true);
                         InstallPage.Info.Severity = InfoBarSeverity.Informational;
                         InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
                         InstallPage.ProgressRingControl.Foreground = null;
                         InstallPage.ProgressRingControl.Visibility = Visibility.Visible;
                         InstallPage.ResumeButton.Visibility = Visibility.Collapsed;
@@ -376,6 +384,7 @@ public static class GraphicsStage
             }
 
             InstallPage.Progress.Value += incrementPerTitle;
+            TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
         }
     }
 }

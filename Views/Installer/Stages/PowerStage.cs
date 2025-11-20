@@ -1,12 +1,15 @@
 ﻿using AutoOS.Views.Installer.Actions;
 using Microsoft.UI.Xaml.Media;
+using WinRT.Interop;
 
 namespace AutoOS.Views.Installer.Stages;
 
 public static class PowerStage
 {
+    public static IntPtr WindowHandle { get; private set; }
     public static async Task Run()
     {
+        WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
         bool? Desktop = PreparingStage.Desktop;
         bool? IdleStates = PreparingStage.IdleStates;
 
