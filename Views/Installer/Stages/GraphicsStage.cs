@@ -221,8 +221,8 @@ public static class GraphicsStage
             // use the advanced 3d image settings
             ("Using the advanced 3D image settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation\Global\NVTweak"" /v ""Gestalt"" /t REG_DWORD /d 515 /f"), () => NVIDIA == true),
 
-            // import the optimized profile
-            ("Importing the optimized profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA == true),
+            // import the optimized nvidia profile
+            ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA == true),
 
             // configure physx to use gpu
             ("Configuring PhysX to use GPU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\ControlSet001\Services\nvlddmkm\Global\NVTweak"" /v ""NvCplPhysxAuto"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),

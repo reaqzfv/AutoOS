@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.WinUI.Controls;
+﻿using AutoOS.Views.Installer.Actions;
+using CommunityToolkit.WinUI.Controls;
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
+using System.Diagnostics;
 using System.Management;
 using System.Net;
 using System.Text;
@@ -75,7 +77,7 @@ namespace AutoOS.Views.Settings
 
                 }
 
-                //await Update();
+                await Update();
                 await LogDiscordUser();
                 localSettings.Values["Version"] = currentVersion;
             }
@@ -107,10 +109,28 @@ namespace AutoOS.Views.Settings
             _ = updater.ShowAsync();
 
             string previousTitle = string.Empty;
+            bool NVIDIA = false;
+
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController"))
+            {
+                foreach (var obj in searcher.Get())
+                {
+                    string name = obj["Name"]?.ToString();
+                    string version = obj["DriverVersion"]?.ToString();
+
+                    if (name != null)
+                    {
+                        if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase))
+                        {
+                            NVIDIA = true;
+                        }
+                    }
+                }
+            }
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                
+                ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"),  () => NVIDIA == true),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -173,8 +193,25 @@ namespace AutoOS.Views.Settings
             }
 
             StatusText.Text = "Update complete.";
+            await Task.Delay(1000);
             ProgressBar.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
-            updater.IsPrimaryButtonEnabled = true;
+            StatusText.Text = "Restarting in 3...";
+            await Task.Delay(1000);
+            StatusText.Text = "Restarting in 2...";
+            await Task.Delay(1000);
+            StatusText.Text = "Restarting in 1...";
+            await Task.Delay(1000);
+            StatusText.Text = "Restarting...";
+            await Task.Delay(750);
+            ProcessStartInfo processStartInfo = new()
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c shutdown /r /t 0",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            };
+            Process.Start(processStartInfo);
+            //updater.IsPrimaryButtonEnabled = true;
         }
 
         public async Task RunDownload(string url, string path, string file = null)

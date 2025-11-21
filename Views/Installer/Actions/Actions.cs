@@ -109,7 +109,7 @@ public static class ProcessActions
         await Task.Delay(1000);
         InstallPage.Info.Title = "Restarting...";
         await Task.Delay(750);
-        ProcessStartInfo processStartInfo = new ProcessStartInfo
+        ProcessStartInfo processStartInfo = new()
         {
             FileName = "cmd.exe",
             Arguments = $"/c shutdown /r /t 0",
