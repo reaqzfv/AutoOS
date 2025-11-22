@@ -289,7 +289,7 @@
       <ProfileSetting>
         <SettingNameInfo>Antialiasing - Transparency Supersampling</SettingNameInfo>
         <SettingID>282364549</SettingID>
-        <SettingValue>8</SettingValue>
+        <SettingValue>0</SettingValue>
         <ValueType>Dword</ValueType>
       </ProfileSetting>
       <ProfileSetting>
@@ -362,6 +362,12 @@
         <SettingNameInfo />
         <SettingID>550240196</SettingID>
         <SettingValue>0</SettingValue>
+        <ValueType>Dword</ValueType>
+      </ProfileSetting>
+      <ProfileSetting>
+        <SettingNameInfo>Vulkan/OpenGL present method</SettingNameInfo>
+        <SettingID>550932728</SettingID>
+        <SettingValue>1</SettingValue>
         <ValueType>Dword</ValueType>
       </ProfileSetting>
       <ProfileSetting>
