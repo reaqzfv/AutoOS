@@ -425,8 +425,8 @@ public sealed partial class GraphicsPage : Page
             {
                 if (HDCP.IsOn)
                 {
-                    Registry.SetValue(path, "RMHdcpKeyglobZero", 0, RegistryValueKind.DWord);
                     using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Control\Class\{{4d36e968-e325-11ce-bfc1-08002be10318}}\000{i}", true);
+                    Registry.SetValue(path, "RMHdcpKeyglobZero", 0, RegistryValueKind.DWord);
                     key?.DeleteValue("RmDisableHdcp22", false);
                     key?.DeleteValue("RmSkipHdcp22Init", false);
                 }
