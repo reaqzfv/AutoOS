@@ -35,6 +35,9 @@ public static class EventTraceSessionsStage
             ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-SleepStudy/Diagnostic /e:false"), null),
             ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-Kernel-Processor-Power/Diagnostic /e:false"), null),
             ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"wevtutil sl Microsoft-Windows-UserModePowerService/Diagnostic /e:false"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power"" /v ""SleepStudyDisabled"" /t REG_DWORD /d 1 /f"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power"" /v ""SleepStudyDeviceAccountingLevel"" /t REG_DWORD /d 0 /f"), null),
+            ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power"" /v ""SleepstudyAccountingEnabled"" /t REG_DWORD /d ""0"" /f"), null),
             ("Disabling sleep study", async () => await ProcessActions.Sleep(500), null),
         };
 
