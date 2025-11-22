@@ -31,7 +31,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "No Power Down" },
         new BiosSettingRecommendation { SetupQuestion = "Power Down Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "LPMode", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Per Bank Refresh", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Per Bank Refresh", Type = "Option", RecommendedOption = "Disabled" }, // only for ddr4 enable for ddr5
         new BiosSettingRecommendation { SetupQuestion = "PowerDown Energy Ch0Dimm0", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "PowerDown Energy Ch0Dimm1", Type = "Value", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "PowerDown Energy Ch1Dimm0", Type = "Value", RecommendedOption = "0" },
@@ -82,8 +82,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset (Down Bin)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Ring to Core offset", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Ring Down Bin", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel SpeedStep™", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Intel(R) SpeedStep(tm)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Race To Halt (RTH)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Voltage Reduction Initiated TVB", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Voltage Optimization", Type = "Option", RecommendedOption = "Disabled" },
@@ -109,7 +107,6 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "RFI Spread Spectrum", Type = "Option", RecommendedOption = "0.5%" },
         new BiosSettingRecommendation { SetupQuestion = "Pcie Pll SSC", Type = "Option", RecommendedOption = "0.0%" },
         new BiosSettingRecommendation { SetupQuestion = "FIVR Dynamic PM", Type = "Option", RecommendedOption = "Disabled" },
-        //new BiosSettingRecommendation { SetupQuestion = "Hyper-Threading", Type = "Option", RecommendedOption = "Disabled" }, // condition if >6 cores
         new BiosSettingRecommendation { SetupQuestion = "Active E-Cores", Type = "Option", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Active Efficient Cores", Type = "Option", RecommendedOption = "0" },
         new BiosSettingRecommendation { SetupQuestion = "Active Efficient-cores", Type = "Option", RecommendedOption = "0" },
@@ -124,7 +121,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Thermal Monitor", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CFG Lock", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU AES Instructions", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "VT-d", Type = "Option", RecommendedOption = "Enabled" }, // required for faceitt
+        new BiosSettingRecommendation { SetupQuestion = "VT-d", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "Intel Virtualization Tech", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "Intel VT-D Tech", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "Intel (VMX) Virtualization Technology", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
@@ -188,13 +185,16 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Enhanced Thermal Velocity Boost", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel Speed Shift Technology", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "Intel(R) Speed Shift Technology Interrupt Control", Type = "Option", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "Intel SpeedStep™", Type = "Option", RecommendedOption = "Disabled" },
+        //new BiosSettingRecommendation { SetupQuestion = "Intel(R) SpeedStep(tm)", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU PkgC10 Long Sleep", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Long Duration Package Power Limit", Type = "Value", RecommendedOption = "4095" },
-        new BiosSettingRecommendation { SetupQuestion = "Package Power Time Window", Type = "Option", RecommendedOption = "448" },
+        new BiosSettingRecommendation { SetupQuestion = "Package Power Time Window", Type = "Option", RecommendedOption = "448" }, // add option for low end
         new BiosSettingRecommendation { SetupQuestion = "Short Duration Package Power Limit", Type = "Value", RecommendedOption = "4095" },
         new BiosSettingRecommendation { SetupQuestion = "Inverse Temperature Dependency Throttle", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Power Floor Management", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "P-core Power Density Throttle", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "OCSafeMode", Type = "Option", RecommendedOption = "Disabled" },
 
         // timer res
         new BiosSettingRecommendation { SetupQuestion = "System Time and Alarm Source", Type = "Option", RecommendedOption = "Legacy RTC" },
@@ -314,8 +314,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ACPI Standby State", Type = "Option", RecommendedOption = "Suspend Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ACPI Sleep State", Type = "Option", RecommendedOption = "Suspend Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ErP Ready", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
-        new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" }, // depends
+        new BiosSettingRecommendation { SetupQuestion = "PCI Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" },
+        new BiosSettingRecommendation { SetupQuestion = "PCI-X Latency Timer", Type = "Option", RecommendedOption = "32 PCI Bus Clocks" },
         new BiosSettingRecommendation { SetupQuestion = "Disable DSX ACPRESENT PullDown", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "Disable Gen2 Pll Shutdown and L1 Controller Power gating", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCI Delay Optimization", Type = "Option", RecommendedOption = "Enabled" },
@@ -374,11 +374,11 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Remote Platform Erase Feature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "PCIE Tunneling over USB4", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Discrete Thunderbolt(TM) Support", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "IOMMU", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit (i think)
+        new BiosSettingRecommendation { SetupQuestion = "IOMMU", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "IGD VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "IPU VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "IOP VTD Enable", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
-        new BiosSettingRecommendation { SetupQuestion = "Control Iommu Pre-boot Behavior", Type = "Option", RecommendedOption = "Disable IOMMU" },
+        new BiosSettingRecommendation { SetupQuestion = "Control Iommu Pre-boot Behavior", Type = "Option", RecommendedOption = "Enable IOMMU during boot" }, // required if account is flagged
         new BiosSettingRecommendation { SetupQuestion = "Three Strike Counter", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Cpu CrashLog (Device 10)", Type = "Option", RecommendedOption = "Disabled" },
@@ -401,7 +401,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "ASF Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake On WiGig", Type = "Option", RecommendedOption = "Disabled" }, // didn't find
         new BiosSettingRecommendation { SetupQuestion = "Wake on WLAN and BT Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", Type = "Option", RecommendedOption = "Disabled" }, // (hard to disable)
+        new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB S5 Wakeup Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake From Thunderbolt(TM) Devices", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Wake From Thunderbolt(TM) Devices", Type = "Value", RecommendedOption = "0" },
@@ -445,6 +445,9 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "RTD3 Support for PCIE Rootports", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ITBT RTD3", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "DeepSx Power Policies", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "System Acceleration with Intel(R) Optane(TM) Memory", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Hybrid Storage Detection and Configuration Mode", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "WRC Feature", Type = "Option", RecommendedOption = "Disabled" },
 
         //new BiosSettingRecommendation { SetupQuestion = "Maximum Payload", Type = "Option", RecommendedOption = "4096 Bytes" }, cause bsod (unmountable boot volume) for some people
         //new BiosSettingRecommendation { SetupQuestion = "Maximum Read Request", Type = "Option", RecommendedOption = "4096 Bytes" }, cause bsod (unmountable boot volume) for some people
@@ -470,7 +473,7 @@ public static class BiosSettingRecommendationsList
         //new BiosSettingRecommendation { SetupQuestion = "Secure Boot Mode", Type = "Option", RecommendedOption = "Standard" },
         new BiosSettingRecommendation { SetupQuestion = "TPM State", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "TCM State", Type = "Option", RecommendedOption = "Enabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Me State", Type = "Option", RecommendedOption = "Disabled" }, // might only work with bios mod (hard to disable)
+        new BiosSettingRecommendation { SetupQuestion = "Me State", Type = "Option", RecommendedOption = "Disabled" }, // Z690+ asrock gigabyte asus
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", Type = "Option", RecommendedOption = "Enable" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "Security Device Support", Type = "Option", RecommendedOption = "Enabled" }, // required for TPM
         new BiosSettingRecommendation { SetupQuestion = "PTT", Type = "Option", RecommendedOption = "Disable" }, // is it necessary for TPM? (hard to disable)
@@ -521,7 +524,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Int. Clk Differential Spread", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Spread Spectrum", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "NX Mode", Type = "Option", RecommendedOption = "Enabled" },
-        new BiosSettingRecommendation { SetupQuestion = "SVM Mode", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "SVM Mode", Type = "Option", RecommendedOption = "Enabled" },
         new BiosSettingRecommendation { SetupQuestion = "OC Explore Mode", Type = "Option", RecommendedOption = "Expert" },
         new BiosSettingRecommendation { SetupQuestion = "CPU Over Temperature Alert", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "CPU temperature Warning Control", Type = "Option", RecommendedOption = "Disabled" },
@@ -658,11 +661,11 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Uart 1 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Uart 2 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Uart 3 Legacy Options", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Uart 0 Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Uart 1 Enable", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Uart 1 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Uart 2 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Uart 3 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Uart 0 Enable", Type = "Option", RecommendedOption = "Disabled" }, // might not boot on some msi boards
+        new BiosSettingRecommendation { SetupQuestion = "Uart 1 Enable", Type = "Option", RecommendedOption = "Disabled" }, // might not boot on some msi boards
+        new BiosSettingRecommendation { SetupQuestion = "Uart 1 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" }, // might not boot on some msi boards
+        new BiosSettingRecommendation { SetupQuestion = "Uart 2 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" }, // might not boot on some msi boards
+        new BiosSettingRecommendation { SetupQuestion = "Uart 3 Enable (no HW FC)", Type = "Option", RecommendedOption = "Disabled" }, // might not boot on some msi boards
         new BiosSettingRecommendation { SetupQuestion = "Uart 4 Enable", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "UART 0 D3 Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "UART 1 D3 Support", Type = "Option", RecommendedOption = "Disabled" },
