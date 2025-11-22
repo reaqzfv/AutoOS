@@ -83,12 +83,12 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     }
 
     # Receive Buffers
-    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Receive Buffers" }) {
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "512"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "1024"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "2048"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "4096"
-    }
+    # if ($adapterProperties | Where-Object { $_.DisplayName -eq "Receive Buffers" }) {
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "512"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "1024"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "2048"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Receive Buffers" -DisplayValue "4096"
+    # }
 
     # Receive Side Scaling
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "Receive Side Scaling" }) {
@@ -121,12 +121,12 @@ Get-NetAdapter | Where-Object { $_.PhysicalMediaType -eq "802.3" } | ForEach-Obj
     }
 
     # Transmit Buffers
-    if ($adapterProperties | Where-Object { $_.DisplayName -eq "Transmit Buffers" }) {
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "512"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "1024"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "2048"
-        Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "4096"
-    }
+    # if ($adapterProperties | Where-Object { $_.DisplayName -eq "Transmit Buffers" }) {
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "512"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "1024"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "2048"
+    #     Set-NetAdapterAdvancedProperty -Name $adapterName -DisplayName "Transmit Buffers" -DisplayValue "4096"
+    # }
 
     # UDP Checksum Offload (IPv4)
     if ($adapterProperties | Where-Object { $_.DisplayName -eq "UDP Checksum Offload (IPv4)" }) {
