@@ -306,5 +306,7 @@ public static class PreparingStage
         InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
         TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
         InstallPage.ProgressRingControl.Foreground = null;
+        InstallPage.Progress.Value += 1;
+        TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
     }
 }

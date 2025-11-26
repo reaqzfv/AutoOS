@@ -138,6 +138,7 @@ public static class PowerStage
             }
 
             InstallPage.Progress.Value += incrementPerTitle;
+            TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
         }
     }
 }
