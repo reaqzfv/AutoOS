@@ -9,40 +9,59 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Disable Runtime Power Management
         New-ItemProperty -Path $classKey -Name "EnableRuntimePowerManagement" -Value 0 -Type DWord -Force
 
-        # Disable Hardware Fault Buffer
+        # Disables HW fault buffers on Pascal+ chips
         New-ItemProperty -Path $classKey -Name "RmDisableHwFaultBuffer" -Value 1 -Type DWord -Force
-        
-        # Disable Per Intr DPC Queueing
-        New-ItemProperty -Path $classKey -Name "RMDisablePerIntrDPCQueueing" -Value 1 -Type DWord -Force
 
-        # Disable Engine Gatings
+        # Disable all Engine Level Clock Gating settings
         New-ItemProperty -Path $classKey -Name "RMElcg" -Value 1431655765 -Type DWord -Force
-        New-ItemProperty -Path $classKey -Name "RMBlcg" -Value 286331153 -Type DWord -Force
+
+        # Disable all Engine Level Power Gating settings
         New-ItemProperty -Path $classKey -Name "RMElpg" -Value 4095 -Type DWord -Force
+
+        # Disable all Block Level Clock Gating settings
+        New-ItemProperty -Path $classKey -Name "RMBlcg" -Value 286331153 -Type DWord -Force
+
+        # Disable all Second Level Clock Gating settings
         New-ItemProperty -Path $classKey -Name "RMSlcg" -Value 262131 -Type DWord -Force
+
+        # Disable all floorsweep power gating settings
         New-ItemProperty -Path $classKey -Name "RMFspg" -Value 15 -Type DWord -Force
 
         # Disable GC6
         New-ItemProperty -Path $classKey -Name "RMGC6Feature" -Value 699050 -Type DWord -Force
+
+        # Disable all latency optimizations for GC6
         New-ItemProperty -Path $classKey -Name "RMGC6Parameters" -Value 85 -Type DWord -Force
+
+        # Disable all GC5 Idle Features
         New-ItemProperty -Path $classKey -Name "RMDidleFeatureGC5" -Value 44731050 -Type DWord -Force
  
         # Disable Hot Plug Support
         New-ItemProperty -Path $classKey -Name "RMHotPlugSupportDisable" -Value 1 -Type DWord -Force
 
-        # Disable the Paged DMA mode for FBSR
+        # Enable the Paged DMA mode for FBSR
         New-ItemProperty -Path $classKey -Name "RmFbsrPagedDMA" -Value 1 -Type DWord -Force
 
         # Disable Post L2 Compression
         New-ItemProperty -Path $classKey -Name "RMDisablePostL2Compression" -Value 1 -Type DWord -Force
 
-        # Disable Logging
+        # Disable RC Watchdog
         New-ItemProperty -Path $classKey -Name "RmRcWatchdog" -Value 0 -Type DWord -Force
+
+        # Disable Event Logging on RC errors
         New-ItemProperty -Path $classKey -Name "RmLogonRC" -Value 0 -Type DWord -Force
+
+        # Disable more detailed debug INTR logs
         New-ItemProperty -Path $classKey -Name "RMIntrDetailedLogs" -Value 0 -Type DWord -Force
+
+        # Disable FECS context switch logging
         New-ItemProperty -Path $classKey -Name "RMCtxswLog" -Value 0 -Type DWord -Force
+
+        # Disable Logging
         New-ItemProperty -Path $classKey -Name "RMNvLog" -Value 0 -Type DWord -Force
-        New-ItemProperty -Path $classKey -Name "RMSuppressGPIOIntrErrLog" -Value 0 -Type DWord -Force
+
+        # Disable logging of NVLINK fatal errors
+        New-ItemProperty -Path $classKey -Name "RmDisableInforomNvlink" -Value 3 -Type DWord -Force
 
         # Set Head0 DCLK Mode
         New-ItemProperty -Path $classKey -Name "Head0DClkMode" -Value 4294967295 -Type DWord -Force
@@ -59,12 +78,6 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Set PCLK Mode
         New-ItemProperty -Path $classKey -Name "PClkMode" -Value 4294967295 -Type DWord -Force
 
-        # Disable USB-C PMU event logging in RM
-        New-ItemProperty -Path $classKey -Name "RMUsbcDebugMode" -Value 0 -Type DWord -Force
-
-        # Disable logging of NVLINK fatal errors
-        New-ItemProperty -Path $classKey -Name "RmDisableInforomNvlink" -Value 3 -Type DWord -Force
-
         # Disable feature disablement
         New-ItemProperty -Path $classKey -Name "RMDisableFeatureDisablement" -Value 0 -Type DWord -Force
 
@@ -80,19 +93,17 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Disable LRC coalescing
         New-ItemProperty -Path $classKey -Name "RMDisableLRCCoalescing" -Value 1 -Type DWord -Force
 
-        # Disable GPS Power steering per core DPC thread
-        New-ItemProperty -Path $classKey -Name "RmGpsPsEnablePerCpuCoreDpc" -Value 0 -Type DWord -Force
-
-        # Turn off I2C Nanny
+        # Disable I2C Nanny
         New-ItemProperty -Path $classKey -Name "RmEnableI2CNanny" -Value 0 -Type DWord -Force
 
         # Latency Tolerance
         New-ItemProperty -Path $classKey -Name "RMPcieLtrOverride" -Value 1 -Type DWord -Force
-        New-ItemProperty -Path $classKey -Name "RMPcieLtrL12ThresholdOverride" -Value 0 -Type DWord -Force
         New-ItemProperty -Path $classKey -Name "RMDeepL1EntryLatencyUsec" -Value 1 -Type DWord -Force
 
         # Configure Bandwidth Feature
         New-ItemProperty -Path $classKey -Name "RMBandwidthFeature" -Value 1896072192 -Type DWord -Force
+        
+        # Disable Mempool Compression
         New-ItemProperty -Path $classKey -Name "RMBandwidthFeature2" -Value 1 -Type DWord -Force
 
         # Disable Pre OS Apps
@@ -114,19 +125,20 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Disable Event Tracer
         New-ItemProperty -Path $classKey -Name "RMEnableEventTracer" -Value 0 -Type DWord -Force
 
-        # Disable Error Checks
+        # Skip Error Checks
         New-ItemProperty -Path $classKey -Name "SkipSwStateErrChecks" -Value 1 -Type DWord -Force
 
         # Disable Advanced Error Reporting
         New-ItemProperty -Path $classKey -Name "RMAERRForceDisable" -Value 1 -Type DWord -Force
 
-        # Disable OPSB Feature
+        # Enable OPSB Feature
         New-ItemProperty -Path $classKey -Name "RM580312" -Value 1 -Type DWord -Force
 
-        # Disable WAR
+        # Enable WAR
         New-ItemProperty -Path $classKey -Name "RMBug2519005War" -Value 1 -Type DWord -Force
         New-ItemProperty -Path $classKey -Name "RmCeElcgWar1895530" -Value 1 -Type DWord -Force
         New-ItemProperty -Path $classKey -Name "RmWar1760398" -Value 1 -Type DWord -Force
+        New-ItemProperty -Path $classKey -Name "RM2644249" -Value 1 -Type DWord -Force
 
         # Configure Low Power Features
         New-ItemProperty -Path $classKey -Name "RMLpwrArch" -Value 349525 -Type DWord -Force
@@ -144,7 +156,7 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         New-ItemProperty -Path $classKey -Name "RmPgCtrlGrParameters" -Value 1431655765 -Type DWord -Force
         New-ItemProperty -Path $classKey -Name "RmPgCtrlDiParameters" -Value 21 -Type DWord -Force
 
-        # Disable MSCG from RM side
+        # Keep MSCG enabled from RM side
         New-ItemProperty -Path $classKey -Name "RmDwbMscg" -Value 1 -Type DWord -Force
 
         # Dont Use PMU SPI
@@ -176,9 +188,6 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Disable D3 related features
         New-ItemProperty -Path $classKey -Name "RMD3Feature" -Value 2 -Type DWord -Force
 
-        # Disable bunch of Power features as WAR for Bug
-        New-ItemProperty -Path $classKey -Name "RM2644249" -Value 1 -Type DWord -Force
-
         # Disable 10 types of ACPI calls from the Resource Manager to the SBIOS
         New-ItemProperty -Path $classKey -Name "RmDisableACPI" -Value 1023 -Type DWord -Force
 
@@ -189,18 +198,11 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Force Disable Clear perfmon and reset level when entering D4 state
         New-ItemProperty -Path $classKey -Name "RMResetPerfMonD4" -Value 0 -Type DWord -Force
 
-        # Disable the WDDM power saving mode for FBSR
-        New-ItemProperty -Path $classKey -Name "RmFbsrWDDMMode" -Value 0 -Type DWord -Force
-
-        # Disable the File based power saving mode for Linux
-        New-ItemProperty -Path $classKey -Name "RmFbsrFileMode" -Value 0 -Type DWord -Force
-
         # Not Allow MCLK Switching
         New-ItemProperty -Path $classKey -Name "RM592311" -Value 2 -Type DWord -Force
 
         # Disable EDC replay
         New-ItemProperty -Path $classKey -Name "RMDisableEDC" -Value 1 -Type DWord -Force
-        New-ItemProperty -Path $classKey -Name "PerfLevelSrc" -Value 8738 -Type DWord -Force
 
         # Disable LPWR FSMs On Init
         New-ItemProperty -Path $classKey -Name "RMElpgStateOnInit" -Value 3 -Type DWord -Force
@@ -217,7 +219,7 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Force Power Steering OFF
         New-ItemProperty -Path $classKey -Name "RmGpsPowerSteeringEnable" -Value 0 -Type DWord -Force
 
-        # Disable controller
+        # Disable CPU utilization controller
         New-ItemProperty -Path $classKey -Name "RmGpsCpuUtilPoll" -Value 0 -Type DWord -Force
 
         # Force never power off the MIOs
@@ -232,16 +234,13 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Disable Optimal Power For Padlink Pll
         New-ItemProperty -Path $classKey -Name "RMDisableOptimalPowerForPadlinkPll" -Value 1 -Type DWord -Force
 
-        # Disable Pex Power Savings features
-        New-ItemProperty -Path $classKey -Name "RMPexPowerSavings" -Value 0 -Type DWord -Force
-
         # Disable CLKREQ and DEEP L1
         New-ItemProperty -Path $classKey -Name "RM2779240" -Value 5 -Type DWord -Force
 
         # Disable the power-off-dram-pll-when-unused feature
         New-ItemProperty -Path $classKey -Name "RmClkPowerOffDramPllWhenUnused" -Value 0 -Type DWord -Force
 
-        # Disable 6 Power Savings
+        # Disable OPSB (Optional Power Saving Bundle)
         New-ItemProperty -Path $classKey -Name "RMOPSB" -Value 10914 -Type DWord -Force
 
         # Disable Slides MCLK
@@ -295,22 +294,22 @@ Get-WmiObject -Class Win32_VideoController | Where-Object { $_.PNPDeviceID -like
         # Enable PowerMizer
         New-ItemProperty -Path $classKey -Name "PowerMizerEnable" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Level
+        # Set PowerMizer Level to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerLevel" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Level AC
+        # Set PowerMizer Level AC to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerLevelAC" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Hard Level
+        # Set PowerMizer Hard Level to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerHardLevel" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Hard Level AC
+        # Set PowerMizer Hard Level AC to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerHardLevelAC" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Default
+        # Set PowerMizer Default to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerDefault" -Value 1 -Type DWord -Force
 
-        # Set PowerMizer Default AC
+        # Set PowerMizer Default AC to Max Performance
         New-ItemProperty -Path $classKey -Name "PowerMizerDefaultAC" -Value 1 -Type DWord -Force
 
         # Disable Non-Contiguous Allocation

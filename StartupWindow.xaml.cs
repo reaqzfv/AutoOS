@@ -23,8 +23,6 @@ namespace AutoOS.Views
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             uint dpi = GetDpiForWindow(hwnd);
-            int scalingPercent = (int)(dpi * 100 / 96);
-
             App.Scaling = dpi / 96.0;
 
             ((OverlappedPresenter)AppWindow.Presenter).PreferredMaximumWidth = (int)(340 * App.Scaling);
