@@ -73,13 +73,6 @@
           "HideItem": true
         },
         {
-          "UniqueId": "AutoOS.Views.Installer.ServicesPage",
-          "Title": "Services & Drivers",
-          "Subtitle": "Services & Drivers",
-          "ImagePath": "ms-appx:///Assets/Fluent/Services.png",
-          "HideItem": true
-        },
-        {
           "UniqueId": "AutoOS.Views.Installer.SecurityPage",
           "Title": "Windows Security",
           "Subtitle": "Windows Security",
