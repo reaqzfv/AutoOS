@@ -1,10 +1,12 @@
-﻿using Microsoft.Win32;
+﻿using AutoOS.Views.Installer.Actions;
+using Microsoft.Win32;
 using System.Diagnostics;
 
 namespace AutoOS.Views.Settings;
 
 public sealed partial class LoggingPage : Page
 {
+    private bool ServicesEnabled = false;
     private bool initialETSState = false;
     private bool isInitializingETSState = true;
 
@@ -13,13 +15,47 @@ public sealed partial class LoggingPage : Page
         InitializeComponent();
         GetETSState();
     }
-    public void GetETSState()
+    public async void GetETSState()
     {
+        // check services state
+        using (var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep"))
+        {
+            ServicesEnabled = (int)(key?.GetValue("Start", 0) ?? 0) == 1;
+        }
+
         // declare services
         var groups = new[]
         {
             (new[] { "EventLog", "EventSystem" }, 2)
         };
+
+        // ensure services are enabled and check ets state 
+        if (ServicesEnabled)
+        {
+            foreach (var service in groups[0].Item1)
+            {
+                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
+                {
+                    if (key != null)
+                    {
+                        var startValue = key.GetValue("Start", 0);
+                        if ((int)startValue != groups[0].Item2)
+                        {
+                            Registry.SetValue(
+                                $@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}",
+                                "Start",
+                                groups[0].Item2
+                            );
+                        }
+                    }
+                }
+            }
+
+            ETS.IsOn = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
+            initialETSState = ETS.IsOn;
+            isInitializingETSState = false;
+            return;
+        }
 
         // check if values match
         foreach (var group in groups)
@@ -43,7 +79,7 @@ public sealed partial class LoggingPage : Page
 
         // check registry
         ETS.IsOn = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
-        initialETSState = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\WMI\Autologger") != null;
+        initialETSState = ETS.IsOn;
 
         isInitializingETSState = false;
     }
@@ -65,22 +101,25 @@ public sealed partial class LoggingPage : Page
             Margin = new Thickness(5)
         });
 
-        // declare services and drivers
-        var groups = new[]
+        if (!ServicesEnabled)
         {
-            (new[] { "EventLog", "EventSystem" }, 2)
-        };
-
-        // set start values
-        foreach (var group in groups)
-        {
-            foreach (var service in group.Item1)
+            // declare services and drivers
+            var groups = new[]
             {
-                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
-                {
-                    if (key == null) continue;
+                (new[] { "EventLog", "EventSystem" }, 2)
+            };
 
-                    Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", ETS.IsOn ? group.Item2 : 4);
+            // set start values
+            foreach (var group in groups)
+            {
+                foreach (var service in group.Item1)
+                {
+                    using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
+                    {
+                        if (key == null) continue;
+
+                        Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", ETS.IsOn ? group.Item2 : 4);
+                    }
                 }
             }
         }
