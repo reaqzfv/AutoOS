@@ -63,7 +63,9 @@
                         </GridView>
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Description="Disabling HDCP breaks Netflix and other protected video streaming services."
+                        <dev:SettingsCard BorderThickness="1,0,1,1"
+                                          CornerRadius="0,0,8,8"
+                                          Description="Disabling HDCP breaks Netflix and other protected video streaming services."
                                           Header="High-Bandwidth Digital Content Protection (HDCP)">
                             <ToggleSwitch x:Name="HDCP"
                                           Toggled="HDCP_Toggled" />

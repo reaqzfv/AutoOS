@@ -52,13 +52,6 @@
           "HideItem": true
         },
         {
-          "UniqueId": "AutoOS.Views.Installer.SchedulingPage",
-          "Title": "Per-CPU Scheduling",
-          "Subtitle": "Per-CPU Scheduling",
-          "ImagePath": "ms-appx:///Assets/Fluent/Cpu.png",
-          "HideItem": true
-        },
-        {
           "UniqueId": "AutoOS.Views.Installer.DevicesPage",
           "Title": "Bluetooth & Devices",
           "Subtitle": "Bluetooth & Devices",

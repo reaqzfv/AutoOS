@@ -17,14 +17,14 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 
 ## ✨ Features
 - Automatically set every monitor to their highest supported refresh rate
-- Automatically benchmark and apply GPU, XHCI Controller and NIC affinities and reserve them if enough cores
+- Automatically optimize GPU, XHCI Controller and NIC affinities
 - Easily update GPU driver with one click
-- Toggle XHCI Interrupt Moderation without having to restart your PC
+- Toggle XHCI Interrupt Moderation without having to restart
 - Toggle between service states with configured functionality
 - Apply all hidden BIOS Settings (500+) in one click
 - Automatically import Epic Games and Steam titles from old install
 - Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
-- Stop processes when running your game to automatically stop all unnecessary services and executables
+- Stop processes when running your game to stop all unnecessary services and executables
 
 ## ⚠️ Current Issues
 - **Blank screen after installing the Graphics Driver:** You may experience a blank screen in the App after installing the Graphics Driver. To fix this, resize the window from the left side until it rerenders the UI.
@@ -212,10 +212,7 @@ dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_pack
 ## 🙏 Credits
 
 **Amitxv / Valleyofdoom:**  
-Thank you for your [PC-Tuning Guide](https://github.com/valleyofdoom/PC-Tuning) and your useful utilities:  
-- [AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)  
-- [service-list-builder](https://github.com/valleyofdoom/service-list-builder)
-
+Thank you for your [PC-Tuning Guide](https://github.com/valleyofdoom/PC-Tuning) and your useful utilities.
 Without your guide this project wouldn't exist. It inspired me to attempt to automate it and ultimately start this project.
 
 ---
@@ -282,23 +279,17 @@ This project is licensed under the **GNU General Public License v3.0**. See the 
    - Changes: Added command line options for preinstall
    - Fork: [tinodin/RadeonSoftwareSlimmer](https://github.com/tinodin/RadeonSoftwareSlimmer)
 
-5. **AutoGpuAffinity**
-   - Licensed under the **GNU General Public License v3.0**.
-   - Source: [valleyofdoom/AutoGpuAffinity](https://github.com/valleyofdoom/AutoGpuAffinity)
-   - Changes: Added functionality to also apply the affinity to the parent of the GPU and output the 3 best performing CPUs
-   - Fork: [tinodin/AutoGpuAffinity](https://github.com/tinodin/AutoGpuAffinity)
-
-6. **Service List Builder**
+5. **Service List Builder**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [valleyofdoom/service-list-builder](https://github.com/valleyofdoom/service-list-builder)
    - Changes: Removed `shutdown /r /t 0` from created lists, added `--output-dir` switch because of MSIX restrictions.
    - Fork: [tinodin/service-list-builder](https://github.com/tinodin/service-list-builder)
 
-7. **Chiptool**
+6. **Chiptool**
    - Licensed under the **GNU General Public License v3.0**.
    - Source: [LuSlower/chiptool](https://github.com/LuSlower/chiptool)
 
-8. **7-Zip**
+7. **7-Zip**
 ```
   7-Zip
   ~~~~~
@@ -449,7 +440,7 @@ The license for original unRAR code has the following restriction:
 ```
 - Source: [7-Zip](https://www.7-zip.org)
  
-9. **Custom Resolution Utility (CRU)**
+8. **Custom Resolution Utility (CRU)**
 ```
 Copyright (C) 2012-2022 ToastyX
 https://monitortests.com/custom-resolution-utility
@@ -467,7 +458,7 @@ OTHER LIABILITY IN CONNECTION WITH THE USE OF THE SOFTWARE.
 ```
 - Source: [Custom Resolution Utility (CRU)](https://monitortests.com/custom-resolution-utility)
 
-10. **DeviceCleanup**
+9. **DeviceCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial
@@ -480,7 +471,7 @@ Not allowed:
 ```
 - Source: [DeviceCleanup](https://www.uwe-sieber.de/misc_tools.html#devicecleanup)
 
-11. **DriveCleanup**
+10. **DriveCleanup**
 ```
 Allowed:
 - usage in any environment, including commercial

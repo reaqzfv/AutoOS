@@ -7,6 +7,7 @@
       xmlns:local="using:AutoOS"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:views="using:AutoOS.Views"
+      xmlns:vm="using:AutoOS.Views.Settings.Scheduling.ViewModels"
       mc:Ignorable="d">
     <Grid>
         <Grid.RowDefinitions>
@@ -23,35 +24,143 @@
                         Padding="{ThemeResource ContentPagePadding}"
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
-                <dev:SettingsGroup Description="Let AutoOS benchmark your GPU, XHCI Controller and NIC Affinities or set them manually. If your CPU has 6 cores or more they will be reserved."
+                <dev:SettingsGroup Description="Manage your GPU, XHCI Controller and NIC Affinities."
                                    Header="Per-CPU Scheduling"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Cpu.png}">
                     <dev:SettingsGroup.Content>
-                        <dev:ProgressButton x:Name="Benchmark"
+                        <dev:ProgressButton x:Name="Optimize"
                                             HorizontalAlignment="Left"
-                                            Checked="Benchmark_Checked"
-                                            CheckedContent="Benchmarking..."
-                                            Content="Benchmark"
+                                            Checked="Optimize_Checked"
+                                            CheckedContent="Optimizing Affinities..."
+                                            Content="Optmize Affinities"
                                             IsIndeterminate="True"
-                                            Style="{ThemeResource AccentProgressButtonStyle}"
-                                            Unchecked="Benchmark_Unchecked" />
+                                            Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Header="GPU Affinity">
-                            <ComboBox x:Name="GPU"
-                                      SelectionChanged="GPU_Changed" />
-                        </dev:SettingsCard>
-                        <dev:SettingsCard Header="XHCI Controller Affinity">
-                            <ComboBox x:Name="XHCI"
-                                      SelectionChanged="XHCI_Changed" />
-                        </dev:SettingsCard>
-                        <dev:SettingsCard Header="NIC Affinity">
-                            <ComboBox x:Name="NIC"
-                                      SelectionChanged="NIC_Changed" />
-                        </dev:SettingsCard>
+                        <dev:Card Padding="24,-24,24,24"
+                                  BorderThickness="1,0,1,1"
+                                  CornerRadius="0,0,8,8">
+                            <StackPanel>
+                                <Grid Padding="16,0,40,12"
+                                      ColumnSpacing="12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*"
+                                                          MinWidth="440" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="70" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="70" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="100" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="100" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="110" />
+                                        <ColumnDefinition Width="*"
+                                                          MinWidth="120" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="Name" />
+                                    <TextBlock Grid.Column="1"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="MSI Mode" />
+                                    <TextBlock Grid.Column="2"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="MSI Limit" />
+                                    <TextBlock Grid.Column="3"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="Max MSI Limit" />
+                                    <TextBlock Grid.Column="4"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="Device Policy" />
+                                    <TextBlock Grid.Column="5"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="Device Priority" />
+                                    <TextBlock Grid.Column="6"
+                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                               Text="Specified Processors" />
+                                </Grid>
+                                <ItemsRepeater ItemsSource="{x:Bind ViewModel.DeviceGroups}">
+                                    <ItemsRepeater.Layout>
+                                        <StackLayout Orientation="Vertical"
+                                                     Spacing="12" />
+                                    </ItemsRepeater.Layout>
+                                    <ItemsRepeater.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:DeviceGroup">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"
+                                                           Text="{x:Bind Title}"
+                                                           Visibility="{x:Bind HasItems, Mode=OneWay}" />
+                                                <ItemsRepeater ItemsSource="{x:Bind Items}">
+                                                    <ItemsRepeater.Layout>
+                                                        <StackLayout Orientation="Vertical" />
+                                                    </ItemsRepeater.Layout>
+                                                    <ItemsRepeater.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:DeviceItemViewModel">
+                                                            <dev:SettingsCard Margin="0,4,0,0"
+                                                                              Click="DeviceCard_Click"
+                                                                              DataContext="{x:Bind}"
+                                                                              IsActionIconVisible="False"
+                                                                              IsClickEnabled="True">
+                                                                <dev:SettingsCard.Description>
+                                                                    <Grid ColumnSpacing="12">
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="3*"
+                                                                                              MinWidth="440" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="70" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="70" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="100" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="100" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="110" />
+                                                                            <ColumnDefinition Width="*"
+                                                                                              MinWidth="120" />
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
+                                                                                   Text="{x:Bind DisplayName}" />
+                                                                        <TextBlock Grid.Column="1"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind MsiModeDisplay}" />
+                                                                        <TextBlock Grid.Column="2"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind MsiLimitDisplay}" />
+                                                                        <TextBlock Grid.Column="3"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind MaxMSILimitDisplay}" />
+                                                                        <TextBlock Grid.Column="4"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind DevicePolicyDisplay}" />
+                                                                        <TextBlock Grid.Column="5"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind DevicePriorityDisplay}" />
+                                                                        <TextBlock Grid.Column="6"
+                                                                                   Style="{StaticResource BodyTextBlockStyle}"
+                                                                                   Text="{x:Bind SpecifiedProcessorsDisplay}" />
+                                                                    </Grid>
+                                                                </dev:SettingsCard.Description>
+                                                            </dev:SettingsCard>
+                                                        </DataTemplate>
+                                                    </ItemsRepeater.ItemTemplate>
+                                                </ItemsRepeater>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsRepeater.ItemTemplate>
+                                </ItemsRepeater>
+                            </StackPanel>
+                        </dev:Card>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <StackPanel x:Name="AffinityInfo" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

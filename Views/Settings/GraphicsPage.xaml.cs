@@ -21,7 +21,7 @@ public sealed partial class GraphicsPage : Page
         InitializeComponent();
         LoadGpus();
         GetHDCPState();
-        GetHDMIDPAudioState();
+        //GetHDMIDPAudioState();
     }
 
     private async void LoadGpus()

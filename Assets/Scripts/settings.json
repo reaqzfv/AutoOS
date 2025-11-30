@@ -240,7 +240,7 @@
             "enabled": false
         },
         "MemberCount": {
-            "enabled": false
+            "enabled": true
         },
         "MentionAvatars": {
             "enabled": false

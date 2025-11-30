@@ -1,13 +1,12 @@
 ﻿using AutoOS.Views.Installer.Actions;
 using Microsoft.UI.Xaml.Media;
-using Windows.Storage;
 using WinRT.Interop;
+using AutoOS.Views.Settings.Scheduling.Services;
 
 namespace AutoOS.Views.Installer.Stages;
 
 public static class SchedulingStage
 {
-    private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
     public static IntPtr WindowHandle { get; private set; }
     public static async Task Run()
     {
@@ -22,25 +21,10 @@ public static class SchedulingStage
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
-            // run autogpuaffinity
-            ("Running AutoGpuAffinity", async () => await ProcessActions.RunAutoGpuAffinity(), () => Scheduling == true),
-
-            // apply gpu affinity
-            ("Applying GPU Affinity", async () => await ProcessActions.Sleep(1000), null),
-            ("Applying GPU Affinity", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"cmd /c ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "AutoGpuAffinity", "AutoGpuAffinity.exe")}"" --apply-affinity {localSettings.Values["GpuAffinity"]}"), null),
-            ("Applying GPU Affinity", async () => await ProcessActions.Sleep(2000), null),
-
-            // apply xhci affinity
-            ("Applying XHCI Affinity", async () => await ProcessActions.Sleep(1000), () => Scheduling == false),
-            ("Applying XHCI Affinity", async () => await ProcessActions.ApplyXhciAffinity(), null),
-
-            // apply nic affinity
-            ("Applying NIC Affinity", async () => await ProcessActions.Sleep(1000), () => Scheduling == false),
-            ("Applying NIC Affinity", async () => await ProcessActions.ApplyNicAffinity(), null),
-
-            // reserve cpus
-            ("Reserving CPUs", async () => await ProcessActions.Sleep(1000), () => Reserve == true),
-            ("Reserving CPUs", async () => await ProcessActions.ReserveCpus(), () => Reserve == true)
+            // optimize affinities
+            ("Optimizing Affinities", async () => await ProcessActions.Sleep(1000), null),
+            ("Optimizing Affinities", async () => await AutoAffinityService.ApplyAutoAffinities(), null),
+            ("Optimizing Affinities", async () => await ProcessActions.Sleep(2000), null),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
