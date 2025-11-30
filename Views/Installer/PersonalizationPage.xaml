@@ -79,12 +79,13 @@
                                         ClockIdentifier="24HourClock"
                                         TimeChanged="DarkMode_TimeChanged" />
                         </dev:SettingsCard>
-                        <dev:SettingsCard x:Name="TimelineCard"
-                                          HorizontalContentAlignment="Stretch"
-                                          ContentAlignment="Vertical"
-                                          Visibility="Collapsed">
+                        <dev:Card x:Name="TimelineCard"
+                                  Padding="24,-24,24,12"
+                                  BorderThickness="1,1,1,0"
+                                  CornerRadius="0"
+                                  Visibility="Collapsed">
                             <dev:Timeline x:Name="TimeLine" />
-                        </dev:SettingsCard>
+                        </dev:Card>
                         <dev:SettingsCard Header="Legacy context menu"
                                           HeaderIcon="{dev:FontIcon FontFamily={StaticResource SymbolThemeFontFamily},
                                                                     Glyph=&#xEDE3;}">
