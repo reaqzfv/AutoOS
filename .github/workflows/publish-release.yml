@@ -202,7 +202,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            ${{ env.APP_NAME }}_${{ env.APP_VERSION }}_x64_Test/unattend.xml
             ${{ env.APP_NAME }}_${{ env.APP_VERSION }}_x64_Test/AutoOS.appinstaller
             ${{ env.APP_NAME }}_${{ env.APP_VERSION }}_x64_Test/AutoOS.msix
             ${{ env.APP_NAME }}_${{ env.APP_VERSION }}_x64_Test/AutoOS.cer
