@@ -163,6 +163,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 RecommendedChanges.Visibility = Visibility.Visible;
                 RecommendedChanges.IsExpanded = true;
                 AllSettings.IsExpanded = false;
+                Import.ClearValue(IsEnabledProperty);
 
                 // backup nvram.txt
                 string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
@@ -480,6 +481,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
     {
         // show importing
         SwitchPresenter.Value = "Import";
+        Import.IsEnabled = false;
         Search.Text = string.Empty;
 
         // import nvram

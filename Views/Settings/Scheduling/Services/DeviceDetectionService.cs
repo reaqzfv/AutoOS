@@ -73,8 +73,9 @@ public class DeviceDetectionService
                 if (lastPart != null)
                 {
                     matches = pnpDeviceIds.Any(id =>
-                        id.Contains(lastPart, StringComparison.OrdinalIgnoreCase) ||
-                        device.DevObjName.Contains(id, StringComparison.OrdinalIgnoreCase));
+                        id.Equals(lastPart, StringComparison.OrdinalIgnoreCase) ||
+                        id.EndsWith("\\" + lastPart, StringComparison.OrdinalIgnoreCase) ||
+                        lastPart.Equals(id.Split('\\').LastOrDefault(), StringComparison.OrdinalIgnoreCase));
                 }
             }
 
@@ -83,8 +84,14 @@ public class DeviceDetectionService
             if (deviceType == DeviceType.GPU && (device.DeviceDesc?.Contains("Microsoft Basic Display Adapter", StringComparison.OrdinalIgnoreCase) ?? false))
                 continue;
 
-            if (deviceType == DeviceType.NIC && (device.DeviceDesc?.Contains("Bluetooth", StringComparison.OrdinalIgnoreCase) ?? false))
-                continue;
+            if (deviceType == DeviceType.NIC)
+            {
+                if (device.DeviceDesc?.Contains("Bluetooth", StringComparison.OrdinalIgnoreCase) ?? false)
+                    continue;
+                
+                if (device.DeviceDesc?.Contains("HID", StringComparison.OrdinalIgnoreCase) ?? false)
+                    continue;
+            }
 
             device.DeviceInfoSet = deviceInfoSet;
             device.DeviceInfoData = deviceInfoData;

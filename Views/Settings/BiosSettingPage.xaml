@@ -51,7 +51,8 @@
                         </StackPanel>
                     </Button>
                     <!--  Import  -->
-                    <Button Click="Import_Click"
+                    <Button x:Name="Import"
+                            Click="Import_Click"
                             IsEnabled="{x:Bind IsAnyModified, Mode=OneWay}">
                         <StackPanel VerticalAlignment="Center"
                                     Orientation="Horizontal">
