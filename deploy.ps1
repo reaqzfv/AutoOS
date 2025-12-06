@@ -3,7 +3,7 @@ Add-Type -AssemblyName System.Windows.Forms
 $admin = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
 if (-not $admin.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Write-Host "This script must be run as Administrator."
-    exit
+    return
 }
 
 Write-Host "Please select the Windows ISO..."
@@ -13,7 +13,7 @@ $IsoPicker.Title = "Select the Windows ISO file"
 $IsoPicker.Multiselect = $false
 if ($IsoPicker.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) {
     Write-Host "No ISO selected. Exiting."
-    exit
+    return
 }
 
 $InstallDrivers = Read-Host "Do you want to install drivers? (y/n)"
@@ -21,7 +21,7 @@ if ($InstallDrivers -match '^[Yy]') {
     Write-Host "Please select your drivers folder..."
     $DriverPicker = New-Object System.Windows.Forms.FolderBrowserDialog
     $DriverPicker.Description = "Select the drivers folder"
-    if ($DriverPicker.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { exit }
+    if ($DriverPicker.ShowDialog() -ne [System.Windows.Forms.DialogResult]::OK) { return }
     $DriversDir = $DriverPicker.SelectedPath
 }
 
@@ -33,7 +33,7 @@ if ((Get-Partition -DriveLetter "C" | Get-Disk).PartitionStyle -eq 'MBR') {
     Write-Host "Partition style is MBR. Converting to GPT..."
     mbr2gpt /convert /disk:$DiskNumber /allowFullOS
     Write-Host "Please set Boot Mode to UEFI in BIOS after conversion, then rerun this script."
-    exit
+    return
 } else {
     Write-Host "Partition style is GPT"
 }
@@ -45,7 +45,7 @@ if ((Get-BitLockerVolume -MountPoint C:).VolumeStatus -eq "FullyEncrypted") {
     Write-Host "BitLocker is enabled. Disabling..."
     Disable-BitLocker -MountPoint C:
     Write-Host "Wait until decryption finishes, then rerun this script."
-    exit
+    return
 } else {
     Write-Host "BitLocker is disabled"
 }
@@ -83,7 +83,7 @@ foreach ($Partition in $Partitions) {
 
 if (-not $ShrinkablePartition) {
     Write-Host "No partition with at least 64GB of shrinkable space found. Free up more space, reboot and try again."
-    exit
+    return
 }
 
 Write-Host ""
@@ -172,5 +172,5 @@ Write-Host "===== AutoOS Deployment Completed Successfully! ====="
 Write-Host "Press Enter to exit..."
 if ($Host.Name -eq 'ConsoleHost') {
     [void][System.Console]::ReadLine()
-    Stop-Process -Id $PID
+    return
 }
