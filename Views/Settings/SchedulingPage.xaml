@@ -37,7 +37,7 @@
                                             Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:Card Padding="24,-24,24,24"
+                        <dev:Card Padding="25,-26,25,17"
                                   BorderThickness="1,0,1,1"
                                   CornerRadius="0,0,8,8">
                             <StackPanel>

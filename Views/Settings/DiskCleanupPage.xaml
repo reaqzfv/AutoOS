@@ -37,60 +37,65 @@
                                             Unchecked="RunDiskCleanup_Unchecked">
                         </dev:ProgressButton>
                     </dev:SettingsGroup.Content>
+                    <dev:SettingsGroup.Items>
+                        <dev:Card Padding="25,-26,25,17"
+                                  BorderThickness="1,0,1,1"
+                                  CornerRadius="0,0,8,8">
+                            <ItemsRepeater x:Name="DrivesRepeater">
+                                <ItemsRepeater.Layout>
+                                    <controls:StaggeredLayout ColumnSpacing="8"
+                                                              DesiredColumnWidth="250"
+                                                              ItemsStretch="Fill"
+                                                              RowSpacing="8" />
+                                </ItemsRepeater.Layout>
+                                <ItemsRepeater.ItemTemplate>
+                                    <DataTemplate x:DataType="local:DriveModel">
+                                        <Border Padding="12"
+                                                Background="{ThemeResource SettingsCardBackground}"
+                                                BorderBrush="{ThemeResource SettingsCardBorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="{StaticResource ControlCornerRadius}">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <ImageIcon Width="32"
+                                                           Height="32"
+                                                           VerticalAlignment="Center"
+                                                           Source="{x:Bind Icon, Mode=OneWay}" />
+                                                <Grid Grid.Column="1"
+                                                      Margin="12,0,0,0">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <TextBlock Grid.Row="0"
+                                                               Style="{StaticResource BodyTextBlockStyle}"
+                                                               Text="{x:Bind Label, Mode=OneWay}"
+                                                               TextWrapping="NoWrap" />
+                                                    <dev:StorageBar Grid.Row="1"
+                                                                    Padding="0,4,4,4"
+                                                                    Maximum="{x:Bind Total, Mode=OneWay}"
+                                                                    PercentCaution="90"
+                                                                    PercentCritical="95"
+                                                                    TrackBarHeight="2"
+                                                                    ValueBarHeight="4"
+                                                                    Value="{x:Bind Used, Mode=OneWay}" />
+                                                    <TextBlock Grid.Row="2"
+                                                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                               Style="{StaticResource CaptionTextBlockStyle}"
+                                                               Text="{x:Bind Free, Mode=OneWay}" />
+                                                </Grid>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsRepeater.ItemTemplate>
+                            </ItemsRepeater>
+                        </dev:Card>
+                    </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <ItemsRepeater x:Name="DrivesRepeater"
-                               Margin="0,0,0,32">
-                    <ItemsRepeater.Layout>
-                        <controls:StaggeredLayout ColumnSpacing="8"
-                                                  DesiredColumnWidth="250"
-                                                  ItemsStretch="Fill"
-                                                  RowSpacing="8" />
-                    </ItemsRepeater.Layout>
-                    <ItemsRepeater.ItemTemplate>
-                        <DataTemplate x:DataType="local:DriveModel">
-                            <Border Padding="12"
-                                    Background="{ThemeResource SettingsCardBackground}"
-                                    BorderBrush="{ThemeResource SettingsCardBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="{StaticResource ControlCornerRadius}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <ImageIcon Width="32"
-                                               Height="32"
-                                               VerticalAlignment="Center"
-                                               Source="{x:Bind Icon, Mode=OneWay}" />
-                                    <Grid Grid.Column="1"
-                                          Margin="12,0,0,0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
-                                        <TextBlock Grid.Row="0"
-                                                   Style="{StaticResource BodyTextBlockStyle}"
-                                                   Text="{x:Bind Label, Mode=OneWay}"
-                                                   TextWrapping="NoWrap" />
-                                        <dev:StorageBar Grid.Row="1"
-                                                        Padding="0,4,4,4"
-                                                        Maximum="{x:Bind Total, Mode=OneWay}"
-                                                        PercentCaution="90"
-                                                        PercentCritical="95"
-                                                        TrackBarHeight="2"
-                                                        ValueBarHeight="4"
-                                                        Value="{x:Bind Used, Mode=OneWay}" />
-                                        <TextBlock Grid.Row="2"
-                                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                   Style="{StaticResource CaptionTextBlockStyle}"
-                                                   Text="{x:Bind Free, Mode=OneWay}" />
-                                    </Grid>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsRepeater.ItemTemplate>
-                </ItemsRepeater>
             </StackPanel>
         </ScrollViewer>
     </Grid>
