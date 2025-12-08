@@ -37,19 +37,17 @@
                                             Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard BorderThickness="1,0,1,1"
-                                          CornerRadius="0,0,8,8"
-                                          Description="Disabling HDCP breaks Netflix and other protected video streaming services."
+                        <dev:SettingsCard Description="Disabling HDCP breaks Netflix and other protected video streaming services."
                                           Header="High-Bandwidth Digital Content Protection (HDCP)">
                             <ToggleSwitch x:Name="HDCP"
                                           Toggled="HDCP_Toggled" />
                         </dev:SettingsCard>
-                        <dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
+                        <!--<dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
                                           Header="High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio"
                                           Visibility="Collapsed">
                             <ToggleSwitch x:Name="NVIDIA_HDMIDPAudio"
                                           Toggled="HDMIDPAudio_Toggled" />
-                        </dev:SettingsCard>
+                        </dev:SettingsCard>-->
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Amd_SettingsGroup"
@@ -66,11 +64,11 @@
                                             Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
+                        <!--<dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
                                           Header="High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio">
                             <ToggleSwitch x:Name="AMD_HDMIDPAudio"
                                           Toggled="HDMIDPAudio_Toggled" />
-                        </dev:SettingsCard>
+                        </dev:SettingsCard>-->
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Intel_SettingsGroup"
@@ -87,11 +85,11 @@
                                             Style="{ThemeResource AccentProgressButtonStyle}" />
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
+                        <!--<dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
                                           Header="High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio">
                             <ToggleSwitch x:Name="INTEL_HDMIDPAudio"
                                           Toggled="HDMIDPAudio_Toggled" />
-                        </dev:SettingsCard>
+                        </dev:SettingsCard>-->
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="GpuInfo" />
@@ -113,6 +111,16 @@
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="MsiAfterburnerInfo" />
+                <dev:SettingsGroup Margin="0,0,0,36"
+                                   Description="Launch OBS Studio on startup and start the replay buffer."
+                                   Header="OBS Studio"
+                                   HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Obs.png}">
+                    <dev:SettingsGroup.Content>
+                        <ToggleSwitch x:Name="OBS"
+                                      Toggled="OBS_Toggled">
+                        </ToggleSwitch>
+                    </dev:SettingsGroup.Content>
+                </dev:SettingsGroup>
             </StackPanel>
         </ScrollViewer>
     </Grid>

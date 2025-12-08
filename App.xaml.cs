@@ -10,6 +10,7 @@ namespace AutoOS
 {
     public partial class App : Application
     {
+        private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
         public new static App Current => (App)Application.Current;
         public static Window MainWindow = Window.Current;
         public JsonNavigationService NavService { get; set; }
@@ -61,7 +62,7 @@ namespace AutoOS
 
                     MainWindow.AppWindow.MoveAndResize(new RectInt32(posX, posY, windowWidth, windowHeight));
 
-                    if (ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] is not true)
+                    if (!localSettings.Values.TryGetValue("LaunchMinimized", out object value) || (int)value == 0)
                     {
                         MainWindow.Activate();
                     }

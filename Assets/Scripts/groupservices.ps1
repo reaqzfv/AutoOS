@@ -3,7 +3,7 @@
 # Source: https://github.com/meetrevision/playbook/blob/main/src/Executables/SVCGROUP.ps1
 # Modified: Removed netprofm, TextInputManagementService, Appinfo, UserManager, ProfSvc, gpsvc, camsvc, StateRepository, CryptSvc in order to make them stoppable in service disabled state 
 
-$registryPath = "HKLM:\SYSTEM\ControlSet001\Services\"
+$registryPath = "HKLM:\SYSTEM\CurrentControlSet\Services\"
 $services = @(
     "DisplayEnhancementService",
     "PcaSvc",

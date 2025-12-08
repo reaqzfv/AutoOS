@@ -310,7 +310,7 @@ public static class RegistryStage
             ("Reducing delay for low-level hooks", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_USERS\.DEFAULT\Control Panel\Desktop"" /v LowLevelHooksTimeout /t REG_SZ /d 1000 /f"), null),
 
             // reduce delay to end services on shutdown
-            ("Reducing delay to end services on shutdown", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control"" /v WaitToKillServiceTimeout /t REG_SZ /d 1500 /f"), null),
+            ("Reducing delay to end services on shutdown", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control"" /v WaitToKillServiceTimeout /t REG_SZ /d 1500 /f"), null),
 
             // disable telemetry
             ("Disabling telemetry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"setx POWERSHELL_TELEMETRY_OPTOUT 1"), null),
@@ -493,7 +493,7 @@ public static class RegistryStage
 
             // disable disk space checks
             ("Disabling disk space checks", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer"" /v NoLowDiskSpaceChecks /t REG_DWORD /d 1 /f"), null),
-            ("Disabling disk space checks", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Session Manager"" /v BootExecute /t REG_MULTI_SZ /d ""autocheck autochk /k:C*"" /f"), null),
+            ("Disabling disk space checks", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager"" /v BootExecute /t REG_MULTI_SZ /d ""autocheck autochk /k:C*"" /f"), null),
             ("Disabling disk space checks", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction"" /v Enable /t REG_SZ /d ""N"" /f"), null),
             ("Disabling disk space checks", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\OptimalLayout"" /v EnableAutoLayout /t REG_DWORD /d 0 /f"), null),
 

@@ -24,8 +24,7 @@
                         Padding="{ThemeResource ContentPagePadding}"
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
-                <dev:SettingsGroup Margin="0,0,0,10"
-                                   Header="Manufacturer">
+                <dev:SettingsGroup Header="Manufacturer">
                     <dev:SettingsGroup.Content>
                         <GridView x:Name="Brands"
                                   Margin="0,0,0,-12"
@@ -63,22 +62,20 @@
                         </GridView>
                     </dev:SettingsGroup.Content>
                     <dev:SettingsGroup.Items>
-                        <dev:SettingsCard BorderThickness="1,0,1,1"
-                                          CornerRadius="0,0,8,8"
-                                          Description="Disabling HDCP breaks Netflix and other protected video streaming services."
+                        <dev:SettingsCard Description="Disabling HDCP breaks Netflix and other protected video streaming services."
                                           Header="High-Bandwidth Digital Content Protection (HDCP)">
                             <ToggleSwitch x:Name="HDCP"
                                           Toggled="HDCP_Toggled" />
                         </dev:SettingsCard>
-                        <dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
+                        <!--<dev:SettingsCard Description="Disabling HDMI/DP Audio prevents audio devices connected to the graphics card from showing up."
                                           Header="High-Definition Multimedia Interface (HDMI)/DisplayPort (DP) Audio"
                                           Visibility="Collapsed">
                             <ToggleSwitch x:Name="HDMIDPAudio"
                                           Toggled="HDMIDPAudio_Toggled" />
-                        </dev:SettingsCard>
+                        </dev:SettingsCard>-->
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <dev:SettingsGroup Margin="0,0,0,10"
+                <dev:SettingsGroup Margin="0,8,0,0"
                                    Description="Import your MSI Afterburner profile here."
                                    Header="MSI Afterburner"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/MsiAfterburner.png}">
@@ -90,8 +87,16 @@
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="MsiAfterburnerInfo" />
-                <Border Height="25"
-                        Background="Transparent" />
+                <dev:SettingsGroup Margin="0,0,0,36"
+                                   Description="Launch OBS Studio on startup and start the replay buffer."
+                                   Header="OBS Studio"
+                                   HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Obs.png}">
+                    <dev:SettingsGroup.Content>
+                        <ToggleSwitch x:Name="OBS"
+                                      Toggled="OBS_Toggled">
+                        </ToggleSwitch>
+                    </dev:SettingsGroup.Content>
+                </dev:SettingsGroup>
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -566,6 +566,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Throttler CKEMin Defeature", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "Time Unit", Type = "Option", RecommendedOption = "1 ns" },
         //new BiosSettingRecommendation { SetupQuestion = "Training Tracing", Type = "Option", RecommendedOption = "Disabled" }, // already disabled by default
+        new BiosSettingRecommendation { SetupQuestion = "Turbo Power Limits", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "URR", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB DbC Enable Mode", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB Overcurrent", Type = "Option", RecommendedOption = "Disabled" },

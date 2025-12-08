@@ -8,7 +8,7 @@ public sealed partial class SettingsPage : Page
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
     public SettingsPage()
     {
-        this.InitializeComponent();
+        InitializeComponent();
         LoadSettings();
     }
 
@@ -117,18 +117,27 @@ public sealed partial class SettingsPage : Page
             }
         }
 
-        LaunchMinimized.IsOn = (bool?)ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] ?? false;
-        LaunchOBS.IsOn = (bool?)ApplicationData.Current.LocalSettings.Values["LaunchOBS"] ?? true;
+
+        if (!localSettings.Values.TryGetValue("LaunchMinimized", out object value))
+        {
+            localSettings.Values["LaunchMinimized"] = 0;
+        }
+        else
+        {
+            if (value is bool)
+            {
+                localSettings.Values.Remove("LaunchMinimized");
+            }
+            else
+            {
+                LaunchMinimized.IsOn = (int)value == 1;
+            }
+        }
     }
 
     private void LaunchMinimized_Toggled(object sender, RoutedEventArgs e)
     {
-        ApplicationData.Current.LocalSettings.Values["LaunchMinimized"] = LaunchMinimized.IsOn;
-    }
-
-    private void LaunchOBS_Toggled(object sender, RoutedEventArgs e)
-    {
-        ApplicationData.Current.LocalSettings.Values["LaunchOBS"] = LaunchOBS.IsOn;
+        localSettings.Values["LaunchMinimized"] = LaunchMinimized.IsOn ? 1 : 0;
     }
 }
 

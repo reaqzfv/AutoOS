@@ -89,7 +89,7 @@ public static class SecurityStage
             ("Disabling antivirus notification when opening attachments", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments"" /v ScanWithAntiVirus /t REG_DWORD /d 1 /f"), null),
 
             // disable tsx
-            ("Disabling Transactional Synchronization Extensions (TSX)", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\Session Manager\Kernel"" /v DisableTsx /t REG_DWORD /d 1 /f"), null),
+            ("Disabling Transactional Synchronization Extensions (TSX)", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Kernel"" /v DisableTsx /t REG_DWORD /d 1 /f"), null),
 
             // enable windows hardware quality labs (whql) driver enforcement
             ("Enabling Windows Hardware Quality Labs (WHQL) driver enforcement", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Policy"" /v WhqlSettings /t REG_DWORD /d 1 /f"), null),

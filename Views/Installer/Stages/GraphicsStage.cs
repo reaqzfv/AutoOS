@@ -101,6 +101,12 @@ public static class GraphicsStage
             ("Installing the NVIDIA driver", async () => await ProcessActions.Sleep(3000), () => NVIDIA == true),
             ("Installing the NVIDIA driver", async () => await ProcessActions.RefreshUI(), () => NVIDIA == true),
 
+            // enable hardware accelerated gpu scheduling (hags)
+            ("Enabling Hardware-accelerated GPU scheduling (HAGS)", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers"" /v ""HwSchMode"" /t REG_DWORD /d 2 /f"), null),
+
+            // enable optimizations for windowed games
+            ("Enabling optimizations for windowed games", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\DirectX\UserGpuPreferences"" /v ""DirectXUserGlobalSettings"" /t REG_SZ /d ""SwapEffectUpgradeEnable=1;"" /f"), null),
+
             // apply custom resolution utility (cru) profile
             ("Importing Custom Resolution Utility (CRU) profile", async () => await ProcessActions.Sleep(1500), () => CRU == true),
             ("Importing Custom Resolution Utility (CRU) profile", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = localSettings.Values["CruProfile"] ?.ToString(), Arguments = "-i" }) !.WaitForExitAsync()), () => CRU == true),
@@ -112,9 +118,6 @@ public static class GraphicsStage
             // set the highest supported refresh rate for every monitor
             ("Setting the highest supported refresh rate for every monitor", async () => await ProcessActions.Sleep(1000), null),
             ("Setting the highest supported refresh rate for every monitor", async () => await ProcessActions.SetHighestRefreshRates(), null),
-
-            // enable optimizations for windowed games
-            ("Enabling optimizations for windowed games", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\DirectX\UserGpuPreferences"" /v ""DirectXUserGlobalSettings"" /t REG_SZ /d ""SwapEffectUpgradeEnable=1;"" /f"), () => Intel10th == true),
 
             // configure settings
             ("Configuring settings", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Intel\Display\igfxcui\MediaKeys"" /v ""ProcAmpApplyAlways"" /t REG_DWORD /d 0 /f"), () => Intel10th == true || Intel14th == true || IntelArc == true),
@@ -213,12 +216,6 @@ public static class GraphicsStage
             // disable the dlss indicator
             ("Disabling the DLSS Indicator", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\NGXCore"" /v ""ShowDlssIndicator"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
 
-            // enable hardware accelerated gpu scheduling (hags)
-            ("Enabling Hardware-accelerated GPU scheduling (HAGS)", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\GraphicsDrivers"" /v ""HwSchMode"" /t REG_DWORD /d 2 /f"), () => NVIDIA == true),
-
-            // enable optimizations for windowed games
-            ("Enabling optimizations for windowed games", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\DirectX\UserGpuPreferences"" /v ""DirectXUserGlobalSettings"" /t REG_SZ /d ""SwapEffectUpgradeEnable=1;"" /f"), () => NVIDIA == true),
-
             // disable automatic updates
             ("Disabling automatic updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v AutoDownload /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
 
@@ -244,7 +241,7 @@ public static class GraphicsStage
             ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA == true),
 
             // configure physx to use gpu
-            ("Configuring PhysX to use GPU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\ControlSet001\Services\nvlddmkm\Global\NVTweak"" /v ""NvCplPhysxAuto"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
+            ("Configuring PhysX to use GPU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""NvCplPhysxAuto"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
 
             // configure color settings
             ("Configuring color settings", async () => await ProcessActions.RunPowerShellScript("colorsettings.ps1", ""), () => NVIDIA == true),

@@ -12,7 +12,7 @@ public static class StartupStage
     public static async Task Run()
     {
         bool MSI = Directory.Exists(@"C:\Program Files (x86)\MSI Afterburner\Profiles\") && Directory.GetFiles(@"C:\Program Files (x86)\MSI Afterburner\Profiles\").Any(f => !f.EndsWith("MSIAfterburner.cfg", StringComparison.OrdinalIgnoreCase));
-        bool OBS = !(localSettings.Values["LaunchOBS"] as bool? == false);
+        bool OBS = localSettings.Values["OBS"]?.ToString() == "1";
         bool HID = localSettings.Values["HumanInterfaceDevices"]?.ToString() == "0";
         bool NEED_IMOD_SAVE = Registry.CurrentUser.OpenSubKey(@"Software\AutoOS\XHCI Interrupter Addresses") == null;
         bool IMOD = localSettings.Values["XhciInterruptModeration"]?.ToString() == "0";

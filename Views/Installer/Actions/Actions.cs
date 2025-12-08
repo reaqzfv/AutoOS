@@ -85,8 +85,6 @@ public static class ProcessActions
     [DllImport("user32.dll")]
     static extern int ChangeDisplaySettingsEx(string lpszDeviceName, ref DEVMODE lpDevMode, IntPtr hwnd, uint dwflags, IntPtr lParam);
 
-    private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
     public static async Task RunNsudo(string user, string command)
     {
         string arguments = user switch

@@ -1,5 +1,4 @@
-﻿using AutoOS.Views.Installer.Actions;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System.Diagnostics;
 
 namespace AutoOS.Views.Settings;
@@ -41,10 +40,7 @@ public sealed partial class LoggingPage : Page
                         var startValue = key.GetValue("Start", 0);
                         if ((int)startValue != groups[0].Item2)
                         {
-                            Registry.SetValue(
-                                $@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}",
-                                "Start",
-                                groups[0].Item2
+                            Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", groups[0].Item2
                             );
                         }
                     }

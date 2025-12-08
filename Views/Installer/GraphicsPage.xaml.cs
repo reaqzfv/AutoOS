@@ -1,4 +1,5 @@
-﻿using Windows.Storage;
+﻿//using System.Diagnostics;
+using Windows.Storage;
 
 namespace AutoOS.Views.Installer;
 
@@ -6,7 +7,8 @@ public sealed partial class GraphicsPage : Page
 {
     private bool isInitializingBrandsState = true;
     private bool isInitializingHDCPState = true;
-    private bool isInitializingHDMIDPAudioState = true;
+    //private bool isInitializingHDMIDPAudioState = true;
+    private bool isInitializingOBSState = true;
 
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -16,8 +18,9 @@ public sealed partial class GraphicsPage : Page
         GetItems();
         GetBrand();
         GetHDCPState();
-        GetHDMIDPAudioState();
+        //GetHDMIDPAudioState();
         GetMsiProfile();
+        GetOBSState();
     }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -90,27 +93,27 @@ public sealed partial class GraphicsPage : Page
         localSettings.Values["HighBandwidthDigitalContentProtection"] = HDCP.IsOn ? 1 : 0;
     }
 
-    private void GetHDMIDPAudioState()
-    {
-        if (!localSettings.Values.TryGetValue("HighDefinitionMultimediaInterface/DisplayPortAudio", out object value))
-        {
-            localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = 1;
-            HDMIDPAudio.IsOn = true;
-        }
-        else
-        {
-            HDMIDPAudio.IsOn = Convert.ToInt32(value) == 1;
-        }
+    //private void GetHDMIDPAudioState()
+    //{
+    //    if (!localSettings.Values.TryGetValue("HighDefinitionMultimediaInterface/DisplayPortAudio", out object value))
+    //    {
+    //        localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = 1;
+    //        HDMIDPAudio.IsOn = true;
+    //    }
+    //    else
+    //    {
+    //        HDMIDPAudio.IsOn = Convert.ToInt32(value) == 1;
+    //    }
 
-        isInitializingHDMIDPAudioState = false;
-    }
+    //    isInitializingHDMIDPAudioState = false;
+    //}
 
-    private void HDMIDPAudio_Toggled(object sender, RoutedEventArgs e)
-    {
-        if (isInitializingHDMIDPAudioState) return;
+    //private void HDMIDPAudio_Toggled(object sender, RoutedEventArgs e)
+    //{
+    //    if (isInitializingHDMIDPAudioState) return;
 
-        localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = HDMIDPAudio.IsOn ? 1 : 0;
-    }
+    //    localSettings.Values["HighDefinitionMultimediaInterface/DisplayPortAudio"] = HDMIDPAudio.IsOn ? 1 : 0;
+    //}
 
     private void GetMsiProfile()
     {
@@ -210,5 +213,25 @@ public sealed partial class GraphicsPage : Page
             MsiAfterburnerInfo.Children.Clear();
             GetMsiProfile();
         }
+    }
+
+    private void GetOBSState()
+    {
+        if (!localSettings.Values.TryGetValue("OBS", out object value))
+        {
+            localSettings.Values["OBS"] = 0;
+        }
+        else
+        {
+            OBS.IsOn = (int)value == 1;
+        }
+
+        isInitializingOBSState = false;
+    }
+
+    private void OBS_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (isInitializingOBSState) return;
+        localSettings.Values["OBS"] = OBS.IsOn ? 1 : 0;
     }
 }
