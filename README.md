@@ -46,23 +46,18 @@ Extract all `.zip` files (for `.exe` files, there may be an extract option in th
 
 **Step 5:** Open PowerShell **as Administrator**.
 
-**Step 6:** Paste this into the PowerShell window to allow running scripts.
+**Step 6:** Paste this into the PowerShell window to download and run the deployment script.
 
 ```ps1
-Set-ExecutionPolicy Unrestricted -Force
-```
-
-**Step 7:** Paste this into the PowerShell window to download and run the deployment script.
-
-```ps1
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 irm https://raw.githubusercontent.com/tinodin/AutoOS/master/deploy.ps1 | iex
 ```
 
-**Step 8:** Once the script finished, restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
+**Step 7:** Once the script finished, restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
 
-**Step 9:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
+**Step 8:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
-**Step 10:** Select your settings and click "Install AutoOS".
+**Step 9:** Select your settings and click "Install AutoOS".
 
 ## 📷Screenshots
 ### Installer
