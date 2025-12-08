@@ -1003,7 +1003,7 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "Suspend to RAM", Type = "Option", RecommendedOption = "Disabled" }, // already disabled on INTEL
         new BiosSettingRecommendation { SetupQuestion = "UFS Support", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "USB power delivery in Soft Off state (S5)", Type = "Option", RecommendedOption = "Disabled" },
-        new BiosSettingRecommendation { SetupQuestion = "Unpopulated Links", Type = "Option", RecommendedOption = "Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "Unpopulated Links", Type = "Option", RecommendedOption = "Keep Link ON" },
         new BiosSettingRecommendation { SetupQuestion = "XHCI Hand-off", Type = "Option", RecommendedOption = "Enabled" },
 
         //new BiosSettingRecommendation { SetupQuestion = "Enable Hibernation", Type = "Value", RecommendedOption = "0" }, // required for wake on lan and breaks hd audio for some
