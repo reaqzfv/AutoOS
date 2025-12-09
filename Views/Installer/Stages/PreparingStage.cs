@@ -152,7 +152,6 @@ public static class PreparingStage
             SpectreMeltdownMitigations = (localSettings.Values["SpectreMeltdownMitigations"]?.ToString() == "1");
             ProcessMitigations = (localSettings.Values["ProcessMitigations"]?.ToString() == "1");
             LegacyContextMenu = (localSettings.Values["LegacyContextMenu"]?.ToString() == "1");
-            ShowMyTaskbarOnAllDisplays = (localSettings.Values["ShowMyTaskbarOnAllDisplays"]?.ToString() == "1");
             AlwaysShowTrayIcons = (localSettings.Values["AlwaysShowTrayIcons"]?.ToString() == "1");
             TaskbarAlignment = (localSettings.Values["TaskbarAlignment"]?.ToString() == "Left");
             WOL = (localSettings.Values["WakeOnLan"]?.ToString() == "1");

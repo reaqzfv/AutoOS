@@ -36,11 +36,11 @@ public class DeviceSettingsService
 
             uint expectedMsiSupported = msiSupported ? 1u : 0u;
             bool msiChanged = currentSettings.MsiSupported != expectedMsiSupported ||
-                             currentSettings.MessageNumberLimit != messageNumberLimit;
+                              currentSettings.MessageNumberLimit != messageNumberLimit;
 
             bool affinityChanged = currentSettings.DevicePolicy != devicePolicy ||
-                                  currentSettings.DevicePriority != devicePriority ||
-                                  currentSettings.AssignmentSetOverride != assignmentSetOverride;
+                                   currentSettings.DevicePriority != devicePriority ||
+                                   currentSettings.AssignmentSetOverride != assignmentSetOverride;
 
             var appliedSettings = new DeviceSettings
             {
@@ -224,4 +224,3 @@ public class DeviceSettingsService
         public List<string> FailedDevices { get; set; } = [];
     }
 }
-

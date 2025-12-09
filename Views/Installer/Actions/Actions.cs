@@ -13,7 +13,6 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using ValveKeyValue;
 using Windows.Graphics;
-using Windows.Storage;
 using WinRT.Interop;
 
 namespace AutoOS.Views.Installer.Actions;

@@ -4,13 +4,11 @@ using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
-using System.Diagnostics;
 using System.Management;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
-using AutoOS.Views.Settings.Scheduling.Services;
 
 namespace AutoOS.Views.Settings
 {
@@ -79,27 +77,10 @@ namespace AutoOS.Views.Settings
                 }
 
                 await Update();
-                await LogDiscordUser();
-                localSettings.Values["Version"] = currentVersion;
                 StatusText.Text = "Update complete.";
-                await Task.Delay(1000);
                 ProgressBar.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
-                StatusText.Text = "Restarting in 3...";
-                await Task.Delay(1000);
-                StatusText.Text = "Restarting in 2...";
-                await Task.Delay(1000);
-                StatusText.Text = "Restarting in 1...";
-                await Task.Delay(1000);
-                StatusText.Text = "Restarting...";
-                await Task.Delay(750);
-                ProcessStartInfo processStartInfo = new()
-                {
-                    FileName = "cmd.exe",
-                    Arguments = $"/c shutdown /r /t 0",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                };
-                Process.Start(processStartInfo);
+                localSettings.Values["Version"] = currentVersion;
+                await LogDiscordUser();
             }
         }
 
@@ -129,123 +110,44 @@ namespace AutoOS.Views.Settings
             _ = updater.ShowAsync();
 
             string previousTitle = string.Empty;
-            bool NVIDIA = false;
-            bool ServicesEnabled = false;
-            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController"))
-            {
-                foreach (var obj in searcher.Get())
-                {
-                    string name = obj["Name"]?.ToString();
-                    string version = obj["DriverVersion"]?.ToString();
 
-                    if (name != null)
-                    {
-                        if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase))
-                        {
-                            NVIDIA = true;
-                        }
-                    }
-                }
-            }
+            bool AlwaysShowTrayIcons = (localSettings.Values["AlwaysShowTrayIcons"]?.ToString() == "1");
+            string ScheduleMode = localSettings.Values["ScheduleMode"]?.ToString();
+            string LightTime = localSettings.Values["LightTime"]?.ToString();
+            string DarkTime = localSettings.Values["DarkTime"]?.ToString();
 
-            using (var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep"))
+            string scheduleMode = ScheduleMode switch
             {
-                ServicesEnabled = (int)(key?.GetValue("Start", 0) ?? 0) == 1;
-            }
+                "Sunset to sunrise" => "LocationService",
+                "Custom hours" => "CustomHours",
+                _ => ScheduleMode
+            };
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                // disable show frequently used folders
-                ("Disabling show frequently used folders", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer"" /v ShowFrequent /t REG_DWORD /d 0 /f"), null),
+                // stop windhawk
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc stop Windhawk"), null),
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c taskkill /f /im Windhawk.exe"), null),
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\Program Files\Windhawk"""), null),
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\ProgramData\Windhawk"""), null),
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk"" /f"), null),
+                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Windhawk /f"), null),
 
-                // remove custom priorities
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\SearchIndexer.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\ctfmon.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\fontdrvhost.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\winlogon.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\lsass.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sihost.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sppsvc.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\dwm.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\svchost.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\WmiPrvSE.exe\PerfOptions"" /f"), null),
-                ("Removing custom priorities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\csrss.exe\PerfOptions"" /f"), null),
-
-                // remove unnecessary process mitigations
-                ("Remove unnecessary process mitigations", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for %a in (fontdrvhost.exe dwm.exe lsass.exe svchost.exe WmiPrvSE.exe winlogon.exe csrss.exe audiodg.exe ntoskrnl.exe services.exe) do reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\%a"" /v ""MitigationOptions"" /f && reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\%a"" /v ""MitigationAuditOptions"" /f"), null),
-
-                // enable eventlog
-                ("Enabling EventLog", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventLog"" /v Start /t REG_DWORD /d 4 /f & sc stop EventLog"), () => ServicesEnabled == true),
-                
-                // enable eventsystem
-                ("Enabling EventSystem", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\EventSystem"" /v Start /t REG_DWORD /d 4 /f & sc stop EventSystem"), () => ServicesEnabled == true),
-
-                // update vencord plugins
-                ("Update Vencord Plugins", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "settings.json"), Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vencord", "settings", "settings.json"), true)), null),
-
-                // import the optimized nvidia profile
-                ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA == true),
-
-                // Disable the nvidia tray icon
-                ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""HideXGpuTrayIcon"" /t REG_DWORD /d 1 /f"), () => NVIDIA == true),
-                ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v ""ShowTrayIcon"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable the dlss indicator
-                ("Disabling the DLSS Indicator", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\NGXCore"" /v ""ShowDlssIndicator"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable automatic updates
-                ("Disabling automatic updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v AutoDownload /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable telemetry
-                ("Disabling telemetry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\FTS"" /v EnableRID44231 /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling telemetry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\FTS"" /v EnableRID64640 /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling telemetry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\FTS"" /v EnableRID66610 /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling telemetry", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c cd /d ""C:\Windows\System32\DriverStore\FileRepository\"" & dir NvTelemetry64.dll /a /b /s & del NvTelemetry64.dll /a /s"), () => NVIDIA == true),
-
-                // disable logging
-                ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogDisableMasks /t REG_BINARY /d ""00ffff0f01ffff0f02ffff0f03ffff0f04ffff0f05ffff0f06ffff0f07ffff0f08ffff0f09ffff0f0affff0f0bffff0f0cffff0f0dffff0f0effff0f0fffff0f10ffff0f11ffff0f12ffff0f13ffff0f14ffff0f15ffff0f16ffff0f00ffff1f01ffff1f02ffff1f03ffff1f04ffff1f05ffff1f06ffff1f07ffff1f08ffff1f09ffff1f0affff1f0bffff1f0cffff1f0dffff1f0effff1f0fffff1f00ffff2f01ffff2f02ffff2f03ffff2f04ffff2f05ffff2f06ffff2f07ffff2f08ffff2f09ffff2f0affff2f0bffff2f0cffff2f0dffff2f0effff2f0fffff2f00ffff3f01ffff3f02ffff3f03ffff3f04ffff3f05ffff3f06ffff3f07ffff3f"" /f"), () => NVIDIA == true),
-                ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogWarningEntries /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogPagingEntries /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogEventEntries /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogErrorEntries /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable error code correction (ecc)
-                ("Disabling error code correction (ECC)", async () => await ProcessActions.RunPowerShellScript("ecc.ps1", ""), () => NVIDIA == true),
-
-                // configure miscellaneous nvidia settings
-                ("Configuring miscellaneous NVIDIA settings", async () => await ProcessActions.RunPowerShellScript("nvidiamisc.ps1", ""), () => NVIDIA == true),
-
-                // disable display power savings
-                ("Disabling Display Power Savings", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""DisplayPowerSaving"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-                ("Disabling Display Power Savings", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\NVIDIA Corporation\Global\NVTweak"" /v ""DisplayPowerSaving"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable hd audio power savings
-                ("Disabling HD Audio Power Savings", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm"" /v ""EnableHDAudioD3Cold"" /t REG_DWORD /d 0 /f"), () => NVIDIA == true),
-
-                // disable standby states
-                ("Disabling standy states", async () => await ProcessActions.RunNsudo("CurrentUser", @"powercfg /setacvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 abfc2519-3608-4c2a-94ea-171b0ed546ab 0"), null),
-                
-                // disable hybrid sleep
-                ("Disabling hybrid sleep", async () => await ProcessActions.RunNsudo("CurrentUser", @"powercfg /setacvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 94ac6d29-73ce-41a6-809f-6363ba21b47e 0"), null),
-
-                // disable drive powersaving features
-                ("Disabling drive powersaving features", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for %a in (EnhancedPowerManagementEnabled AllowIdleIrpInD3 EnableSelectiveSuspend DeviceSelectiveSuspended SelectiveSuspendEnabled SelectiveSuspendOn EnumerationRetryCount ExtPropDescSemaphore WaitWakeEnabled D3ColdSupported WdfDirectedPowerTransitionEnable EnableIdlePowerManagement IdleInWorkingState IdleTimeoutInMS MinimumIdleTimeoutInMS WakeEnabled) do for /f ""delims="" %b in ('reg query ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum"" /s /f ""%a"" ^| findstr ""HKEY""') do reg add ""%b"" /v ""%a"" /t REG_DWORD /d 0 /f"), null),
-                ("Disabling drive powersaving features", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c for %a in (DisableIdlePowerManagement DisableRuntimePowerManagement) do for /f ""delims="" %b in ('reg query ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum"" /s /f ""%a"" ^| findstr ""HKEY""') do reg add ""%b"" /v ""%a"" /t REG_DWORD /d 1 /f"), null),
-
-                // disable sleep study
-                ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power"" /v ""SleepStudyDisabled"" /t REG_DWORD /d 1 /f"), null),
-                ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power"" /v ""SleepStudyDeviceAccountingLevel"" /t REG_DWORD /d 0 /f"), null),
-                ("Disabling sleep study", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power"" /v ""SleepstudyAccountingEnabled"" /t REG_DWORD /d ""0"" /f"), null),
-
-                // remove autogpuaffinity
-                ("Removing AutoGpuAffinity", async () => { var p = Path.Combine(PathHelper.GetAppDataFolderPath(), "AutoGpuAffinity"); if (Directory.Exists(p)) Directory.Delete(p, true); }, null),
-
-                // optimize affinities
-                ("Optimizing Affinities", async () => await ProcessActions.Sleep(1000), null),
-                ("Optimizing Affinities", async () => await AutoAffinityService.ApplyAutoAffinities(), null),
-                ("Optimizing Affinities", async () => await ProcessActions.Sleep(2000), null),
-                ("Optimizing Affinities", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v ReservedCpuSets /f"), null)
-
+                // download windhawk
+                ("Downloading Windhawk", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/omk2gg29v8yguskw4jhng/Windhawk.zip?rlkey=tljvtfus2tq57d3y5mzdt8ges&st=5h7z80ir&dl=0", Path.GetTempPath(), "Windhawk.zip"), null),
+        
+                // update windhawk
+                ("Updating Windhawk", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "Windhawk.zip"), @"C:\Program Files\Windhawk"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c robocopy ""C:\Program Files\Windhawk\Windhawk"" ""C:\ProgramData\Windhawk"" /MOVE /E"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("CurrentUser", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "windhawk.reg")}\""), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher"" /v Disabled /t REG_DWORD /d 1 /f"), () => ScheduleMode == "Always Light" || ScheduleMode == "Always Dark"),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v ScheduleMode /t REG_SZ /d {scheduleMode} /f"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v CustomLight /t REG_SZ /d {LightTime} /f"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v CustomDark /t REG_SZ /d {DarkTime} /f"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\taskbar-notification-icons-show-all"" /v Disabled /t REG_DWORD /d 1 /f"), () => AlwaysShowTrayIcons == false),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc create Windhawk binPath= ""\""C:\Program Files\Windhawk\windhawk.exe\"" -service"" start= auto"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunPowerShell(@"$s=New-Object -ComObject WScript.Shell;$sc=$s.CreateShortcut([IO.Path]::Combine($env:APPDATA,'Microsoft\Windows\Start Menu\Programs\Windhawk.lnk'));$sc.TargetPath='C:\Program Files\Windhawk\windhawk.exe';$sc.Save()"), null),
+                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc start Windhawk"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -307,7 +209,7 @@ namespace AutoOS.Views.Settings
                 ProgressBar.Value += incrementPerTitle;
             }
 
-            //updater.IsPrimaryButtonEnabled = true;
+            updater.IsPrimaryButtonEnabled = true;
         }
 
         public async Task RunDownload(string url, string path, string file = null)
