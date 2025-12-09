@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net.NetworkInformation;
 using Microsoft.Win32;
 
 namespace AutoOS.Views.Settings;
@@ -32,41 +31,20 @@ public sealed partial class InternetPage : Page
         {
             foreach (var service in group.Item1)
             {
-                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}"))
-                {
-                    if (key == null) continue;
+                using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}");
+                if (key == null) continue;
 
-                    var startValue = key.GetValue("Start");
-                    if (startValue == null || (int)startValue != group.Item2)
-                    {
-                        isInitializingWIFIState = false;
-                        return;
-                    }
+                var startValue = key.GetValue("Start");
+                if (startValue == null || (int)startValue != group.Item2)
+                {
+                    isInitializingWIFIState = false;
+                    return;
                 }
             }
         }
 
-        // check for enabled wifi adapters
-        var output = Process.Start(new ProcessStartInfo("cmd.exe", "/C netsh interface show interface | findstr /i \"Wi-Fi\" | findstr /i \"Enabled\"") { CreateNoWindow = true, RedirectStandardOutput = true })?.StandardOutput.ReadToEnd();
-
-        if (!string.IsNullOrEmpty(output))
-        {
-            initialWIFIState = true;
-            WiFi.IsOn = true;
-        }
-        else
-        {
-            // if no wifi adapters are present hide the whole section
-            if (NetworkInterface.GetAllNetworkInterfaces().Where(ni => ni.NetworkInterfaceType == NetworkInterfaceType.Wireless80211).Any())
-            {
-                isInitializingWIFIState = false;
-                return;
-            }
-            else
-            {
-                WiFi_SettingsGroup.Visibility = Visibility.Collapsed;
-            }
-        }
+        initialWIFIState = true;
+        WiFi.IsOn = true;
         isInitializingWIFIState = false;
     }
 
@@ -100,12 +78,10 @@ public sealed partial class InternetPage : Page
         {
             foreach (var service in group.Item1)
             {
-                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
-                {
-                    if (key == null) continue;
+                using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true);
+                if (key == null) continue;
 
-                    Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", WiFi.IsOn ? group.Item2 : 4);
-                }
+                Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", WiFi.IsOn ? group.Item2 : 4);
             }
         }
 

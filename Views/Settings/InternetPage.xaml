@@ -23,8 +23,7 @@
                         Padding="{ThemeResource ContentPagePadding}"
                         dev:PanelAttach.ChildrenTransitions="Default"
                         Spacing="8">
-                <dev:SettingsGroup x:Name="WiFi_SettingsGroup"
-                                   Description="Toggle Services &amp; Drivers required for Wi-Fi functionality."
+                <dev:SettingsGroup Description="Toggle Services &amp; Drivers required for Wi-Fi functionality."
                                    Header="Wi-Fi"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Wifi.png}">
                     <dev:SettingsGroup.Content>
