@@ -28,7 +28,7 @@ if ($InstallDrivers -match '^[Yy]') {
 Write-Host ""
 Write-Host "===== Step 1: Check Partition Style ====="
 Write-Host ""
-$DiskNumber = (Get-Partition -DriveLetter C | Get-Disk).Number
+$DiskNumber = (Get-Volume -DriveLetter C | Get-Disk).Number
 if ((Get-Partition -DriveLetter "C" | Get-Disk).PartitionStyle -eq 'MBR') {
     Write-Host "Partition style is MBR. Converting to GPT..."
     mbr2gpt /convert /disk:$DiskNumber /allowFullOS
