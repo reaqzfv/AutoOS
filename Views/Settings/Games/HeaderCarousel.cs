@@ -1658,6 +1658,8 @@ public partial class HeaderCarousel : ItemsControl
             "Netman",
             "NetSetupSvc",
             "netprofm",
+            "NgcCtnrSvc",
+            "NgcSvc",
             "nsi",
             "ProfSvc",
             "StateRepository",
@@ -1691,6 +1693,9 @@ public partial class HeaderCarousel : ItemsControl
             }
             catch { }
         }
+
+        try { new ServiceController("KeyIso").Stop(); } catch { }
+        try { new ServiceController("Winmgmt").Stop(); } catch { }
 
         foreach (var process in Process.GetProcesses())
         {

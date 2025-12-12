@@ -427,7 +427,7 @@
                                                 <StackPanel>
                                                     <TextBlock FontWeight="Bold"
                                                                Text="Stop processes" />
-                                                    <TextBlock Text="Click after loading into your first match."
+                                                    <TextBlock Text="Click to stop processes."
                                                                TextWrapping="Wrap" />
                                                 </StackPanel>
                                             </ToolTip>

@@ -1,5 +1,4 @@
-﻿using AutoOS.Views.Installer.Actions;
-using CommunityToolkit.WinUI.Controls;
+﻿using CommunityToolkit.WinUI.Controls;
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
@@ -9,6 +8,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
+using AutoOS.Views.Installer.Actions;
+using System.Diagnostics;
 
 namespace AutoOS.Views.Settings
 {
@@ -27,6 +28,9 @@ namespace AutoOS.Views.Settings
         {
             Margin = new Thickness(0, 15, 0, 0)
         };
+        private readonly string list = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini");
+        private readonly string nsudoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "NSudo", "NSudoLC.exe");
+
         public HomeLandingPage()
         {
             InitializeComponent();
@@ -109,45 +113,106 @@ namespace AutoOS.Views.Settings
 
             _ = updater.ShowAsync();
 
+            bool servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1;
+            bool wifiState = false;
+            bool bluetoothState = false;
+            bool laptopState = false;
+
             string previousTitle = string.Empty;
-
-            bool AlwaysShowTrayIcons = (localSettings.Values["AlwaysShowTrayIcons"]?.ToString() == "1");
-            string ScheduleMode = localSettings.Values["ScheduleMode"]?.ToString();
-            string LightTime = localSettings.Values["LightTime"]?.ToString();
-            string DarkTime = localSettings.Values["DarkTime"]?.ToString();
-
-            string scheduleMode = ScheduleMode switch
-            {
-                "Sunset to sunrise" => "LocationService",
-                "Custom hours" => "CustomHours",
-                _ => ScheduleMode
-            };
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
-                // stop windhawk
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc stop Windhawk"), null),
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c taskkill /f /im Windhawk.exe"), null),
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\Program Files\Windhawk"""), null),
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c rmdir /s /q ""C:\ProgramData\Windhawk"""), null),
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk"" /f"), null),
-                ("Stopping Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Windhawk /f"), null),
+                // disable large mtu
+                ("Disabling large MTU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ip loopbacklargemtu=disabled"), null),
 
-                // download windhawk
-                ("Downloading Windhawk", async () => await RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/omk2gg29v8yguskw4jhng/Windhawk.zip?rlkey=tljvtfus2tq57d3y5mzdt8ges&st=5h7z80ir&dl=0", Path.GetTempPath(), "Windhawk.zip"), null),
-        
-                // update windhawk
-                ("Updating Windhawk", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "Windhawk.zip"), @"C:\Program Files\Windhawk"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c robocopy ""C:\Program Files\Windhawk\Windhawk"" ""C:\ProgramData\Windhawk"" /MOVE /E"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("CurrentUser", $"cmd /c reg import \"{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "windhawk.reg")}\""), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher"" /v Disabled /t REG_DWORD /d 1 /f"), () => ScheduleMode == "Always Light" || ScheduleMode == "Always Dark"),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v ScheduleMode /t REG_SZ /d {scheduleMode} /f"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v CustomLight /t REG_SZ /d {LightTime} /f"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\auto-theme-switcher\Settings"" /v CustomDark /t REG_SZ /d {DarkTime} /f"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Windhawk\Engine\Mods\taskbar-notification-icons-show-all"" /v Disabled /t REG_DWORD /d 1 /f"), () => AlwaysShowTrayIcons == false),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc create Windhawk binPath= ""\""C:\Program Files\Windhawk\windhawk.exe\"" -service"" start= auto"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunPowerShell(@"$s=New-Object -ComObject WScript.Shell;$sc=$s.CreateShortcut([IO.Path]::Combine($env:APPDATA,'Microsoft\Windows\Start Menu\Programs\Windhawk.lnk'));$sc.TargetPath='C:\Program Files\Windhawk\windhawk.exe';$sc.Save()"), null),
-                ("Updating Windhawk", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc start Windhawk"), null),
+                // disable failure actions
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure AudioEndpointBuilder reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag AudioEndpointBuilder 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Appinfo reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Appinfo 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure AppXSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag AppXSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure CaptureService reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag CaptureService 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure cbdhsvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag cbdhsvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure ClipSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag ClipSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure CryptSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag CryptSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure DevicesFlowUserSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag DevicesFlowUserSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Dhcp reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Dhcp 0"), null),
+                //("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure DispBrokerDesktopSvc reset=0 actions=//"), null),
+                //("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag DispBrokerDesktopSvc 0"), null),
+                //("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Dnscache reset=0 actions=//"), null),
+                //("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Dnscache 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure DoSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag DoSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure DsmSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag DsmSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure gpsvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag gpsvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure InstallService reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag InstallService 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure KeyIso reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag KeyIso 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure lfsvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag lfsvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure msiserver reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag msiserver 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure NcbService reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag NcbService 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure netprofm reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag netprofm 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure NgcSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag NgcSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure NgcCtnrSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag NgcCtnrSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure nsi reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag nsi 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure ProfSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag ProfSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure sppsvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag sppsvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure StateRepository reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag StateRepository 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure TextInputManagementService reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag TextInputManagementService 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure TrustedInstaller reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag TrustedInstaller 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure UdkUserSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failu^^reflag UdkUserSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure WFDSConMgrSvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag WFDSConMgrSvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure WinHttpAutoProxySvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag WinHttpAutoProxySvc 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Winmgmt reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Winmgmt 0"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Wcmsvc reset=0 actions=//"), null),
+                ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Wcmsvc 0"), null),
+
+                // save services state
+                ("Saving Services & Drivers state ", async () => await Task.Run(() => servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1), null),
+                ("Saving Services & Drivers state ", async () => await Task.Run(() => wifiState = new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# tdx", "# vwififlt", "# Netwtw10", "# Netwtw14" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+                ("Saving Services & Drivers state ", async () => await Task.Run(() => bluetoothState = new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.All(service => File.ReadAllLines(list).Any(line => line.Trim() == service)) && new[] { "# BthA2dp", "# BthEnum", "# BthHFAud", "# BthHFEnum", "# BthLEEnum", "# BthMini", "# BTHMODEM", "# BthPan", "# BTHPORT", "# BTHUSB", "# HidBth", "# ibtusb", "# Microsoft_Bluetooth_AvrcpTransport", "# RFCOMM" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+                ("Saving Services & Drivers state ", async () => await Task.Run(() => laptopState = new[] { "# msisadrv" }.All(driver => File.ReadAllLines(list).Any(line => line.Trim() == driver))), null),
+
+                // enable services & drivers
+                ("Enabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Enable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
+
+                // update lists.ini
+                ("Updating lists.ini", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "lists.ini"), Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini"), true)), null),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "WlanSvc", "Dhcp", "Netman", "NetSetupSvc", "NlaSvc", "Wcmsvc", "WinHttpAutoProxySvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "tdx", "vwififlt", "Netwtw10", "Netwtw14" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => wifiState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "BluetoothUserService", "BTAGService", "BthAvctpSvc", "bthserv", "DeviceAssociationService", "DevicesFlowUserSvc", "DsmSvc", "NcbService", "WFDSConMgrSvc" }.Contains(line.Trim().TrimStart('#', ' ')) ? line.TrimStart('#', ' ') : new[] { "BthA2dp", "BthEnum", "BthHFAud", "BthHFEnum", "BthLEEnum", "BthMini", "BTHMODEM", "BthPan", "BTHPORT", "BTHUSB", "HidBth", "ibtusb", "Microsoft_Bluetooth_AvrcpTransport", "RFCOMM" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => bluetoothState == true),
+                ("Updating lists.ini", async () => await File.WriteAllLinesAsync(list, [.. (await File.ReadAllLinesAsync(list)).Select(line => new[] { "msisadrv" }.Contains(line.Trim().TrimStart('#', ' ')) ? "# " + line.TrimStart('#') : line)]), () => laptopState == true),
+
+                // build service list
+                ("Building service list", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $@"-U:T -P:E -Wait -ShowWindowMode:Hide ""{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Service-list-builder", "service-list-builder.exe")}"" --config ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "lists.ini")}"" --disable-service-warning --output-dir ""{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")}""", CreateNoWindow = true }).WaitForExitAsync(), null),
+
+                // disable services & drivers
+                ("Disabling Services & Drivers", async () => await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", Directory.GetDirectories(Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build")).OrderByDescending(d => Directory.GetLastWriteTime(d)).FirstOrDefault()?.Split('\\').Last(), "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync(), () => servicesState == false),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
