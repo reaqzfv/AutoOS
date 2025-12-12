@@ -552,19 +552,6 @@ public sealed partial class SecurityPage : Page
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management", "FeatureSettingsOverrideMask", 3, RegistryValueKind.DWord);
             Registry.SetValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management", "FeatureSettingsOverride", 3, RegistryValueKind.DWord);
 
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management"" /v ""MoveImages"" /t REG_DWORD /d 0 /f", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide reg add """"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"""" /v """"DisableExceptionChainValidation"""" /t REG_DWORD /d 1 /f""", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v ""DisableControlFlowGuardXfg"" /t REG_DWORD /d 1 /f", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v ""DisableControlFlowGuardExportSuppression"" /t REG_DWORD /d 1 /f", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\SCMConfig"" /v ""EnableSvchostMitigationsPolicy"" /t REG_DWORD /d 0 /f", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide ", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide ", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide ", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide ", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide ", CreateNoWindow = true }).WaitForExitAsync();
-            await Process.Start(new ProcessStartInfo("powershell.exe", $"-Command \"ForEach($v in (Get-Command -Name 'Set-ProcessMitigation').Parameters['Disable'].Attributes.ValidValues){{Set-ProcessMitigation -System -Disable $v.ToString().Replace(' ', '').Replace('`n', '') -ErrorAction SilentlyContinue}}\"") { CreateNoWindow = true, UseShellExecute = false })!.WaitForExitAsync();
-
-
             // rename to disable microcode updates
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide cmd /c ren C:\Windows\System32\mcupdate_GenuineIntel.dll mcupdate_GenuineIntel.dlll", CreateNoWindow = true }).WaitForExitAsync();
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = @"-U:T -P:E -Wait -ShowWindowMode:Hide cmd /c ren C:\Windows\System32\mcupdate_AuthenticAMD.dll mcupdate_AuthenticAMD.dlll", CreateNoWindow = true }).WaitForExitAsync();
@@ -692,4 +679,3 @@ public sealed partial class SecurityPage : Page
         }
     }
 }
-
