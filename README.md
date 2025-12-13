@@ -36,7 +36,11 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 
 **Step 1:** Before installing, please join my [Discord Server](https://discord.gg/bZU4dMMWpg) to receive installation support and stay informed about future updates or changes.
 
-**Step 2:** Download the latest Windows 23H2 ISO from [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are currently not supported.
+**Step 2:** Download the latest Windows 23H2 ISO from [here](https://nightly.link/tinodin/uup-dump-get-windows-iso/workflows/23H2/main/23H2.zip). Other ISOs are currently not supported. 
+
+If your download speed is slower than usual, use 1VPN and set it to USA West. Then restart the download:
+- [1VPN for Chromium Based Browsers](https://chromewebstore.google.com/detail/free-vpn-proxy-1vpn/akcocjjpkmlniicdeemdceeajlmoabhg) 
+- [1VPN for Firefox Based Browsers](https://addons.mozilla.org/en-US/firefox/addon/1vpn/)
 
 **Step 3:** Extract the downloaded zip file.
 
