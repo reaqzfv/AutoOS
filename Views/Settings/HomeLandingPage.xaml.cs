@@ -117,6 +117,23 @@ namespace AutoOS.Views.Settings
             bool wifiState = false;
             bool bluetoothState = false;
             bool laptopState = false;
+            bool NVIDIA = false;
+
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController"))
+            {
+                foreach (var obj in searcher.Get())
+                {
+                    string name = obj["Name"]?.ToString();
+                    string version = obj["DriverVersion"]?.ToString();
+                    if (name != null)
+                    {
+                        if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase))
+                        {
+                            NVIDIA = true;
+                        }
+                    }
+                }
+            }
 
             string previousTitle = string.Empty;
 
@@ -192,6 +209,9 @@ namespace AutoOS.Views.Settings
                 ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Winmgmt 0"), null),
                 ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failure Wcmsvc reset=0 actions=//"), null),
                 ("Disabling failure actions", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"sc failureflag Wcmsvc 0"), null),
+
+                // import the optimized nvidia profile
+                ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA == true),
 
                 // save services state
                 ("Saving Services & Drivers state ", async () => await Task.Run(() => servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1), null),

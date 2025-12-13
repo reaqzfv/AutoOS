@@ -31,13 +31,13 @@ public static partial class GamesStage
 
         string fortnitePath = string.Empty;
 
-        string iniPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini");
-        InIHelper iniHelper = new InIHelper(iniPath);
+        string iniPath = Path.Combine(Path.GetTempPath(), "GameUserSettings.ini");
+        File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "GameUserSettings.ini"), iniPath);
+        InIHelper iniHelper = new(iniPath);
 
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // setting fortnite frame rate
-            ("Setting Fortnite Frame Rate", async () => await ProcessActions.RunNsudo("CurrentUser", $@"cmd /c takeown /f ""{iniPath}"" & icacls ""{iniPath}"" /grant Everyone:F /T /C /Q"), () => Fortnite == true),
             ("Setting Fortnite Frame Rate", async () => iniHelper.AddValue("FrameRateLimit", $"{GetDeviceCaps(GetDC(IntPtr.Zero), 116)}.000000", "/Script/FortniteGame.FortGameUserSettings"), () => Fortnite == true),
             ("Setting Fortnite Frame Rate", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
             
