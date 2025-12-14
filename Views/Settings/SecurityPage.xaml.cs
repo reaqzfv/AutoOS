@@ -205,6 +205,8 @@ public sealed partial class SecurityPage : Page
         using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true))
         {
             key.SetValue("EnableLUA", UAC.IsOn ? 1 : 0, RegistryValueKind.DWord);
+            key.SetValue("PromptOnSecureDesktop", UAC.IsOn ? 1 : 0, RegistryValueKind.DWord);
+            key.SetValue("ConsentPromptBehaviorAdmin", UAC.IsOn ? 5 : 0, RegistryValueKind.DWord);
         }
 
         // delay

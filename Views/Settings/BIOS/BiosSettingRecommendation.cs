@@ -762,8 +762,8 @@ public static class BiosSettingRecommendationsList
         new BiosSettingRecommendation { SetupQuestion = "I2C 5 Enable", Type = "Option", RecommendedOption = "Disabled" },
         //new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 0 Enable", Type = "Option", RecommendedOption = "Both Disabled" }, // cause no boot for some people (gigabyte)
         //new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 1 Enable", Type = "Option", RecommendedOption = "Both Disabled" }, // cause no boot for some people (gigabyte)
-        //new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 2 Enable", Type = "Option", RecommendedOption = "Both Disabled" }, // cause no boot for some people (gigabyte)
-        //new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 3 Enable", Type = "Option", RecommendedOption = "Both Disabled" }, // cause no boot for some people (gigabyte)
+        new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 2 Enable", Type = "Option", RecommendedOption = "Both Disabled" },
+        new BiosSettingRecommendation { SetupQuestion = "I3C/I2C 3 Enable", Type = "Option", RecommendedOption = "Both Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "IBUF_LPWR_MODE", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "IOMMU", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
         new BiosSettingRecommendation { SetupQuestion = "Indirect Branch Prediction Speculation", Type = "Option", RecommendedOption = "Enabled" }, // required for faceit
