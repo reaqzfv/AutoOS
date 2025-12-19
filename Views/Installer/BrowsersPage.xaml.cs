@@ -35,6 +35,7 @@ public sealed partial class BrowsersPage : Page
         Browsers.ItemsSource = new List<GridViewItem>
         {
             new() { Text = "Chrome", ImageSource = "ms-appx:///Assets/Fluent/Chrome.png" },
+            new() { Text = "Thorium", ImageSource = "ms-appx:///Assets/Fluent/Thorium.png" },
             new() { Text = "Brave", ImageSource = "ms-appx:///Assets/Fluent/Brave.png" },
             new() { Text = "Vivaldi", ImageSource = "ms-appx:///Assets/Fluent/Vivaldi.png" },
             new() { Text = "Arc", ImageSource = "ms-appx:///Assets/Fluent/Arc.png" },

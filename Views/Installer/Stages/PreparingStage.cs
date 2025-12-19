@@ -52,6 +52,7 @@ public static class PreparingStage
     public static bool? CRU;
 
     public static bool? Chrome;
+    public static bool? Thorium;
     public static bool? Brave;
     public static bool? Vivaldi;
     public static bool? Arc;
@@ -170,6 +171,7 @@ public static class PreparingStage
             CRU = (localSettings.Values["CruProfile"] != null);
 
             Chrome = (localSettings.Values["Browsers"]?.ToString().Contains("Chrome") ?? false);
+            Thorium = (localSettings.Values["Browsers"]?.ToString().Contains("Thorium") ?? false);
             Brave = (localSettings.Values["Browsers"]?.ToString().Contains("Brave") ?? false);
             Vivaldi = (localSettings.Values["Browsers"]?.ToString().Contains("Vivaldi") ?? false);
             Arc = (localSettings.Values["Browsers"]?.ToString().Contains("Arc") ?? false);

@@ -13,6 +13,7 @@ public static class BrowsersStage
     {
         WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
         bool? Chrome = PreparingStage.Chrome;
+        bool? Thorium = PreparingStage.Thorium;
         bool? Brave = PreparingStage.Brave;
         bool? Vivaldi = PreparingStage.Vivaldi;
         bool? Arc = PreparingStage.Arc;
@@ -38,7 +39,7 @@ public static class BrowsersStage
 
         string chromeVersion = "";
         string chromeVersion2 = "";
-
+        string thoriumVersion = "";
         string braveVersion = "";
         string vivaldiVersion = "";
         string arcVersion = "";
@@ -53,7 +54,7 @@ public static class BrowsersStage
             ("Downloading Google Chrome", async () => await ProcessActions.RunDownload("http://dl.google.com/chrome/install/375.126/chrome_installer.exe", Path.GetTempPath(), "ChromeSetup.exe"), () => Chrome == true),
 
             // install google chrome
-            ("Installing Google Chrome", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\ChromeSetup.exe"" /silent /install"), () => Chrome == true),
+            ("Installing Google Chrome", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\ChromeSetup.exe"" --silent --install --system-level --do-not-launch-chrome"), () => Chrome == true),
             ("Installing Google Chrome", async () => chromeVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"%TEMP%\ChromeSetup.exe")).ProductVersion), () => Chrome == true),
             ("Installing Google Chrome", async () => chromeVersion2 = await Task.Run(() => FileVersionInfo.GetVersionInfo(@"C:\Program Files\Google\Chrome\Application\chrome.exe").ProductVersion), () => Chrome == true),
 
@@ -110,6 +111,63 @@ public static class BrowsersStage
             ("Disabling Google Chrome services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{8A69D345-D564-463c-AFF1-A69D9E530F96}"" /v ""IsInstalled"" /t REG_DWORD /d 1 /f"), () => Chrome == true),
             ("Disabling Google Chrome services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{8A69D345-D564-463c-AFF1-A69D9E530F96}"" /f"), () => Chrome == true),
             ("Disabling Google Chrome services", async () => await ProcessActions.RunPowerShell(@"Get-ScheduledTask | Where-Object {$_.TaskName -like 'GoogleUpdaterTaskSystem*'} | Disable-ScheduledTask"), () => Chrome == true),
+
+            // download thorium
+            ("Downloading Thorium", async () => await ProcessActions.RunDownload("https://github.com/Alex313031/Thorium-Win/releases/download/M130.0.6723.174/thorium_SSE4_mini_installer.exe", Path.GetTempPath(), "ThoriumSetup.exe"), () => Thorium == true),
+
+            // install thorium
+            ("Installing Thorium", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\ThoriumSetup.exe"" --silent --install --system-level --do-not-launch-chrome"), () => Thorium == true),
+            ("Installing Thorium", async () => thoriumVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(@"C:\Program Files\Thorium\Application\thorium.exe").ProductVersion), () => Thorium == true),
+
+            // disable thorium services
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}"" /v """" /t REG_SZ /d ""Thorium"" /f"), () => Thorium == true),
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}"" /v ""Localized Name"" /t REG_SZ /d ""Thorium"" /f"), () => Chrome == true),
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}}"" /v ""StubPath"" /t REG_SZ /d ""\""C:\\Program Files\\Thorium\\Application\\{thoriumVersion}\\Installer\\chrmstp.exe\"" --configure-user-settings --verbose-logging --system-level /f"), () => Thorium == true),
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}"" /v ""Version"" /t REG_SZ /d ""43,0,0,0"" /f"), () => Thorium == true),
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\AutorunsDisabled\{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}"" /v ""IsInstalled"" /t REG_DWORD /d 1 /f"), () => Thorium == true),
+            ("Disabling Thorium services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Active Setup\Installed Components\{7D2B3E1D-D096-4594-9D8F-A6667F12E0AC}"" /f"), () => Thorium == true),
+
+            // pin thorium to the taskbar
+            ("Pinning Thorium to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type Link -Path ""C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Thorium.lnk"""), () => Thorium == true),
+
+            // install ublock origin extension
+            ("Installing uBlock Origin Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'cjpalhdlnbpafiamejdnhcphjbkeiagm' /f"), () => Thorium == true && uBlock == true),
+
+            // install sponsorblock extension
+            ("Installing SponsorBlock Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'mnjggcdmjocbbbhaepdhchncahnbgone' /f"), () => Thorium == true && SponsorBlock == true),
+
+            // install return youtube dislike extension
+            ("Installing ReturnYouTubeDislike Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'gebbhagfogifgggkldgodflihgfeippi' /f"), () => Thorium == true && ReturnYouTubeDislike == true),
+
+            // install i still dont care about cookies extension
+            ("Installing I still don't care about cookies Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'edibdbjcniadpccecjdfdjjppcpchdlm' /f"), () => Thorium == true && Cookies == true),
+
+            // install dark reader extension
+            ("Installing Dark Reader Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'eimadpbcbfnmbkopoojfekhnkhdbieeh' /f"), () => Thorium == true && DarkReader == true),
+            
+            // install violentmonkey extension
+            ("Installing Violentmonkey Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'jinjaccalgkegednnccohejagnlnfdag' /f"), () => Thorium == true && Violentmonkey == true),
+
+            // install tampermonkey extension
+            ("Installing Tampermonkey Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'dhdgffkkebhmkfjojejmpbldmpobfkfo' /f"), () => Thorium == true && Tampermonkey == true),
+
+            // install shazam extension
+            ("Installing Shazam Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'mmioliijnhnoblpgimnlajmefafdfilb' /f"), () => Thorium == true && Shazam == true),
+
+            // install icloud passwords extension
+            ("Installing iCloud Passwords Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'pejdijmoenmkgeppbflobdenhhabjlaj' /f"), () => Thorium == true && iCloud == true),
+
+            // install bitwarden extension
+            ("Installing Bitwarden Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'nngceckbapebfimnlniiiahkandclblb' /f"), () => Thorium == true && Bitwarden == true),
+
+            // install 1password extension
+            ("Installing 1Password Extension", async () => await ProcessActions.RunPowerShell(@"$BaseKey = 'HKLM:\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist'; $Index = (Get-Item $BaseKey).Property | Sort-Object {[int]$_} | Select-Object -Last 1; $NewIndex = [int]$Index + 1; reg add 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Chromium\ExtensionInstallForcelist' /v $NewIndex /t REG_SZ /d 'aeblfdkhhhdcdjpifhhbdiojplfjncoa' /f"), () => Thorium == true && OnePassword == true),
+
+            // log in to thorium
+            ("Please log in to your Thorium account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\Thorium\Application", "thorium.exe"), WindowStyle = ProcessWindowStyle.Maximized })!.WaitForExitAsync()), () => Thorium == true),
+
+            // remove thorium shortcut from the desktop
+            ("Removing Thorium shortcut from the desktop", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Thorium.lnk"""), () => Thorium == true),
 
             // download brave
             ("Downloading Brave", async () => await ProcessActions.RunDownload("https://github.com/brave/brave-browser/releases/latest/download/BraveBrowserStandaloneSetup.exe", Path.GetTempPath(), "BraveBrowserStandaloneSetup.exe"), () => Brave == true),
