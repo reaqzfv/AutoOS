@@ -57,11 +57,15 @@ Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
 irm https://raw.githubusercontent.com/tinodin/AutoOS/master/deploy.ps1 | iex
 ```
 
+If you get any errors during the script, its most likely because your current operating system has disabled services that are required. Make sure to you use a default installation of windows to run the script.
+
 **Step 7:** Once the script finished, restart your computer and boot into the default option. Make sure to `keep your ethernet cable connected` or `connect to your WiFi in the setup`. Then wait for Windows to finish installing.
 
 **Step 8:** Once finished, wait for AutoOS to open up (On slower systems this may take a minute).
 
-**Step 9:** Select your settings and click "Install AutoOS".
+**Step 9:** Select your settings and click "Install AutoOS". This process will take around 30 minutes.
+
+If you want to delete your old Windows partition and merge the unallocated space with the AutoOS partition, use [Minitool Partition Wizard Free](https://cdn2.minitool.com/?p=pw&e=pw-free) (decline each offer in the installer). Then use the `Delete` function on the old Windows partition and the `Extend` function on the AutoOS partition and max out the slider. Click appy and restart. Make sure to delete `Minitool Partition Wizard Free` again after you are done.
 
 ## 📷Screenshots
 ### Installer
@@ -209,7 +213,12 @@ Without your guide this project wouldn't exist. It inspired me to attempt to aut
 ---
 
 **Revi Team:**  
-Thank you for [SVCGROUP.ps1](https://github.com/meetrevision/playbook/blob/main/src/Executables/SVCGROUP.ps1), [useful registry keys](https://github.com/meetrevision/playbook/tree/main/src/Configuration/Tasks/registry) and for first introducing me to custom ISOs.
+Thank you for [SVCGROUP.ps1](https://github.com/meetrevision/playbook/blob/main/src/Executables/SVCGROUP.ps1) and for first introducing me to custom ISOs.
+
+---
+
+**Peter:**  
+Thank you for helping me with some BIOS Settings and NVIDIA tweaks.
 
 ---
 
