@@ -293,7 +293,8 @@ public partial class HeaderCarousel : ItemsControl
 
     private void HeaderCarousel_Loaded(object sender, RoutedEventArgs e)
     {
-        selectionTimer.Tick += SelectionTimer_Tick;
+        if (IsAutoScrollEnabled)
+            selectionTimer.Tick += SelectionTimer_Tick;
 
         ElementSoundPlayer.State = ElementSoundPlayerState.On;
     }

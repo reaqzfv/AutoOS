@@ -15,7 +15,7 @@
         <local:HeaderCarousel x:Name="games"
                               Grid.Row="1"
                               ImageStretch="Fill"
-                              IsAutoScrollEnabled="True"
+                              IsAutoScrollEnabled="False"
                               IsBlurEnabled="False" />
     </Grid>
 </Page>
