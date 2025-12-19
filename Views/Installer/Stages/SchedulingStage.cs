@@ -25,6 +25,9 @@ public static class SchedulingStage
             ("Optimizing Affinities", async () => await ProcessActions.Sleep(1000), null),
             ("Optimizing Affinities", async () => await AutoAffinityService.ApplyAutoAffinities(), null),
             ("Optimizing Affinities", async () => await ProcessActions.Sleep(2000), null),
+
+            // disable interrupt steering
+            ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), null),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
