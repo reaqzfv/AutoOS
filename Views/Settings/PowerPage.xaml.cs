@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Win32;
+using System.Diagnostics;
 using System.Management;
 
 namespace AutoOS.Views.Settings;
@@ -14,31 +15,13 @@ public sealed partial class PowerPage : Page
 
     public async void GetIdleState()
     {
-        // hide toggle switch
-        IdleStates.Visibility = Visibility.Collapsed;
+        // get active scheme
+        string activeScheme = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes", "ActivePowerScheme", "").ToString();
 
         // get idle state
-        var idleEnabled = await Task.Run(() =>
-        {
-            var searcher = new ManagementObjectSearcher("SELECT PercentIdleTime FROM Win32_PerfFormattedData_PerfOS_Processor WHERE Name='_Total'");
-            foreach (ManagementObject obj in searcher.Get().Cast<ManagementObject>())
-            {
-                if (obj["PercentIdleTime"] != null && Convert.ToInt32(obj["PercentIdleTime"]) > 0)
-                    return true;
-            }
+        int value = (int?)Registry.GetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Power\User\PowerSchemes\{activeScheme}\54533251-82be-4824-96c1-47b60b740d00\5d76a2ca-e8c0-402f-a133-2158492d58ad", "ACSettingIndex", 0) ?? 0;
 
-            return false;
-        });
-
-        // hide progress ring
-        IdleStatesProgress.Visibility = Visibility.Collapsed;
-
-        // show toggle
-        IdleStates.Visibility = Visibility.Visible;
-
-        // toggle idle state
-        IdleStates.IsOn = idleEnabled;
-        IdleStates.IsEnabled = true;
+        IdleStates.IsOn = value == 0;
         isInitializingIdleStatesState = false;
     }
 
@@ -74,7 +57,6 @@ public sealed partial class PowerPage : Page
             process.WaitForExit();
         }
 
-
         // remove infobar
         PowerInfo.Children.Clear();
 
@@ -95,4 +77,3 @@ public sealed partial class PowerPage : Page
         PowerInfo.Children.Clear();
     }
 }
-

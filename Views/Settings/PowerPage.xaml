@@ -30,16 +30,8 @@
                         <dev:SettingsCard Description="Disabling leads to a lower latency at the expense of higher temperatures and power consumption. Do not disable if you already have high temperatures or have Hyper-Threading enabled on Intel."
                                           Header="Idle States"
                                           IsClickEnabled="False">
-                            <StackPanel Orientation="Horizontal">
-                                <ToggleSwitch x:Name="IdleStates"
-                                              Toggled="IdleStates_Toggled" />
-                                <ProgressRing x:Name="IdleStatesProgress"
-                                              Width="25"
-                                              Height="25"
-                                              Margin="10,0,0,0"
-                                              Background="Transparent"
-                                              IsActive="True" />
-                            </StackPanel>
+                            <ToggleSwitch x:Name="IdleStates"
+                                          Toggled="IdleStates_Toggled" />
                         </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
