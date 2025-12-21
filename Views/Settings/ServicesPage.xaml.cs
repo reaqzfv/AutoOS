@@ -53,12 +53,11 @@ public sealed partial class ServicesPage : Page
 
             var infoBar = new InfoBar
             {
-                Title = Services.IsOn ? "Successfully enabled Services & Drivers. A restart is required to apply the change."
-                                      : "Successfully disabled Services & Drivers. A restart is required to apply the change.",
+                Title = Services.IsOn ? "Successfully enabled Services & Drivers. A restart is required to apply the change." : "Successfully disabled Services & Drivers. A restart is required to apply the change.",
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -86,7 +85,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         string buildPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build");
@@ -121,7 +120,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         };
         ServiceInfo.Children.Add(infoBar);
 
@@ -177,7 +176,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -255,7 +254,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -279,7 +278,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -317,7 +316,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -393,7 +392,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -417,7 +416,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -453,7 +452,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -526,7 +525,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -550,7 +549,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -586,7 +585,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -659,7 +658,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -683,7 +682,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -729,7 +728,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -802,7 +801,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -826,7 +825,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -862,7 +861,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -933,7 +932,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -957,7 +956,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay
@@ -1011,7 +1010,7 @@ public sealed partial class ServicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // read list
@@ -1084,7 +1083,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5),
+                Margin = new Thickness(4, -28, 4, 36),
                 ActionButton = new Button
                 {
                     Content = "Restart",
@@ -1108,7 +1107,7 @@ public sealed partial class ServicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Success,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
 
             // delay

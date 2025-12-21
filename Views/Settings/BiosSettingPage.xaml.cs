@@ -163,7 +163,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
                 RecommendedChanges.Visibility = Visibility.Visible;
                 RecommendedChanges.IsExpanded = true;
                 AllSettings.IsExpanded = false;
-                Import.ClearValue(IsEnabledProperty);
+                AllSettingsGrid.MaxHeight = 495;
 
                 // backup nvram.txt
                 string backupRoot = Path.Combine(PathHelper.GetAppDataFolderPath(), "SCEWIN", "Backup");
@@ -335,6 +335,7 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
             biosSettings.Clear();
             RecommendedChanges.Visibility = string.IsNullOrEmpty(query) ? Visibility.Visible : Visibility.Collapsed;
             AllSettings.IsExpanded = !string.IsNullOrEmpty(query);
+            AllSettingsGrid.MaxHeight = string.IsNullOrEmpty(query) ? 495 : 555;
 
             foreach (var setting in allSettings)
             {
@@ -481,8 +482,8 @@ public sealed partial class BiosSettingPage : Page, INotifyPropertyChanged
     {
         // show importing
         SwitchPresenter.Value = "Import";
-        Import.IsEnabled = false;
         Search.Text = string.Empty;
+        IsAnyModified = false;
 
         // import nvram
         using var process = new Process

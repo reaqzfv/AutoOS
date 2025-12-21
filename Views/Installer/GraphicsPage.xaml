@@ -22,9 +22,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
-                <dev:SettingsGroup Header="Manufacturer">
+                        dev:PanelAttach.ChildrenTransitions="Default">
+                <dev:SettingsGroup Margin="0,0,0,12"
+                                   Header="Manufacturer">
                     <dev:SettingsGroup.Content>
                         <GridView x:Name="Brands"
                                   Margin="0,0,0,-12"
@@ -75,7 +75,7 @@
                         </dev:SettingsCard>-->
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <dev:SettingsGroup Margin="0,8,0,0"
+                <dev:SettingsGroup Margin="0,0,0,12"
                                    Description="Import your MSI Afterburner profile here."
                                    Header="MSI Afterburner"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/MsiAfterburner.png}">

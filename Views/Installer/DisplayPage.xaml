@@ -21,9 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
-                <dev:SettingsGroup Description="Import your Custom Resolution Utility (CRU) profile here."
+                        dev:PanelAttach.ChildrenTransitions="Default">
+                <dev:SettingsGroup Margin="0,0,0,36"
+                                   Description="Import your Custom Resolution Utility (CRU) profile here."
                                    Header="Custom Resolution Utility (CRU)"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/CRU.png}">
                     <dev:SettingsGroup.Content>
@@ -34,8 +34,6 @@
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="CruInfo" />
-                <Border Height="25"
-                        Background="Transparent" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -18,7 +18,7 @@
             <!--  Title  -->
             <TextBlock Style="{StaticResource TitleTextBlockStyle}"
                        Text="BIOS Settings" />
-            <Grid Margin="0,48,0,24"
+            <Grid Margin="0,48,0,12"
                   HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -51,8 +51,7 @@
                         </StackPanel>
                     </Button>
                     <!--  Import  -->
-                    <Button x:Name="Import"
-                            Click="Import_Click"
+                    <Button Click="Import_Click"
                             IsEnabled="{x:Bind IsAnyModified, Mode=OneWay}">
                         <StackPanel VerticalAlignment="Center"
                                     Orientation="Horizontal">
@@ -361,6 +360,7 @@
                         <!--  Recommended Changes  -->
                         <Expander x:Name="RecommendedChanges"
                                   Grid.Row="1"
+                                  Margin="0,0,0,12"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   IsEnabled="{x:Bind HasRecommendations, Mode=OneWay}"
@@ -399,7 +399,7 @@
                                 </Grid>
                             </Expander.Header>
                             <!--  ListView  -->
-                            <Grid MaxHeight="485">
+                            <Grid MaxHeight="495">
                                 <ListView x:Name="RecommendedChangesListView"
                                           HorizontalContentAlignment="Stretch"
                                           ItemsSource="{x:Bind recommendedSettings}"
@@ -474,7 +474,7 @@
                         <!--  All Settings  -->
                         <Expander x:Name="AllSettings"
                                   Grid.Row="2"
-                                  Margin="0,12,0,36"
+                                  Margin="0,0,0,36"
                                   HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
                                   IsExpanded="False">
@@ -498,7 +498,8 @@
                                 </Grid>
                             </Expander.Header>
                             <!--  ListView  -->
-                            <Grid MaxHeight="485">
+                            <Grid x:Name="AllSettingsGrid"
+                                  MaxHeight="495">
                                 <ListView x:Name="SettingsListView"
                                           HorizontalContentAlignment="Stretch"
                                           ItemsSource="{x:Bind biosSettings}"

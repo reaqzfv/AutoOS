@@ -43,7 +43,7 @@ public sealed partial class UpdatePage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // toggle registry value
@@ -94,7 +94,7 @@ public sealed partial class UpdatePage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         };
         WindowsUpdateInfo.Children.Add(infoBar);
 

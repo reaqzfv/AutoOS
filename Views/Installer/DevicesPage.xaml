@@ -21,10 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <dev:SettingsGroup x:Name="Bluetooth_SettingsGroup"
-                                   Margin="0,0,0,10"
+                                   Margin="0,0,0,12"
                                    Description="Toggle Services &amp; Drivers required for Bluetooth functionality."
                                    Header="Bluetooth"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Bluetooth.png}">
@@ -33,7 +32,7 @@
                                       Toggled="Bluetooth_Toggled" />
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
-                <dev:SettingsGroup Margin="0,0,0,10"
+                <dev:SettingsGroup Margin="0,0,0,36"
                                    Description="Toggle detection and interrupt moderation of devices."
                                    Header="Devices"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Devices.png}">
@@ -50,8 +49,6 @@
                         </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <Border Height="25"
-                        Background="Transparent" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

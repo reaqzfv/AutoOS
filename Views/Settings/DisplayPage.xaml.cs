@@ -28,7 +28,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay
@@ -63,7 +63,7 @@ public sealed partial class DisplayPage : Page
                     IsClosable = false,
                     IsOpen = true,
                     Severity = InfoBarSeverity.Informational,
-                    Margin = new Thickness(5)
+                    Margin = new Thickness(4, -28, 4, 36)
                 });
 
                 // close obs studio
@@ -108,7 +108,7 @@ public sealed partial class DisplayPage : Page
                     IsClosable = false,
                     IsOpen = true,
                     Severity = InfoBarSeverity.Success,
-                    Margin = new Thickness(5)
+                    Margin = new Thickness(4, -28, 4, 36)
                 });
 
                 // delay
@@ -132,7 +132,7 @@ public sealed partial class DisplayPage : Page
                     IsClosable = false,
                     IsOpen = true,
                     Severity = InfoBarSeverity.Error,
-                    Margin = new Thickness(5)
+                    Margin = new Thickness(4, -28, 4, 36)
                 });
 
                 // delay
@@ -164,7 +164,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay
@@ -183,7 +183,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay
@@ -205,7 +205,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // close obs studio
@@ -250,7 +250,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay
@@ -272,7 +272,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // close obs studio
@@ -314,7 +314,7 @@ public sealed partial class DisplayPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay

@@ -748,7 +748,7 @@
                                             </ComboBox>
                                         </StackPanel>
                                     </dev:Card>
-                                    <Border Height="32"
+                                    <Border Height="28"
                                             Background="Transparent" />
                                 </StackPanel>
                             </ScrollViewer>

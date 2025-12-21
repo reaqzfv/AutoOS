@@ -21,9 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
-                <dev:SettingsGroup Description="Add custom resolutions, remove unwanted resolutions, edit FreeSync ranges, and more."
+                        dev:PanelAttach.ChildrenTransitions="Default">
+                <dev:SettingsGroup Margin="0,0,0,36"
+                                   Description="Add custom resolutions, remove unwanted resolutions, edit FreeSync ranges, and more."
                                    Header="Custom Resolution Utility (CRU)"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/CRU.png}">
                     <dev:SettingsGroup.Content>

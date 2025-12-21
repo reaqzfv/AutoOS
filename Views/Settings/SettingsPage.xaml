@@ -21,8 +21,7 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <dev:SimpleSettingsGroup Margin="0,-48,0,0"
                                          Header="Appearance &amp; behavior">
                     <dev:SettingsCard Description="Select the theme that suits your mood and preference. You can choose from dark, light, or system themes."
@@ -133,4 +132,3 @@
         </ScrollViewer>
     </Grid>
 </Page>
-

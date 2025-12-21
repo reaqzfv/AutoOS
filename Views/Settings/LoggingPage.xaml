@@ -21,9 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
-                <dev:SettingsGroup Description="Disabling Event Trace Sessions breaks logging apps e.g. Event Viewer and xperf."
+                        dev:PanelAttach.ChildrenTransitions="Default">
+                <dev:SettingsGroup Margin="0,0,0,36"
+                                   Description="Disabling Event Trace Sessions breaks logging apps e.g. Event Viewer and xperf."
                                    Header="Event Trace Sessions (ETS)"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/EventTraceSessions.png}">
                     <dev:SettingsGroup.Content>

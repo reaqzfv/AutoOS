@@ -21,9 +21,8 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
-                <dev:SettingsGroup Margin="0,0,0,10"
+                        dev:PanelAttach.ChildrenTransitions="Default">
+                <dev:SettingsGroup Margin="0,0,0,12"
                                    Header="Themes">
                     <dev:SettingsGroup.Content>
                         <GridView x:Name="Themes"
@@ -94,7 +93,7 @@
                         </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <dev:SettingsGroup Margin="0,0,0,10"
+                <dev:SettingsGroup Margin="0,0,0,36"
                                    Header="Taskbar">
                     <dev:SettingsGroup.Items>
                         <dev:SettingsCard x:Name="TaskbarIcon"
@@ -114,8 +113,6 @@
                         </dev:SettingsCard>
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
-                <Border Height="25"
-                        Background="Transparent" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

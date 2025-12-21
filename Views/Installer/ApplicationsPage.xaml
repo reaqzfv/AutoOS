@@ -22,9 +22,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <dev:Card Title="Office"
+                          Margin="0,0,0,12"
                           Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Office"
@@ -63,6 +63,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Music"
+                          Margin="0,0,0,12"
                           Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Music"
@@ -101,6 +102,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Messaging"
+                          Margin="0,0,0,12"
                           Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Messaging"
@@ -139,6 +141,7 @@
                     </dev:Card.Content>
                 </dev:Card>
                 <dev:Card Title="Launchers"
+                          Margin="0,0,0,36"
                           Padding="24,24,24,12">
                     <dev:Card.Content>
                         <GridView x:Name="Launchers"
@@ -176,8 +179,6 @@
                         </GridView>
                     </dev:Card.Content>
                 </dev:Card>
-                <Border Height="25"
-                        Background="Transparent" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

@@ -21,9 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <dev:SettingsGroup x:Name="Nvidia_SettingsGroup"
+                                   Margin="0,0,0,12"
                                    Header="NVIDIA Driver"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Nvidia.png}"
                                    Visibility="Collapsed">
@@ -51,6 +51,7 @@
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Amd_SettingsGroup"
+                                   Margin="0,0,0,12"
                                    Header="AMD Driver"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Amd.png}"
                                    Visibility="Collapsed">
@@ -72,6 +73,7 @@
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <dev:SettingsGroup x:Name="Intel_SettingsGroup"
+                                   Margin="0,0,0,12"
                                    Header="Intel Driver"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Intel.png}"
                                    Visibility="Collapsed">
@@ -93,7 +95,8 @@
                     </dev:SettingsGroup.Items>
                 </dev:SettingsGroup>
                 <StackPanel x:Name="GpuInfo" />
-                <dev:SettingsGroup Description="Overclock your graphics card, remove power limits, set custom fan curves, and more."
+                <dev:SettingsGroup Margin="0,0,0,12"
+                                   Description="Overclock your graphics card, remove power limits, set custom fan curves, and more."
                                    Header="MSI Afterburner"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/MsiAfterburner.png}">
                     <dev:SettingsGroup.Content>

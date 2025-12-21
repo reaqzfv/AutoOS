@@ -67,7 +67,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -4, 4, 12)
         });
 
         // declare services and drivers
@@ -81,12 +81,10 @@ public sealed partial class DevicesPage : Page
         {
             foreach (var service in group.Item1)
             {
-                using (var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true))
-                {
-                    if (key == null) continue;
-
-                    Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", Bluetooth.IsOn ? group.Item2 : 4);
-                }
+                using var key = Registry.LocalMachine.OpenSubKey($@"SYSTEM\CurrentControlSet\Services\{service}", writable: true);
+                if (key == null) continue;
+                
+                Registry.SetValue($@"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\{service}", "Start", Bluetooth.IsOn ? group.Item2 : 4);
             }
         }
 
@@ -103,7 +101,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -4, 4, 12)
         };
         BluetoothInfo.Children.Add(infoBar);
 
@@ -163,7 +161,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         localSettings.Values["HumanInterfaceDevices"] = HID.IsOn ? 1 : 0;
@@ -200,7 +198,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay
@@ -275,7 +273,7 @@ public sealed partial class DevicesPage : Page
                 IsClosable = false,
                 IsOpen = true,
                 Severity = InfoBarSeverity.Error,
-                Margin = new Thickness(5)
+                Margin = new Thickness(4, -28, 4, 36)
             });
         }
 
@@ -302,7 +300,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Informational,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // toggle imod
@@ -332,7 +330,7 @@ public sealed partial class DevicesPage : Page
             IsClosable = false,
             IsOpen = true,
             Severity = InfoBarSeverity.Success,
-            Margin = new Thickness(5)
+            Margin = new Thickness(4, -28, 4, 36)
         });
 
         // delay

@@ -21,9 +21,9 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <dev:SettingsGroup x:Name="Services_SettingsGroup"
+                                   Margin="0,0,0,36"
                                    Description="Toggle functionality needed in service disabled state and toggle between service states."
                                    Header="Service-list-builder"
                                    HeaderIcon="{dev:BitmapIcon Source=Assets/Fluent/Services.png}">
