@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.WinUI.Controls;
+﻿using AutoOS.Views.Installer.Actions;
+using AutoOS.Views.Settings.Scheduling.Services;
+using CommunityToolkit.WinUI.Controls;
 using Downloader;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
@@ -8,7 +10,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
-using AutoOS.Views.Installer.Actions;
 
 namespace AutoOS.Views.Settings
 {
@@ -109,6 +110,10 @@ namespace AutoOS.Views.Settings
 
             _ = updater.ShowAsync();
 
+            var cpuSetsInfo = CpuDetectionService.GetCpuSets();
+            var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);
+            int PCores = pCores.Count;
+
             string previousTitle = string.Empty;
 
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
@@ -170,7 +175,7 @@ namespace AutoOS.Views.Settings
                 ("Increasing delay when opening submenus", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Control Panel\Desktop"" /v MenuShowDelay /t REG_SZ /d 150 /f"), null),
 
                 // disable interrupt steering
-                ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), null),
+                ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), () => PCores >= 4),
 
                 // switch to high performance power plan
                 ("Switching to high performance power plan", async () => await ProcessActions.RunNsudo("CurrentUser", @"powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c"), null),

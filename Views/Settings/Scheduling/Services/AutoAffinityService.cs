@@ -10,7 +10,7 @@ public static class AutoAffinityService
         var cpuSetsInfo = CpuDetectionService.GetCpuSets();
         var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);
 
-        if (pCores.Count == 0)
+        if (pCores.Count <= 2)
             return;
 
         bool hasHyperThreading = cpuSetsInfo.HyperThreading;
@@ -18,30 +18,6 @@ public static class AutoAffinityService
 
         var allChangedDevices = new List<(DeviceInfo device, DeviceType deviceType)>();
         var allDevices = new List<DeviceInfo>();
-
-        if (pCores.Count >= 1)
-        {
-            var nicDevices = DeviceDetectionService.FindDevicesByType(DeviceType.NIC);
-            if (nicDevices.Count > 0)
-            {
-                allDevices.AddRange(nicDevices);
-                var nicMask = BuildAffinityMask(pCores, pCores.Count - 1, 1, threadsPerCore);
-                var nicResult = ApplyAffinityOnly(nicDevices, nicMask, DeviceType.NIC);
-                allChangedDevices.AddRange(nicResult.ChangedDevices.Select(d => (d, DeviceType.NIC)));
-            }
-        }
-
-        if (pCores.Count >= 2)
-        {
-            var xhciDevices = DeviceDetectionService.FindDevicesByType(DeviceType.XHCI);
-            if (xhciDevices.Count > 0)
-            {
-                allDevices.AddRange(xhciDevices);
-                var xhciMask = BuildAffinityMask(pCores, pCores.Count - 2, 1, threadsPerCore);
-                var xhciResult = ApplyAffinityOnly(xhciDevices, xhciMask, DeviceType.XHCI);
-                allChangedDevices.AddRange(xhciResult.ChangedDevices.Select(d => (d, DeviceType.XHCI)));
-            }
-        }
 
         if (pCores.Count >= 4)
         {
@@ -158,4 +134,3 @@ public static class AutoAffinityService
         });
     }
 }
-

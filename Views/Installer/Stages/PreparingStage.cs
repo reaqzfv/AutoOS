@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using AutoOS.Views.Settings.Scheduling.Services;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Management;
@@ -100,8 +101,7 @@ public static class PreparingStage
     public static bool? SteamGames;
     public static bool? RiotClient;
 
-    public static bool? Scheduling;
-    public static bool? Reserve;
+    public static int? PCores;
 
     private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
@@ -217,7 +217,9 @@ public static class PreparingStage
             Steam = (localSettings.Values["Launchers"]?.ToString().Contains("Steam") ?? false);
             RiotClient = (localSettings.Values["Launchers"]?.ToString().Contains("Riot Client") ?? false);
 
-            Scheduling = (localSettings.Values["Affinities"]?.ToString() == "Automatic");
+            var cpuSetsInfo = CpuDetectionService.GetCpuSets();
+            var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);
+            PCores = pCores.Count;
 
             EpicGamesAccount = DriveInfo.GetDrives()
                 .Where(d => d.DriveType == DriveType.Fixed && d.Name != @"C:\")
@@ -296,11 +298,6 @@ public static class PreparingStage
                     }
                 }
             }
-
-            Reserve = new ManagementObjectSearcher("SELECT NumberOfCores FROM Win32_Processor")
-                .Get()
-                .Cast<ManagementObject>()
-                .Sum(m => Convert.ToInt32(m["NumberOfCores"])) >= 6;
         });
 
         InstallPage.Info.Severity = InfoBarSeverity.Informational;

@@ -11,8 +11,7 @@ public static class SchedulingStage
     public static async Task Run()
     {
         WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
-        bool? Scheduling = PreparingStage.Scheduling;
-        bool? Reserve = PreparingStage.Reserve;
+        int? PCores = PreparingStage.PCores;
 
         InstallPage.Status.Text = "Configuring Affinities...";
 
@@ -22,12 +21,12 @@ public static class SchedulingStage
         var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
         {
             // optimize affinities
-            ("Optimizing Affinities", async () => await ProcessActions.Sleep(1000), null),
-            ("Optimizing Affinities", async () => await AutoAffinityService.ApplyAutoAffinities(), null),
-            ("Optimizing Affinities", async () => await ProcessActions.Sleep(2000), null),
+            ("Optimizing Affinities", async () => await ProcessActions.Sleep(1000), () => PCores >= 4),
+            ("Optimizing Affinities", async () => await AutoAffinityService.ApplyAutoAffinities(), () => PCores >= 4),
+            ("Optimizing Affinities", async () => await ProcessActions.Sleep(2000), () => PCores >= 4),
 
             // disable interrupt steering
-            ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), null),
+            ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), () => PCores >= 4),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -129,6 +128,11 @@ public static class SchedulingStage
             }
 
             InstallPage.Progress.Value += incrementPerTitle;
+            TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
+        }
+        if (filteredActions.Count == 0)
+        {
+            InstallPage.Progress.Value += stagePercentage;
             TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
         }
     }

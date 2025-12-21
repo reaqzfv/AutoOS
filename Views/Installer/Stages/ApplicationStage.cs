@@ -618,5 +618,10 @@ public static class ApplicationStage
             InstallPage.Progress.Value += incrementPerTitle;
             TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
         }
+        if (filteredActions.Count == 0)
+        {
+            InstallPage.Progress.Value += stagePercentage;
+            TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
+        }
     }
 }
