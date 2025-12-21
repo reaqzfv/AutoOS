@@ -206,7 +206,8 @@ namespace AutoOS.Helpers
 
             aes.Key = keyBytes;
 
-            byte[] plain = Encoding.GetEncoding("windows-1252").GetBytes(plainText);
+            byte[] plain = Encoding.UTF8.GetBytes(plainText);
+            //byte[] plain = Encoding.GetEncoding("windows-1252").GetBytes(plainText);
 
             using var ms = new MemoryStream();
             using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
