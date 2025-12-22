@@ -29,6 +29,22 @@ public static class AutoAffinityService
                 var gpuResult = ApplyAffinityOnly(gpuDevices, gpuMask, DeviceType.GPU);
                 allChangedDevices.AddRange(gpuResult.ChangedDevices.Select(d => (d, DeviceType.GPU)));
             }
+            var xhciDevices = DeviceDetectionService.FindDevicesByType(DeviceType.XHCI);
+            if (xhciDevices.Count > 0)
+            {
+                allDevices.AddRange(xhciDevices);
+                var xhciMask = BuildAffinityMask(pCores, pCores.Count - 2, 1, threadsPerCore);
+                var xhciResult = ApplyAffinityOnly(xhciDevices, xhciMask, DeviceType.XHCI);
+                allChangedDevices.AddRange(xhciResult.ChangedDevices.Select(d => (d, DeviceType.XHCI)));
+            }
+            var nicDevices = DeviceDetectionService.FindDevicesByType(DeviceType.NIC);
+            if (nicDevices.Count > 0)
+            {
+                allDevices.AddRange(nicDevices);
+                var nicMask = BuildAffinityMask(pCores, pCores.Count - 1, 1, threadsPerCore);
+                var nicResult = ApplyAffinityOnly(nicDevices, nicMask, DeviceType.NIC);
+                allChangedDevices.AddRange(nicResult.ChangedDevices.Select(d => (d, DeviceType.NIC)));
+            }
         }
 
         if (allChangedDevices.Count > 0)

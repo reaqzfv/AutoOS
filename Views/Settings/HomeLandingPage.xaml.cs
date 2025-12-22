@@ -19,14 +19,14 @@ namespace AutoOS.Views.Settings
         private static readonly HttpClient httpClient = new();
         private readonly TextBlock StatusText = new()
         {
-            Margin = new Thickness(0, 10, 0, 0),
+            Margin = new Thickness(0, 12, 0, 0),
             FontSize = 14,
             FontWeight = FontWeights.Medium
         };
 
         private readonly ProgressBar ProgressBar = new()
         {
-            Margin = new Thickness(0, 15, 0, 0)
+            Margin = new Thickness(0, 12, 0, 0)
         };
         public HomeLandingPage()
         {
@@ -81,7 +81,9 @@ namespace AutoOS.Views.Settings
                 StatusText.Text = "Update complete.";
                 ProgressBar.Foreground = new SolidColorBrush((Windows.UI.Color)Application.Current.Resources["SystemFillColorSuccess"]);
                 localSettings.Values["Version"] = currentVersion;
-                await LogDiscordUser();
+                #if !DEBUG
+                    await LogDiscordUser();
+                #endif
             }
         }
 
@@ -283,6 +285,9 @@ namespace AutoOS.Views.Settings
                 
                 // save power plan
                 ("Saving the power plan configuration", async () => await ProcessActions.RunNsudo("CurrentUser", @"powercfg /setactive scheme_current"), null),
+
+                // set "win32priorityseparation" to 24/36
+                (@"Setting ""Win32PrioritySeparation"" to 24/36", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl"" /v Win32PrioritySeparation /t REG_DWORD /d 36 /f"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

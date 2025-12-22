@@ -84,6 +84,9 @@ public sealed partial class LoggingPage : Page
     {
         if (isInitializingETSState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        ETS.IsHitTestVisible = false;
+
         // remove infobar
         EventTraceSessionsInfo.Children.Clear();
 
@@ -141,6 +144,9 @@ public sealed partial class LoggingPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        ETS.IsHitTestVisible = true;
 
         // remove infobar
         EventTraceSessionsInfo.Children.Clear();

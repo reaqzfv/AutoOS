@@ -20,6 +20,21 @@ public sealed partial class DevicesPage : Page
         GetBluetoothState();
         GetHIDState();
         GetIMODState();
+
+        // copy chiptool to localstate because of permissions
+        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Chiptool");
+        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool");
+
+        if (!Directory.Exists(destinationPath))
+        {
+            Directory.CreateDirectory(destinationPath);
+
+            foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
+
+            foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+                File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
+        }
     }
 
     private void GetBluetoothState()
@@ -57,6 +72,9 @@ public sealed partial class DevicesPage : Page
     {
         if (isInitializingBluetoothState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        Bluetooth.IsHitTestVisible = false;
+
         // remove infobar
         BluetoothInfo.Children.Clear();
 
@@ -90,6 +108,9 @@ public sealed partial class DevicesPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        Bluetooth.IsHitTestVisible = true;
 
         // remove infobar
         BluetoothInfo.Children.Clear();
@@ -151,6 +172,9 @@ public sealed partial class DevicesPage : Page
     {
         if (isInitializingHIDState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        HID.IsHitTestVisible = false;
+
         // remove infobar
         DevicesInfo.Children.Clear();
 
@@ -188,6 +212,9 @@ public sealed partial class DevicesPage : Page
         // cleanup devices
         await Task.Run(() => Process.Start(new ProcessStartInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "DeviceCleanup", "DeviceCleanupCmd.exe"), "-s *") { CreateNoWindow = true })?.WaitForExit());
 
+        // re-enable hittestvisible
+        HID.IsHitTestVisible = true;
+
         // remove infobar
         DevicesInfo.Children.Clear();
 
@@ -213,41 +240,24 @@ public sealed partial class DevicesPage : Page
         // hide toggle switch
         IMOD.Visibility = Visibility.Collapsed;
 
-        // copy chiptool to localstate because of permissions
-        string sourcePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "Chiptool");
-        string destinationPath = Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool");
-
-        if (!Directory.Exists(destinationPath))
-        {
-            Directory.CreateDirectory(destinationPath);
-
-            foreach (var directory in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(directory.Replace(sourcePath, destinationPath));
-
-            foreach (var file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-                File.Copy(file, file.Replace(sourcePath, destinationPath), overwrite: true);
-        }
-
         // check state
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' -status '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'\"",
+                Arguments = @$"-ExecutionPolicy Bypass -Command ""& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' -status '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'""",
                 CreateNoWindow = true,
                 RedirectStandardOutput = true
             }
         };
 
         process.Start();
-
         string output = await process.StandardOutput.ReadToEndAsync();
 
         if (output.Contains("ENABLED"))
         {
             localSettings.Values["XhciInterruptModeration"] = 1;
-
             IMOD.IsOn = true;
         }
         else if (output.Contains("FAILED"))
@@ -290,6 +300,9 @@ public sealed partial class DevicesPage : Page
     {
         if (isInitializingIMODState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        IMOD.IsHitTestVisible = false;
+
         // remove infobar
         DevicesInfo.Children.Clear();
 
@@ -309,7 +322,7 @@ public sealed partial class DevicesPage : Page
             StartInfo = new ProcessStartInfo
             {
                 FileName = "powershell.exe",
-                Arguments = $"-ExecutionPolicy Bypass -Command \"& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' {(IMOD.IsOn ? "-enable" : "-disable")} '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'\"",
+                Arguments = @$"-ExecutionPolicy Bypass -Command ""& '{Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "imod.ps1")}' {(IMOD.IsOn ? "-enable" : "-disable")} '{Path.Combine(PathHelper.GetAppDataFolderPath(), "Chiptool", "chiptool.exe")}'""",
                 CreateNoWindow = true
             }
         };
@@ -319,6 +332,9 @@ public sealed partial class DevicesPage : Page
 
         // toggle setting
         localSettings.Values["XhciInterruptModeration"] = IMOD.IsOn ? 1 : 0;
+
+        // re-enable hittestvisible
+        IMOD.IsHitTestVisible = true;
 
         // remove infobar
         DevicesInfo.Children.Clear();

@@ -124,6 +124,7 @@
                         </ToggleSwitch>
                     </dev:SettingsGroup.Content>
                 </dev:SettingsGroup>
+                <StackPanel x:Name="ObsStudioInfo" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

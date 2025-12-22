@@ -932,6 +932,9 @@ public partial class HeaderCarousel : ItemsControl
         // launch epic games launcher
         Process.Start(EpicGamesHelper.EpicGamesPath);
 
+        // delay
+        await Task.Delay(2000);
+
         // check when logged in
         while (true)
         {
@@ -1590,7 +1593,7 @@ public partial class HeaderCarousel : ItemsControl
             "ApplicationFrameHost",
             "CrashReportClient",
             "CrossDeviceResume",
-            "ctfmon",
+            //"ctfmon",
             "DataExchangeHost",
             "EasyAntiCheat_EOS",
             "EpicGamesLauncher",
@@ -1664,7 +1667,7 @@ public partial class HeaderCarousel : ItemsControl
             "nsi",
             "ProfSvc",
             "StateRepository",
-            "TextInputManagementService",
+            //"TextInputManagementService",
             "TrustedInstaller",
             "UdkUserSvc",
             "UserManager",

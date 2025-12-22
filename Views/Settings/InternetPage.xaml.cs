@@ -52,6 +52,9 @@ public sealed partial class InternetPage : Page
     {
         if (isInitializingWIFIState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        WiFi.IsHitTestVisible = false;
+
         // remove infobar
         WiFiInfo.Children.Clear();
 
@@ -87,6 +90,9 @@ public sealed partial class InternetPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        WiFi.IsHitTestVisible = true;
 
         // remove infobar
         WiFiInfo.Children.Clear();
@@ -156,6 +162,9 @@ public sealed partial class InternetPage : Page
     {
         if (isInitializingWOLState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        WOL.IsHitTestVisible = false;
+
         // remove infobar
         EthernetInfo.Children.Clear();
 
@@ -182,6 +191,9 @@ public sealed partial class InternetPage : Page
 
         process.Start();
         await process.WaitForExitAsync();
+
+        // re-enable hittestvisible
+        WOL.IsHitTestVisible = true;
 
         // remove infobar
         EthernetInfo.Children.Clear();

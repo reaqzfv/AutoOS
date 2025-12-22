@@ -21,35 +21,32 @@
                       VerticalScrollMode="Auto">
             <StackPanel Margin="{ThemeResource ContentPageMargin}"
                         Padding="{ThemeResource ContentPagePadding}"
-                        dev:PanelAttach.ChildrenTransitions="Default"
-                        Spacing="8">
+                        dev:PanelAttach.ChildrenTransitions="Default">
                 <TextBlock x:Name="StatusText"
-                           Margin="0,100,0,8"
+                           Margin="0,100,0,12"
                            Style="{StaticResource SubtitleTextBlockStyle}" />
                 <ProgressBar x:Name="ProgressBar" />
                 <InfoBar x:Name="InfoBar"
-                         Margin="0,4,0,0"
+                         Margin="0,8,0,36"
                          IsClosable="False"
                          IsOpen="True">
                     <InfoBar.Content>
                         <StackPanel Orientation="Vertical">
                             <ProgressRing x:Name="ProgressRingItem"
-                                          Width="25"
-                                          Height="25"
-                                          Margin="0,-50,10,0"
+                                          Width="24"
+                                          Height="24"
+                                          Margin="0,-52,16,0"
                                           HorizontalAlignment="Right"
                                           Background="LightGray"
                                           IsIndeterminate="True" />
                             <Button x:Name="ResumeButtonItem"
-                                    Margin="0,-50,10,0"
+                                    Margin="0,-52,16,0"
                                     HorizontalAlignment="Right"
                                     Content="Resume"
                                     Visibility="Collapsed" />
                         </StackPanel>
                     </InfoBar.Content>
                 </InfoBar>
-                <Border Height="25"
-                        Background="Transparent" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

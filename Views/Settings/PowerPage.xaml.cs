@@ -29,6 +29,9 @@ public sealed partial class PowerPage : Page
     {
         if (isInitializingIdleStatesState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        IdleStates.IsHitTestVisible = false;
+
         // remove infobar
         PowerInfo.Children.Clear();
 
@@ -56,6 +59,9 @@ public sealed partial class PowerPage : Page
         {
             process.WaitForExit();
         }
+
+        // re-enable hittestvisible
+        IdleStates.IsHitTestVisible = true;
 
         // remove infobar
         PowerInfo.Children.Clear();

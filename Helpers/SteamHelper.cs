@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
-using System.Xml.Linq;
 using ValveKeyValue;
 
 namespace AutoOS.Helpers
@@ -65,7 +64,7 @@ namespace AutoOS.Helpers
                 return null;
 
             var kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Text)
-                                 .Deserialize(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(SteamLoginUsersPath))));
+                                 .Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(File.ReadAllText(SteamLoginUsersPath))));
             return kv.Children.FirstOrDefault(c => c["MostRecent"]?.ToString() == "1" && c["AllowAutoLogin"]?.ToString() == "1")?.Name;
         }
 

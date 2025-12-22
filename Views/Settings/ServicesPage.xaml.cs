@@ -75,6 +75,9 @@ public sealed partial class ServicesPage : Page
     {
         if (isInitializingServicesState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        Services.IsHitTestVisible = false;
+
         // remove infobar
         ServiceInfo.Children.Clear();
 
@@ -109,6 +112,9 @@ public sealed partial class ServicesPage : Page
             // toggle services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, Services.IsOn ? "Services-Enable.bat" : "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
         }
+
+        // re-enable hittestvisible
+        Services.IsHitTestVisible = true;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -165,6 +171,9 @@ public sealed partial class ServicesPage : Page
     private async void WIFI_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingWIFIState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        WIFI.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -244,6 +253,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            WIFI.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -268,6 +280,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            WIFI.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -305,6 +320,9 @@ public sealed partial class ServicesPage : Page
     private async void Bluetooth_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingBluetoothState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        Bluetooth.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -382,6 +400,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            Bluetooth.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -406,6 +427,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            Bluetooth.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -441,6 +465,9 @@ public sealed partial class ServicesPage : Page
     private async void Camera_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingCameraState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        Camera.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -515,6 +542,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            Camera.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -539,6 +569,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            Camera.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -574,6 +607,9 @@ public sealed partial class ServicesPage : Page
     private async void TaskManager_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingTaskManagerState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        TaskManager.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -648,6 +684,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            TaskManager.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -672,6 +711,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            TaskManager.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -717,6 +759,9 @@ public sealed partial class ServicesPage : Page
     private async void Laptop_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingLaptopState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        Laptop.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -791,6 +836,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            Laptop.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -815,6 +863,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            Laptop.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -850,6 +901,9 @@ public sealed partial class ServicesPage : Page
     private async void GTA_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingGTAState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        GTA.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -922,6 +976,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            GTA.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -946,6 +1003,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            GTA.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -999,6 +1059,9 @@ public sealed partial class ServicesPage : Page
     private async void AMDVRR_Checked(object sender, RoutedEventArgs e)
     {
         if (isInitializingAMDVRRState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        AMDVRR.IsHitTestVisible = false;
 
         // remove infobar
         ServiceInfo.Children.Clear();
@@ -1073,6 +1136,9 @@ public sealed partial class ServicesPage : Page
             // disable services
             await Process.Start(new ProcessStartInfo { FileName = nsudoPath, Arguments = $"-U:T -P:E -Wait -ShowWindowMode:Hide \"{Path.Combine(PathHelper.GetAppDataFolderPath(), "Service-list-builder", "build", folderName, "Services-Disable.bat")}\"", CreateNoWindow = true }).WaitForExitAsync();
 
+            // re-enable hittestvisible
+            AMDVRR.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 
@@ -1097,6 +1163,9 @@ public sealed partial class ServicesPage : Page
         }
         else
         {
+            // re-enable hittestvisible
+            AMDVRR.IsHitTestVisible = true;
+
             // remove infobar
             ServiceInfo.Children.Clear();
 

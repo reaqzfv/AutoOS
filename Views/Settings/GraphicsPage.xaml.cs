@@ -537,6 +537,9 @@ public sealed partial class GraphicsPage : Page
         // return if still initializing
         if (isInitializingHDCPState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        HDCP.IsHitTestVisible = false;
+
         // remove infobar
         GpuInfo.Children.Clear();
 
@@ -600,6 +603,9 @@ public sealed partial class GraphicsPage : Page
             await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q", CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false })?.WaitForExit());
             await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
         }
+
+        // re-enable hittestvisible
+        HDCP.IsHitTestVisible = true;
 
         // remove infobar
         GpuInfo.Children.Clear();
@@ -911,15 +917,36 @@ public sealed partial class GraphicsPage : Page
     {
         if (isInitializingOBSState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        OBS.IsHitTestVisible = false;
+
+        // remove infobar
+        ObsStudioInfo.Children.Clear();
+
+        // add infobar
+        ObsStudioInfo.Children.Add(new InfoBar
+        {
+            Title = OBS.IsOn ? "Launching OBS Studio..." : "Closing OBS Studio...",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Informational,
+            Margin = new Thickness(4, -28, 4, 36)
+        });
+
         localSettings.Values["OBS"] = OBS.IsOn ? 1 : 0;
 
         if (OBS.IsOn)
         {
+            // launch obs studio
             await Task.Run(() => Process.Start(new ProcessStartInfo("cmd.exe") { Arguments = @"/c del ""%APPDATA%\obs-studio\.sentinel"" /s /f /q", CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden, UseShellExecute = false })?.WaitForExit());
             await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\obs-studio\bin\64bit\obs64.exe", Arguments = "--disable-updater --startreplaybuffer --minimize-to-tray", WorkingDirectory = @"C:\Program Files\obs-studio\bin\64bit" }));
+
+            // delay
+            await Task.Delay(1500);
         }
         else
         {
+            // close obs studio
             if (Process.GetProcessesByName("obs64").Length > 0)
             {
                 foreach (var process in Process.GetProcessesByName("obs64"))
@@ -928,6 +955,32 @@ public sealed partial class GraphicsPage : Page
                     process.WaitForExit();
                 }
             }
+
+            // delay
+            await Task.Delay(400);
         }
+
+        // re-enable hittestvisible
+        OBS.IsHitTestVisible = true;
+
+        // remove infobar
+        ObsStudioInfo.Children.Clear();
+
+        // add infobar
+        var infoBar = new InfoBar
+        {
+            Title = OBS.IsOn ? "Successfully launched OBS Studio." : "Successfully closed OBS Studio.",
+            IsClosable = false,
+            IsOpen = true,
+            Severity = InfoBarSeverity.Success,
+            Margin = new Thickness(4, -28, 4, 36)
+        };
+        ObsStudioInfo.Children.Add(infoBar);
+
+        // delay
+        await Task.Delay(2000);
+
+        // remove infobar
+        ObsStudioInfo.Children.Clear();
     }
 }

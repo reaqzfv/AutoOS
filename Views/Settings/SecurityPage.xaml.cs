@@ -71,6 +71,9 @@ public sealed partial class SecurityPage : Page
     {
         if (isInitializingWindowsDefenderState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        WindowsDefender.IsHitTestVisible = false;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -135,6 +138,9 @@ public sealed partial class SecurityPage : Page
         // delay
         await Task.Delay(200);
 
+        // re-enable hittestvisible
+        WindowsDefender.IsHitTestVisible = true;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -188,6 +194,9 @@ public sealed partial class SecurityPage : Page
     {
         if (isInitializingUACState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        UAC.IsHitTestVisible = false;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -211,6 +220,9 @@ public sealed partial class SecurityPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        UAC.IsHitTestVisible = true;
 
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
@@ -298,12 +310,12 @@ public sealed partial class SecurityPage : Page
                     IsClosable = false,
                     IsOpen = true,
                     Severity = InfoBarSeverity.Success,
-                    Margin = new Thickness(4, -28, 4, 36)
-                };
-                infoBar.ActionButton = new Button
-                {
-                    Content = "Restart",
-                    HorizontalAlignment = HorizontalAlignment.Right
+                    Margin = new Thickness(4, -28, 4, 36),
+                    ActionButton = new Button
+                    {
+                        Content = "Restart",
+                        HorizontalAlignment = HorizontalAlignment.Right
+                    }
                 };
                 ((Button)infoBar.ActionButton).Click += (s, args) =>
                 Process.Start("shutdown", "/r /f /t 0");
@@ -317,6 +329,9 @@ public sealed partial class SecurityPage : Page
     private async void DEP_Toggled(object sender, RoutedEventArgs e)
     {
         if (isInitializingDEPState) return;
+
+        // disable hittestvisible to avoid double-clicking
+        DEP.IsHitTestVisible = false;
 
         // get active state
         int policy = GetSystemDEPPolicy();
@@ -341,6 +356,9 @@ public sealed partial class SecurityPage : Page
         {
             // delay
             await Task.Delay(500);
+
+            // re-enable hittestvisible
+            DEP.IsHitTestVisible = true;
 
             // remove infobar
             WindowsDefenderInfo.Children.Clear();
@@ -370,6 +388,9 @@ public sealed partial class SecurityPage : Page
         {
             // delay
             await Task.Delay(500);
+
+            // re-enable hittestvisible
+            DEP.IsHitTestVisible = true;
 
             // remove infobar
             WindowsDefenderInfo.Children.Clear();
@@ -423,6 +444,9 @@ public sealed partial class SecurityPage : Page
     {
         if (isInitializingMemoryIntegrityState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        MemoryIntegrity.IsHitTestVisible = false;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -441,6 +465,9 @@ public sealed partial class SecurityPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        MemoryIntegrity.IsHitTestVisible = true;
 
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
@@ -509,6 +536,9 @@ public sealed partial class SecurityPage : Page
     {
         if (isInitializingSpectreMeltdownState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        SpectreMeltdown.IsHitTestVisible = false;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -562,6 +592,9 @@ public sealed partial class SecurityPage : Page
         // delay
         await Task.Delay(500);
 
+        // re-enable hittestvisible
+        SpectreMeltdown.IsHitTestVisible = true;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -613,6 +646,9 @@ public sealed partial class SecurityPage : Page
     {
         if (isInitializingProcessMitigationsState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        ProcessMitigations.IsHitTestVisible = false;
+
         // remove infobar
         WindowsDefenderInfo.Children.Clear();
 
@@ -644,6 +680,9 @@ public sealed partial class SecurityPage : Page
 
         // delay
         await Task.Delay(500);
+
+        // re-enable hittestvisible
+        ProcessMitigations.IsHitTestVisible = true;
 
         // remove infobar
         WindowsDefenderInfo.Children.Clear();

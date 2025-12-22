@@ -33,6 +33,9 @@ public sealed partial class UpdatePage : Page
     {
         if (isInitializingWindowsUpdateState) return;
 
+        // disable hittestvisible to avoid double-clicking
+        WindowsUpdate.IsHitTestVisible = false;
+
         // remove infobar
         WindowsUpdateInfo.Children.Clear();
 
@@ -83,6 +86,9 @@ public sealed partial class UpdatePage : Page
 
         // delay
         await Task.Delay(200);
+
+        // re-enable hittestvisible
+        WindowsUpdate.IsHitTestVisible = true;
 
         // remove infobar
         WindowsUpdateInfo.Children.Clear();
