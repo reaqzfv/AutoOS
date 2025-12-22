@@ -1720,8 +1720,8 @@ public partial class HeaderCarousel : ItemsControl
             audioService.Start();
         }
 
-        // launch ctfmon
-        Process.Start("ctfmon.exe");
+        //// launch ctfmon
+        //Process.Start("ctfmon.exe");
 
         // launch explorer
         Process.Start("explorer.exe");
