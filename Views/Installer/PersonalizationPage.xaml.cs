@@ -161,20 +161,15 @@ public sealed partial class PersonalizationPage : Page
         };
 
         // load custom hours
-        LightTime.Time = (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lt))
-                         ? lt
-                         : TimeSpan.Parse("07:00");
+        LightTime.Time = (localSettings.Values["LightTime"] is string lightTimeStr && TimeSpan.TryParse(lightTimeStr, out var lt)) ? lt : TimeSpan.Parse("07:00");
         localSettings.Values["LightTime"] = LightTime.Time.ToString(@"hh\:mm");
 
-        DarkTime.Time = (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var dt))
-                        ? dt
-                        : TimeSpan.Parse("19:00");
+        DarkTime.Time = (localSettings.Values["DarkTime"] is string darkTimeStr && TimeSpan.TryParse(darkTimeStr, out var dt)) ? dt : TimeSpan.Parse("19:00");
         localSettings.Values["DarkTime"] = DarkTime.Time.ToString(@"hh\:mm");
 
         // calculate sunrise sunset
         var pos = await LocationHelper.GetGeoLocationAsync();
-        var sunTimes = SunTimesHelper.CalculateSunriseSunset(pos.Coordinate.Point.Position.Latitude, pos.Coordinate.Point.Position.Longitude,
-            DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+        var sunTimes = SunTimesHelper.CalculateSunriseSunset(pos.Coordinate.Point.Position.Latitude, pos.Coordinate.Point.Position.Longitude, DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
         TimeLine.Sunrise = new TimeSpan(sunTimes.SunriseHour, sunTimes.SunriseMinute, 0);
         TimeLine.Sunset = new TimeSpan(sunTimes.SunsetHour, sunTimes.SunsetMinute, 0);
@@ -184,7 +179,6 @@ public sealed partial class PersonalizationPage : Page
         {
             TimeLine.StartTime = new TimeSpan(sunTimes.SunriseHour, sunTimes.SunriseMinute, 0);
             TimeLine.EndTime = new TimeSpan(sunTimes.SunsetHour, sunTimes.SunsetMinute, 0);
-            await UpdateTheme();
         }
         else if (scheduleMode == "Custom hours")
         {
