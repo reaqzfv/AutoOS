@@ -45,7 +45,7 @@ public static class PreparingStage
     public static bool? Intel_6th;
     public static bool? Intel_7th_10th;
     public static bool? Intel_11th_14th;
-    public static bool? Intel_Arc_Xe;
+    public static bool? Intel_Arc;
     public static bool? NVIDIA_GTX900_GTX10;
     public static bool? NVIDIA_GTX16_RTX50;
     public static bool? AMD_RX5000_RX9000;
@@ -164,7 +164,7 @@ public static class PreparingStage
             Intel_6th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® 6th Gen Processor Graphics") ?? false);
             Intel_7th_10th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® 7th-10th Gen Processor Graphics") ?? false);
             Intel_11th_14th = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® 11th-14th Gen Processor Graphics") ?? false);
-            Intel_Arc_Xe = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® Arc™ & Iris® Xe Graphics") ?? false);
+            Intel_Arc = (localSettings.Values["GpuBrand"]?.ToString().Contains("Intel® Arc™ Graphics") ?? false);
             NVIDIA_GTX900_GTX10 = (localSettings.Values["GpuBrand"]?.ToString().Contains("NVIDIA GeForce GTX™ 900 - 10 series") ?? false);
             NVIDIA_GTX16_RTX50 = (localSettings.Values["GpuBrand"]?.ToString().Contains("NVIDIA GeForce GTX™ 16 - RTX™ 50 series") ?? false);
             AMD_RX5000_RX9000 = (localSettings.Values["GpuBrand"]?.ToString().Contains("AMD Radeon™ RX 5000 - 9000 series") ?? false);

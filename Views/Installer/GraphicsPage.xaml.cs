@@ -43,7 +43,7 @@ public sealed partial class GraphicsPage : Page
             new() { Text = "Intel® 6th Gen Processor Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
             new() { Text = "Intel® 7th-10th Gen Processor Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
             new() { Text = "Intel® 11th-14th Gen Processor Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
-            new() { Text = "Intel® Arc™ & Iris® Xe Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
+            new() { Text = "Intel® Arc™ Graphics", ImageSource = "ms-appx:///Assets/Fluent/Intel.png" },
             new() { Text = "NVIDIA GeForce GTX™ 900 - 10 series", ImageSource = "ms-appx:///Assets/Fluent/Nvidia.png" },
             new() { Text = "NVIDIA GeForce GTX™ 16 - RTX™ 50 series", ImageSource = "ms-appx:///Assets/Fluent/Nvidia.png" },
             new() { Text = "AMD Radeon™ RX 5000 - 9000 series", ImageSource = "ms-appx:///Assets/Fluent/Amd.png" }
