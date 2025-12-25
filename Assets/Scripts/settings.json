@@ -51,7 +51,7 @@
             "enabled": false
         },
         "AlwaysExpandRoles": {
-            "enabled": false
+            "enabled": true
         },
         "AlwaysTrust": {
             "enabled": true
@@ -72,7 +72,7 @@
             "enabled": false
         },
         "BetterGifPicker": {
-            "enabled": false
+            "enabled": true
         },
         "BetterNotesBox": {
             "enabled": false
@@ -102,7 +102,7 @@
             "enabled": true
         },
         "ClearURLs": {
-            "enabled": false
+            "enabled": true
         },
         "ClientTheme": {
             "enabled": false
@@ -111,7 +111,9 @@
             "enabled": false
         },
         "ConsoleJanitor": {
-            "enabled": false
+            "enabled": true,
+            "disableNoisyLoggers": true,
+            "disableSpotifyLogger": true
         },
         "ConsoleShortcuts": {
             "enabled": false
@@ -120,7 +122,7 @@
             "enabled": false
         },
         "CopyFileContents": {
-            "enabled": false
+            "enabled": true
         },
         "CopyUserURLs": {
             "enabled": false
@@ -165,7 +167,7 @@
             "enabled": false
         },
         "FavoriteEmojiFirst": {
-            "enabled": false
+            "enabled": true
         },
         "FavoriteGifSearch": {
             "enabled": false
@@ -180,7 +182,7 @@
             "enabled": false
         },
         "FixYoutubeEmbeds": {
-            "enabled": false
+            "enabled": true
         },
         "ForceOwnerCrown": {
             "enabled": false
@@ -279,7 +281,7 @@
             "enabled": false
         },
         "NoDevtoolsWarning": {
-            "enabled": false
+            "enabled": true
         },
         "NoF1": {
             "enabled": true
@@ -291,7 +293,7 @@
             "enabled": false
         },
         "NoOnboardingDelay": {
-            "enabled": false
+            "enabled": true
         },
         "NoPendingCount": {
             "enabled": false
@@ -312,10 +314,10 @@
             "enabled": false
         },
         "NoTypingAnimation": {
-            "enabled": false
+            "enabled": true
         },
         "NoUnblockToJump": {
-            "enabled": false
+            "enabled": true
         },
         "NormalizeMessageLinks": {
             "enabled": false
@@ -327,7 +329,10 @@
             "enabled": false
         },
         "OnePingPerDM": {
-            "enabled": false
+            "enabled": true,
+            "channelToAffect": "both_dms",
+            "allowMentions": true,
+            "allowEveryone": false
         },
         "oneko": {
             "enabled": false
@@ -348,7 +353,7 @@
             "enabled": false
         },
         "PermissionsViewer": {
-            "enabled": false
+            "enabled": true
         },
         "petpet": {
             "enabled": false
@@ -363,7 +368,11 @@
             "enabled": false
         },
         "PlatformIndicators": {
-            "enabled": false
+            "enabled": true,
+            "colorMobileIndicator": true,
+            "list": true,
+            "badges": true,
+            "messages": false
         },
         "PreviewMessage": {
             "enabled": false
@@ -393,7 +402,7 @@
             "enabled": false
         },
         "ReverseImageSearch": {
-            "enabled": false
+            "enabled": true
         },
         "ReviewDB": {
             "enabled": false
@@ -516,7 +525,7 @@
             "enabled": false
         },
         "ViewIcons": {
-            "enabled": false
+            "enabled": true
         },
         "ViewRaw": {
             "enabled": false
