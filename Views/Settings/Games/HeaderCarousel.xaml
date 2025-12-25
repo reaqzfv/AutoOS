@@ -61,7 +61,7 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal"
-                                    Spacing="12">
+                                    Spacing="8">
                             <!--  Search Box  -->
                             <AutoSuggestBox x:Name="SearchBox"
                                             MinWidth="245"
@@ -151,7 +151,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Orientation="Horizontal"
-                                    Spacing="12">
+                                    Spacing="8">
                             <!--  Epic Games  -->
                             <Button x:Name="EpicGamesButton"
                                     Padding="12,8"
@@ -576,7 +576,7 @@
                                     </StackPanel>
                                     <!--  Description  -->
                                     <dev:Card Title="Description"
-                                              Margin="0,24,0,8">
+                                              Margin="0,12,0,12">
                                         <TextBlock Text="{TemplateBinding Description}"
                                                    TextWrapping="Wrap" />
                                     </dev:Card>
@@ -608,7 +608,7 @@
                                         </views:GameGallery>-->
                                     <dev:Card x:Name="Screenshots_Card"
                                               Title="Screenshots"
-                                              Margin="0,0,0,8"
+                                              Margin="0,0,0,12"
                                               Visibility="Collapsed">
                                         <dev:Card.TitleContent>
                                             <Button Margin="0,4,16,4"
@@ -677,7 +677,7 @@
                                         </ItemsControl>
                                     </ScrollViewer>
                                     <dev:Card Title="Additional information"
-                                              Margin="0,0,0,8">
+                                              Margin="0,0,0,12">
                                         <ItemsRepeater x:Name="PART_ItemsRepeater"
                                                        ItemsSource="{Binding InfoItems, RelativeSource={RelativeSource TemplatedParent}}">
                                             <ItemsRepeater.Layout>
@@ -732,7 +732,7 @@
                                     </dev:Card>
                                     <dev:Card x:Name="PresentationMode"
                                               Title="Settings"
-                                              Margin="0,0,0,8"
+                                              Margin="0,0,0,12"
                                               Visibility="Collapsed">
                                         <!--  Presentation Mode  -->
                                         <StackPanel>
@@ -748,7 +748,7 @@
                                             </ComboBox>
                                         </StackPanel>
                                     </dev:Card>
-                                    <Border Height="28"
+                                    <Border Height="24"
                                             Background="Transparent" />
                                 </StackPanel>
                             </ScrollViewer>
