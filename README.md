@@ -23,7 +23,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Toggle between service states with configured functionality
 - Apply all hidden BIOS Settings (500+) in one click
 - Automatically import Epic Games and Steam titles from old install
-- Custom Game Launcher supporting (Epic Games, Steam, Ryujinx)
+- Custom Game Launcher supporting (Epic Games, Steam, Riot Games, Ryujinx)
 - Stop processes when running your game to stop all unnecessary services and executables
 
 ## ⚠️ Current Issues
