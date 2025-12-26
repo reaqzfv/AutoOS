@@ -64,8 +64,7 @@
                                     Spacing="8">
                             <!--  Search Box  -->
                             <AutoSuggestBox x:Name="SearchBox"
-                                            MinWidth="245"
-                                            MaxWidth="400"
+                                            MinWidth="240"
                                             Padding="12,8"
                                             CornerRadius="18"
                                             PlaceholderText="Search..."
@@ -128,23 +127,6 @@
                                                              Text="Descending" />
                                     </MenuFlyout>
                                 </Button.Flyout>
-                            </Button>
-                            <Button x:Name="Fullscreen"
-                                    Padding="12,8"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    CornerRadius="18"
-                                    Style="{ThemeResource MicaButtonStyle}">
-                                <StackPanel VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                    <FontIcon x:Name="FullscreenIcon"
-                                              Margin="0,0,8,0"
-                                              FontSize="12"
-                                              Glyph="&#xE92D;" />
-                                    <TextBlock x:Name="FullscreenText"
-                                               VerticalAlignment="Center"
-                                               Text="Enter Full Screen" />
-                                </StackPanel>
                             </Button>
                         </StackPanel>
                         <StackPanel Margin="0,80,36,0"

@@ -17,5 +17,16 @@
                               ImageStretch="Fill"
                               IsAutoScrollEnabled="False"
                               IsBlurEnabled="False" />
+        <Border Width="0"
+                Height="0"
+                Background="Transparent">
+            <Border.KeyboardAccelerators>
+                <KeyboardAccelerator Key="F11"
+                                     Invoked="ToggleFullscreen" />
+                <KeyboardAccelerator Key="Enter"
+                                     Invoked="ToggleFullscreen"
+                                     Modifiers="Menu" />
+            </Border.KeyboardAccelerators>
+        </Border>
     </Grid>
 </Page>
