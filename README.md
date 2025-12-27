@@ -23,7 +23,7 @@ AutoOS is a WinUI3 application focused on automation to improve performance whil
 - Toggle between service states with configured functionality
 - Apply all hidden BIOS Settings (500+) in one click
 - Automatically import Epic Games and Steam titles from old install
-- Custom Game Launcher supporting (Epic Games, Steam, Riot Games, Ryujinx)
+- Custom Game Launcher supporting (Epic Games, Steam, Riot Games, Eden, Citron, Ryujinx)
 - Stop processes when running your game to stop all unnecessary services and executables
 
 ## ⚠️ Current Issues
@@ -204,6 +204,11 @@ Clone the repository and run this in the terminal inside of Visual Studio.
 dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -n CommunityToolkit-Labs
 ```
 
+If the debugger is not attaching to the process you sadly are required to set EnableLua to 0. This has been a problem for 5 years and Microsoft hasn't provided a fix:
+```bat
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 1 /f
+```
+
 ## 🙏 Credits
 
 **Amitxv / Valleyofdoom:**  
@@ -228,7 +233,7 @@ Thank you for your research on [Configuring services and features](https://githu
 ---
 
 **Duckleeng:**  
-Thank you for your research on [Receive Side Scaling (RSS)](https://github.com/Duckleeng/TweakCollection/tree/main/Research#which-nicsdrivers-support-receive-side-scaling-rss) and [Windows 11 24H2 AutoBoost Behavior](https://github.com/Duckleeng/TweakCollection/tree/main/Research#windows-11-24h2-autoboost-behavior).
+Thank you for your research on [Receive Side Scaling (RSS)](https://github.com/Duckleeng/TweakCollection/tree/main/Research#which-nicsdrivers-support-receive-side-scaling-rss) and [Windows 11 24H2 AutoBoost Behavior](https://github.com/Duckleeng/TweakCollection/tree/main/Research/AutoBoost#windows-11-24h2-autoboost-behavior).
 
 ---
 

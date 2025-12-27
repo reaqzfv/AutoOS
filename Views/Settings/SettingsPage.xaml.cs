@@ -44,30 +44,55 @@ public sealed partial class SettingsPage : Page
             SwitchEmulator.SelectedItem = itemToSelect;
             DataLocationValue.IsEnabled = itemToSelect.Text == "Ryujinx";
             DataLocationValue.IsReadOnly = itemToSelect.Text != "Ryujinx";
-            
+
+            string exeKey = $"{itemToSelect.Text}Location";
+            string dataKey = $"{itemToSelect.Text}DataLocation";
+
+            ExecutableLocationValue.Text = localSettings.Values[exeKey] as string ?? string.Empty;
+            DataLocationValue.Text = localSettings.Values[dataKey] as string ?? string.Empty;
+
             if (itemToSelect.Text == "Ryujinx")
             {
-                ExecutableLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}Location"] as string ?? string.Empty;
-
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), itemToSelect.Text);
-
-                DataLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}DataLocation"] as string ?? string.Empty;
-
-                if (Directory.Exists(Path.Combine(path, "games")) && Directory.GetDirectories(Path.Combine(path, "games")).Length > 0)
+                if (!string.IsNullOrWhiteSpace(DataLocationValue.Text))
                 {
-                    localSettings.Values[$"{itemToSelect.Text}DataLocation"] = Path.Combine(path, "games");
-                    DataLocationValue.Text = Path.Combine(path, "games");
+                    if (!Directory.Exists(DataLocationValue.Text))
+                    {
+                        localSettings.Values.Remove(dataKey);
+                        DataLocationValue.Text = string.Empty;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(DataLocationValue.Text))
+                {
+                    var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), itemToSelect.Text);
+                    var gamesDir = Path.Combine(path, "games");
+
+                    if (Directory.Exists(gamesDir) && Directory.GetDirectories(gamesDir).Length > 0)
+                    {
+                        localSettings.Values[dataKey] = path;
+                        DataLocationValue.Text = path;
+                    }
                 }
             }
             else if (itemToSelect.Text == "Eden" || itemToSelect.Text == "Citron")
             {
-                ExecutableLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}Location"] as string ?? string.Empty;
-
-                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),itemToSelect.Text.ToLowerInvariant());
-                if (File.Exists(Path.Combine(path, "cache", "game_list", "game_metadata_cache.json")))
+                if (!string.IsNullOrWhiteSpace(DataLocationValue.Text))
                 {
-                    localSettings.Values[$"{itemToSelect.Text}DataLocation"] = path;
-                    DataLocationValue.Text = path;
+                    if (!File.Exists(Path.Combine(DataLocationValue.Text, "cache", "game_list", "game_metadata_cache.json")))
+                    {
+                        localSettings.Values.Remove(dataKey);
+                        DataLocationValue.Text = string.Empty;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(DataLocationValue.Text))
+                {
+                    var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), itemToSelect.Text.ToLowerInvariant());
+                    if (File.Exists(Path.Combine(path, "cache", "game_list", "game_metadata_cache.json")))
+                    {
+                        localSettings.Values[dataKey] = path;
+                        DataLocationValue.Text = path;
+                    }
                 }
             }
         }

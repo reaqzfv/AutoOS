@@ -136,7 +136,7 @@ public static class PowerStage
             ("Disabling timer coalescing", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Power"" /v ""CoalescingTimerInterval"" /t REG_DWORD /d 0 /f"), null),
         };
 
-        var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
+                var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
         int groupedTitleCount = 0;
 
         List<Func<Task>> currentGroup = [];
@@ -166,6 +166,7 @@ public static class PowerStage
                         InstallPage.Info.Title += ": " + ex.Message;
                         InstallPage.Info.Severity = InfoBarSeverity.Error;
                         InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Error);
                         InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
                         InstallPage.ProgressRingControl.Visibility = Visibility.Collapsed;
                         InstallPage.ResumeButton.Visibility = Visibility.Visible;
@@ -177,6 +178,7 @@ public static class PowerStage
                             tcs.TrySetResult(true);
                             InstallPage.Info.Severity = InfoBarSeverity.Informational;
                             InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                            TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
                             InstallPage.ProgressRingControl.Foreground = null;
                             InstallPage.ProgressRingControl.Visibility = Visibility.Visible;
                             InstallPage.ResumeButton.Visibility = Visibility.Collapsed;
@@ -187,6 +189,7 @@ public static class PowerStage
                 }
 
                 InstallPage.Progress.Value += incrementPerTitle;
+                TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
                 await Task.Delay(150);
                 currentGroup.Clear();
             }
@@ -209,6 +212,7 @@ public static class PowerStage
                     InstallPage.Info.Title += ": " + ex.Message;
                     InstallPage.Info.Severity = InfoBarSeverity.Error;
                     InstallPage.Progress.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
+                    TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Error);
                     InstallPage.ProgressRingControl.Foreground = (Brush)Application.Current.Resources["SystemFillColorCriticalBrush"];
                     InstallPage.ProgressRingControl.Visibility = Visibility.Collapsed;
                     InstallPage.ResumeButton.Visibility = Visibility.Visible;
@@ -220,6 +224,7 @@ public static class PowerStage
                         tcs.TrySetResult(true);
                         InstallPage.Info.Severity = InfoBarSeverity.Informational;
                         InstallPage.Progress.ClearValue(ProgressBar.ForegroundProperty);
+                        TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
                         InstallPage.ProgressRingControl.Foreground = null;
                         InstallPage.ProgressRingControl.Visibility = Visibility.Visible;
                         InstallPage.ResumeButton.Visibility = Visibility.Collapsed;
@@ -229,6 +234,7 @@ public static class PowerStage
                 }
             }
 
+            TaskbarHelper.SetProgressState(WindowHandle, TaskbarStates.Normal);
             InstallPage.Progress.Value += incrementPerTitle;
             TaskbarHelper.SetProgressValue(WindowHandle, InstallPage.Progress.Value, 100);
         }
