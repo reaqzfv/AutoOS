@@ -6,87 +6,197 @@ namespace AutoOS.Views.Settings;
 public sealed partial class SettingsPage : Page
 {
     private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+    private bool isInitializingSwitchEmulatorState = true;
+
     public SettingsPage()
     {
         InitializeComponent();
         LoadSettings();
+        GetItems();
+        GetSwitchEmulator();
     }
 
-    private  void RyujinxLocation_TextChanged(object sender, RoutedEventArgs e)
+    public class GridViewItem
     {
-        if (string.IsNullOrWhiteSpace(RyujinxLocationValue?.Text))
+        public string Text { get; set; }
+        public string ImageSource { get; set; }
+    }
+
+    private void GetItems()
+    {
+        SwitchEmulator.ItemsSource = new List<GridViewItem>
         {
-            localSettings.Values.Remove("RyujinxLocation");
-            return;
+            new() { Text = "Eden", ImageSource = "ms-appx:///Assets/Fluent/Eden.png" },
+            new() { Text = "Citron", ImageSource = "ms-appx:///Assets/Fluent/Citron.png" },
+            new() { Text = "Ryujinx", ImageSource = "ms-appx:///Assets/Fluent/Ryujinx.png" },
+        };
+    }
+
+    private void GetSwitchEmulator()
+    {
+        var selectedSwitchEmulator = localSettings.Values["SwitchEmulator"] as string ?? "Eden";
+        var switchEmulatorItems = SwitchEmulator.ItemsSource as List<GridViewItem>;
+
+        var itemToSelect = switchEmulatorItems?.FirstOrDefault(ext => ext.Text == selectedSwitchEmulator) ?? switchEmulatorItems?.FirstOrDefault(ext => ext.Text == "Eden");
+
+        if (itemToSelect != null)
+        {
+            SwitchEmulator.SelectedItem = itemToSelect;
+            DataLocationValue.IsEnabled = itemToSelect.Text == "Ryujinx";
+            DataLocationValue.IsReadOnly = itemToSelect.Text != "Ryujinx";
+            
+            if (itemToSelect.Text == "Ryujinx")
+            {
+                ExecutableLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}Location"] as string ?? string.Empty;
+
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), itemToSelect.Text);
+
+                DataLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}DataLocation"] as string ?? string.Empty;
+
+                if (Directory.Exists(Path.Combine(path, "games")) && Directory.GetDirectories(Path.Combine(path, "games")).Length > 0)
+                {
+                    localSettings.Values[$"{itemToSelect.Text}DataLocation"] = Path.Combine(path, "games");
+                    DataLocationValue.Text = Path.Combine(path, "games");
+                }
+            }
+            else if (itemToSelect.Text == "Eden" || itemToSelect.Text == "Citron")
+            {
+                ExecutableLocationValue.Text = localSettings.Values[$"{itemToSelect.Text}Location"] as string ?? string.Empty;
+
+                var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),itemToSelect.Text.ToLowerInvariant());
+                if (File.Exists(Path.Combine(path, "cache", "game_list", "game_metadata_cache.json")))
+                {
+                    localSettings.Values[$"{itemToSelect.Text}DataLocation"] = path;
+                    DataLocationValue.Text = path;
+                }
+            }
+        }
+
+        isInitializingSwitchEmulatorState = false;
+    }
+
+
+    private void SwitchEmulator_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (isInitializingSwitchEmulatorState) return;
+
+        if (SwitchEmulator.SelectedItem is GridViewItem selectedItem)
+        {
+            DataLocationValue.IsEnabled = selectedItem.Text == "Ryujinx";
+            DataLocationValue.IsReadOnly = selectedItem.Text != "Ryujinx";
+
+            ExecutableLocationValue.Text = localSettings.Values[$"{selectedItem.Text}Location"] as string ?? string.Empty;
+            DataLocationValue.Text = localSettings.Values[$"{selectedItem.Text}DataLocation"] as string ?? string.Empty;
+
+            localSettings.Values["SwitchEmulator"] = selectedItem.Text;
         }
     }
 
-    private async void RyujinxLocation_Click(object sender, RoutedEventArgs e)
+    private void ExecutableLocation_TextChanged(object sender, RoutedEventArgs e)
     {
-        var picker = new FilePicker(App.MainWindow)
+        if (SwitchEmulator.SelectedItem is GridViewItem selectedItem)
         {
-            ShowAllFilesOption = false
-        };
-        picker.FileTypeChoices.Add("Ryujinx executable", ["*.exe"]);
+            string emulator = selectedItem.Text;
+
+            if (!string.IsNullOrWhiteSpace(ExecutableLocationValue?.Text))
+            {
+                string exeName = Path.GetFileName(ExecutableLocationValue.Text).ToLowerInvariant();
+
+                if ((emulator == "Eden" && exeName == "eden.exe") || (emulator == "Citron" && exeName == "citron.exe") || (emulator == "Ryujinx" && exeName == "ryujinx.exe"))
+                {
+                    localSettings.Values[$"{emulator}Location"] = ExecutableLocationValue.Text;
+                }
+            }
+            else
+            {
+                localSettings.Values.Remove($"{emulator}Location");
+            }
+        }
+    }
+
+    private async void ExecutableLocation_Click(object sender, RoutedEventArgs e)
+    {
+        var picker = new FilePicker(App.MainWindow) { ShowAllFilesOption = false };
+        picker.FileTypeChoices.Add("Emulator executable", ["*.exe"]);
 
         var file = await picker.PickSingleFileAsync();
-
-        if (file != null)
+        if (file != null && SwitchEmulator.SelectedItem is GridViewItem selectedItem)
         {
-            if (Path.GetFileName(file.Path).Equals("Ryujinx.exe", StringComparison.OrdinalIgnoreCase))
-            {
-                RyujinxLocationValue.Text = file.Path;
-                localSettings.Values["RyujinxLocation"] = file.Path;
-            }
-            else 
-            {
-                var dialog = new ContentDialog
-                {
-                    Title = "Invalid File",
-                    Content = "Please select the Ryujinx.exe file.",
-                    CloseButtonText = "OK",
-                    DefaultButton = ContentDialogButton.Close,
-                    XamlRoot = App.MainWindow.Content.XamlRoot
-                };
-                await dialog.ShowAsync();
-            }
-        }   
-    }
+            string emulator = selectedItem.Text;
+            string exeName = Path.GetFileName(file.Path).ToLowerInvariant();
 
-    private void RyujinxDataLocation_TextChanged(object sender, RoutedEventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(RyujinxDataLocationValue?.Text))
-        {
-            localSettings.Values.Remove("RyujinxDataLocation");
-            return;
-        }
-    }
-
-    private async void RyujinxDataLocation_Click(object sender, RoutedEventArgs e)
-    {
-        var picker = new FolderPicker(App.MainWindow);
-        var folder = await picker.PickSingleFolderAsync();
-
-        if (folder != null)
-        {
-            string folderName = Path.GetFileName(folder.Path).ToLowerInvariant();
-            if (folderName == "ryujinx" || folderName == "portable")
+            if ((emulator == "Eden" && exeName == "eden.exe") ||
+                (emulator == "Citron" && exeName == "citron.exe") ||
+                (emulator == "Ryujinx" && exeName == "ryujinx.exe"))
             {
-                RyujinxDataLocationValue.Text = folder.Path;
-                localSettings.Values["RyujinxDataLocation"] = folder.Path;
+                ExecutableLocationValue.Text = file.Path;
+                localSettings.Values[$"{emulator}Location"] = file.Path;
             }
             else
             {
                 var dialog = new ContentDialog
                 {
-                    Title = "Invalid Folder",
-                    Content = "Please select the portable folder.",
+                    Title = "Invalid File",
+                    Content = $"Please select the correct executable for {emulator}.",
                     CloseButtonText = "OK",
                     DefaultButton = ContentDialogButton.Close,
                     XamlRoot = App.MainWindow.Content.XamlRoot
                 };
                 await dialog.ShowAsync();
             }
+        }
+    }
+
+    private void DataLocation_TextChanged(object sender, RoutedEventArgs e)
+    {
+        if (SwitchEmulator.SelectedItem is GridViewItem selectedItem && selectedItem.Text == "Ryujinx")
+        {
+            if (!string.IsNullOrWhiteSpace(DataLocationValue?.Text))
+            {
+                string folderName = Path.GetFileName(DataLocationValue.Text).ToLowerInvariant();
+
+                if (folderName == "portable" || folderName == "ryujinx")
+                {
+                    localSettings.Values["RyujinxDataLocation"] = DataLocationValue.Text;
+                }
+            }
+            else
+            {
+                localSettings.Values.Remove("RyujinxDataLocation");
+            }
+        }
+    }
+
+    private async void DataLocation_Click(object sender, RoutedEventArgs e)
+    {
+        if (SwitchEmulator.SelectedItem is not GridViewItem selectedItem || selectedItem.Text != "Ryujinx")
+            return;
+
+        var picker = new FolderPicker(App.MainWindow)
+        {
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+        };
+
+        var folder = await picker.PickSingleFolderAsync();
+        if (folder == null) return;
+
+        string folderName = Path.GetFileName(folder.Path).ToLowerInvariant();
+        if (folderName == "portable" || folderName == "ryujinx")
+        {
+            DataLocationValue.Text = folder.Path;
+            localSettings.Values["RyujinxDataLocation"] = folder.Path;
+        }
+        else
+        {
+            var dialog = new ContentDialog
+            {
+                Title = "Invalid Folder",
+                Content = "Please select the correct data folder for Ryujinx.",
+                CloseButtonText = "OK",
+                DefaultButton = ContentDialogButton.Close,
+                XamlRoot = App.MainWindow.Content.XamlRoot
+            };
+            await dialog.ShowAsync();
         }
     }
 
@@ -99,25 +209,6 @@ public sealed partial class SettingsPage : Page
 
     private void LoadSettings()
     {
-        if (localSettings.Values.TryGetValue("RyujinxLocation", out object ryujinxLocationValue) && ryujinxLocationValue is string ryujinxLocationPath)
-        {
-            RyujinxLocationValue.Text = ryujinxLocationPath;
-        }
-
-        if (localSettings.Values.TryGetValue("RyujinxDataLocation", out object ryujinxDataValue) && ryujinxDataValue is string ryujinxDataPath)
-        {
-            RyujinxDataLocationValue.Text = ryujinxDataPath;
-        }
-        else
-        {
-            string defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Ryujinx");
-            if (Directory.Exists(defaultPath))
-            {
-                RyujinxDataLocationValue.Text = defaultPath;
-            }
-        }
-
-
         if (!localSettings.Values.TryGetValue("LaunchMinimized", out object value))
         {
             localSettings.Values["LaunchMinimized"] = 0;
@@ -140,4 +231,3 @@ public sealed partial class SettingsPage : Page
         localSettings.Values["LaunchMinimized"] = LaunchMinimized.IsOn ? 1 : 0;
     }
 }
-

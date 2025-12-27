@@ -1,5 +1,4 @@
 ﻿using AutoOS.Helpers;
-using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Win32;
@@ -13,7 +12,6 @@ using System.Text.RegularExpressions;
 using ValveKeyValue;
 using Windows.Foundation;
 using Windows.Storage;
-using WinRT.Interop;
 
 namespace AutoOS.Views.Settings.Games;
 
@@ -63,6 +61,8 @@ public partial class HeaderCarousel : ItemsControl
     private StackPanel EpicGrowl;
     private StackPanel SteamGrowl;
 
+    private readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
     private TextBlock AgeRatingDescriptionText;
     private TextBlock ElementsText;
 
@@ -76,10 +76,6 @@ public partial class HeaderCarousel : ItemsControl
 
     private RadioMenuFlyoutItem SortByName, SortByLauncher, SortByRating, SortByPlayTime;
     private RadioMenuFlyoutItem SortAscending, SortDescending;
-
-    private Button Fullscreen;
-    private TextBlock FullscreenText;
-    private FontIcon FullscreenIcon;
 
     //public event EventHandler<HeaderCarouselEventArgs> ItemClick;
 
@@ -130,11 +126,6 @@ public partial class HeaderCarousel : ItemsControl
         SortByPlayTime.Click += SortKey_Click;
         SortAscending.Click += SortOrder_Click;
         SortDescending.Click += SortOrder_Click;
-
-        Fullscreen = GetTemplateChild("Fullscreen") as Button;
-        FullscreenText = GetTemplateChild("FullscreenText") as TextBlock;
-        FullscreenIcon = GetTemplateChild("FullscreenIcon") as FontIcon;
-        Fullscreen.Click += Fullscreen_Click;
 
         EpicGamesButton = GetTemplateChild("EpicGamesButton") as Button;
         EpicGamesAccounts = GetTemplateChild("EpicGamesAccounts") as ComboBox;
@@ -218,7 +209,21 @@ public partial class HeaderCarousel : ItemsControl
             tasks.Add(SteamHelper.LoadGames());
         }
 
-        tasks.Add(CustomGameHelper.LoadGames());
+        switch (localSettings.Values["SwitchEmulator"] as string ?? "Eden")
+        {
+            case "Eden":
+                tasks.Add(EdenHelper.LoadGames());
+                break;
+
+            case "Citron":
+                tasks.Add(CitronHelper.LoadGames());
+                break;
+
+            case "Ryujinx":
+                tasks.Add(RyujinxHelper.LoadGames());
+                break;
+        }
+
         //tasks.Add(UbisoftConnectHelper.LoadGames());
 
         await Task.WhenAll(tasks);
@@ -239,11 +244,8 @@ public partial class HeaderCarousel : ItemsControl
 
         if (Items[0] is HeaderCarouselItem tile)
         {
-            if (selectedTile != null)
-            {
-                selectedTile.IsSelected = false;
-                selectedTile = null;
-            }
+            selectedTile?.IsSelected = false;
+            selectedTile = null;
 
             selectedTile = tile;
             var panel = ItemsPanelRoot;
@@ -763,42 +765,6 @@ public partial class HeaderCarousel : ItemsControl
         }
 
         return 0;
-    }
-
-    private bool isFullscreen = false;
-    private void Fullscreen_Click(object sender, RoutedEventArgs e)
-    {
-        App.MainWindow.ExtendsContentIntoTitleBar = true;
-
-        IntPtr hWnd = WindowNative.GetWindowHandle(App.MainWindow);
-        WindowId windowId = Win32Interop.GetWindowIdFromWindow(hWnd);
-        AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
-
-        var navView = MainWindow.Instance.GetNavView();
-        var titleBar = MainWindow.Instance.GetTitleBar();
-
-        if (!isFullscreen)
-        {
-            UnsubscribeToEvents();
-
-            navView.IsPaneVisible = false;
-            titleBar.Visibility = Visibility.Collapsed;
-            appWindow.SetPresenter(AppWindowPresenterKind.FullScreen);
-            FullscreenText.Text = "Exit Full Screen";
-            FullscreenIcon.Glyph = "\uE92C";
-            isFullscreen = true;
-
-            SubscribeToEvents();
-        }
-        else
-        {
-            navView.IsPaneVisible = true;
-            titleBar.Visibility = Visibility.Visible;
-            appWindow.SetPresenter(AppWindowPresenterKind.Overlapped);
-            FullscreenText.Text = "Enter Full Screen";
-            FullscreenIcon.Glyph = "\uE92D";
-            isFullscreen = false;
-        }
     }
 
     public void LoadEpicGamesAccounts()
@@ -1527,6 +1493,28 @@ public partial class HeaderCarousel : ItemsControl
 
             //Process.Start(startInfo);
         }
+        else if (Launcher == "Eden")
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = LauncherLocation,
+                Arguments = $@"-f -g ""{GameLocation}""",
+                CreateNoWindow = true,
+            };
+
+            Process.Start(startInfo);
+        }
+        else if (Launcher == "Citron")
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = LauncherLocation,
+                Arguments = $@"-f -g ""{GameLocation}""",
+                CreateNoWindow = true,
+            };
+
+            Process.Start(startInfo);
+        }
         else if (Launcher == "Ryujinx")
         {
             var startInfo = new ProcessStartInfo
@@ -1544,10 +1532,6 @@ public partial class HeaderCarousel : ItemsControl
     {
         if (Launcher == "Epic Games")
         {
-            Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{CatalogNamespace}%3A{CatalogItemId}%3A{AppName}?action=update") { UseShellExecute = true });
-
-            await Task.Delay(4000);
-
             Process.Start(new ProcessStartInfo($"com.epicgames.launcher://apps/{CatalogNamespace}%3A{CatalogItemId}%3A{AppName}?action=update") { UseShellExecute = true });
         }
     }
@@ -1842,20 +1826,49 @@ public partial class HeaderCarousel : ItemsControl
                 exeNames.Any(name => Process.GetProcessesByName(name).Length > 0)
             );
         }
-        else if (Launcher == "Ryujinx")
+        else if (Launcher == "Eden")
         {
-            string launcherFileName = Path.GetFileName(LauncherLocation);
-            string expectedPath = $@"-r ""{DataLocation}"" -fullscreen ""{GameLocation}""";
-
             StartGameWatcher(() =>
             {
                 using var searcher = new ManagementObjectSearcher(
-                    $"SELECT CommandLine FROM Win32_Process WHERE Name = '{launcherFileName}'");
+                    $"SELECT CommandLine FROM Win32_Process WHERE Name = '{Path.GetFileName(LauncherLocation)}'");
 
                 foreach (var obj in searcher.Get().OfType<ManagementObject>())
                 {
                     string cmdLine = obj["CommandLine"]?.ToString() ?? "";
-                    if (cmdLine.Contains(expectedPath))
+                    if (cmdLine.Contains($@"-f -g ""{GameLocation}"""))
+                        return true;
+                }
+                return false;
+            });
+        }
+        else if (Launcher == "Citron")
+        {
+            StartGameWatcher(() =>
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT CommandLine FROM Win32_Process WHERE Name = '{Path.GetFileName(LauncherLocation)}'");
+
+                foreach (var obj in searcher.Get().OfType<ManagementObject>())
+                {
+                    string cmdLine = obj["CommandLine"]?.ToString() ?? "";
+                    if (cmdLine.Contains($@"-f -g ""{GameLocation}"""))
+                        return true;
+                }
+                return false;
+            });
+        }
+        else if (Launcher == "Ryujinx")
+        {
+            StartGameWatcher(() =>
+            {
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT CommandLine FROM Win32_Process WHERE Name = '{Path.GetFileName(LauncherLocation)}'");
+
+                foreach (var obj in searcher.Get().OfType<ManagementObject>())
+                {
+                    string cmdLine = obj["CommandLine"]?.ToString() ?? "";
+                    if (cmdLine.Contains($@"-r ""{DataLocation}"" -fullscreen ""{GameLocation}"""))
                         return true;
                 }
                 return false;
