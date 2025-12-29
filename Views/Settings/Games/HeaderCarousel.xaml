@@ -415,7 +415,7 @@
                                             </ToolTip>
                                         </ToolTipService.ToolTip>
                                     </Button>
-                                    <Button x:Name="LaunchExplorer"
+                                    <Button x:Name="RestartProcesses"
                                             Padding="15"
                                             CornerRadius="22"
                                             Style="{ThemeResource MicaButtonStyle}"
@@ -426,8 +426,8 @@
                                             <ToolTip Placement="Mouse">
                                                 <StackPanel>
                                                     <TextBlock FontWeight="Bold"
-                                                               Text="Launch explorer" />
-                                                    <TextBlock Text="Click to launch explorer again."
+                                                               Text="Restart processes" />
+                                                    <TextBlock Text="Click to restart processes."
                                                                TextWrapping="Wrap" />
                                                 </StackPanel>
                                             </ToolTip>

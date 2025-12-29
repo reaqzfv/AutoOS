@@ -44,7 +44,7 @@ public partial class HeaderCarousel : ItemsControl
     private Button Play;
     private Button Update;
     private Button StopProcesses;
-    private Button LaunchExplorer;
+    private Button RestartProcesses;
 
     private bool isInitializingEpicGamesAccounts = true;
     private bool isInitializingSteamAccounts = true;
@@ -161,8 +161,8 @@ public partial class HeaderCarousel : ItemsControl
         Update.Click += Update_Click;
         StopProcesses = GetTemplateChild("StopProcesses") as Button;
         StopProcesses.Click += StopProcesses_Click;
-        LaunchExplorer = GetTemplateChild("LaunchExplorer") as Button;
-        LaunchExplorer.Click += LaunchExplorer_Click;
+        RestartProcesses = GetTemplateChild("RestartProcesses") as Button;
+        RestartProcesses.Click += RestartProcesses_Click;
 
         AgeRatingDescriptionText = GetTemplateChild("AgeRatingDescriptionText") as TextBlock;
         ElementsText = GetTemplateChild("ElementsText") as TextBlock;
@@ -1634,7 +1634,7 @@ public partial class HeaderCarousel : ItemsControl
             "DevicesFlowUserSvc",
             "DeviceAssociationService",
             "Dhcp",
-            //"DispBrokerDesktopSvc",
+            "DispBrokerDesktopSvc",
             //"Dnscache",
             "DoSvc",
             "gpsvc",
@@ -1695,7 +1695,7 @@ public partial class HeaderCarousel : ItemsControl
         }
     }
 
-    private void LaunchExplorer_Click(object sender, RoutedEventArgs e)
+    private void RestartProcesses_Click(object sender, RoutedEventArgs e)
     {
         // start audioendpoint builder
         using var audioService = new ServiceController("AudioEndpointBuilder");
@@ -1755,15 +1755,15 @@ public partial class HeaderCarousel : ItemsControl
                 if (StopProcesses != null && !servicesState)
                     StopProcesses.Visibility = isRunning ? Visibility.Visible : Visibility.Collapsed;
 
-                if (LaunchExplorer != null && !servicesState && previousExplorerState != (isRunning && !explorerRunning))
+                if (RestartProcesses != null && !servicesState && previousExplorerState != (isRunning && !explorerRunning))
                 {
-                    LaunchExplorer.Visibility = (isRunning && !explorerRunning) ? Visibility.Visible : Visibility.Collapsed;
+                    RestartProcesses.Visibility = (isRunning && !explorerRunning) ? Visibility.Visible : Visibility.Collapsed;
                     previousExplorerState = isRunning && !explorerRunning;
                 }
 
                 if (previousGameState == true && isRunning == false && !explorerRunning)
                 {
-                    LaunchExplorer_Click(this, new RoutedEventArgs());
+                    RestartProcesses_Click(this, new RoutedEventArgs());
                 }
 
                 if (Launcher == "Epic Games")
