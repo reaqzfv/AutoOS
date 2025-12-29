@@ -30,7 +30,9 @@ namespace AutoOS.Views.Settings
         public HomeLandingPage()
         {
             InitializeComponent();
-            Loaded += GetChangeLog;
+            #if !DEBUG
+                Loaded += GetChangeLog;
+            #endif
         }
 
         private async void GetChangeLog(object sender, RoutedEventArgs e)
@@ -137,6 +139,52 @@ namespace AutoOS.Views.Settings
                 ("Installing MSI Afterburner", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Afterburner"" /v ""UninstallString"" /t REG_SZ /d ""C:\Program Files (x86)\MSI Afterburner\uninstall.exe"" /f"), null),
                 ("Installing MSI Afterburner", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c mkdir ""%APPDATA%\Microsoft\Windows\Start Menu\Programs\MSI Afterburner"" ""%APPDATA%\Microsoft\Windows\Start Menu\Programs\MSI Afterburner\SDK"""), null),
                 ("Installing MSI Afterburner", async () => await ProcessActions.RunPowerShell(@"$Shell=New-Object -ComObject WScript.Shell; @(@{P='MSI Afterburner.lnk';T='C:\Program Files (x86)\MSI Afterburner\MSIAfterburner.exe'},@{P='ReadMe.lnk';T='C:\Program Files (x86)\MSI Afterburner\Doc\ReadMe.pdf'},@{P='Uninstall.lnk';T='C:\Program Files (x86)\MSI Afterburner\Uninstall.exe'},@{P='SDK\MSI Afterburner localization reference.lnk';T='C:\Program Files (x86)\MSI Afterburner\SDK\Doc\Localization reference.pdf'},@{P='SDK\MSI Afterburner skin format reference.lnk';T='C:\Program Files (x86)\MSI Afterburner\SDK\Doc\USF skin format reference.pdf'},@{P='SDK\Samples.lnk';T='C:\Program Files (x86)\MSI Afterburner\SDK\Samples\'}) | % {$Shortcut=$Shell.CreateShortcut([System.IO.Path]::Combine($env:APPDATA, 'Microsoft\Windows\Start Menu\Programs\MSI Afterburner', $_.P)); $Shortcut.TargetPath=$_.T; $Shortcut.Save()}"), null),
+
+                // set "win32priorityseparation" to 0x28/40
+                (@"Setting ""Win32PrioritySeparation"" to 0x28/40", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\PriorityControl"" /v Win32PrioritySeparation /t REG_DWORD /d 40 /f"), null),
+
+                // remove uneffective registry values
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender"" /v DisableAntiSpyware /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Microsoft Antimalware"" /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows Defender\Real-Time Protection"" /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\MRT"" /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\SmartScreen"" /v ConfigureAppInstallControlEnabled /t REG_DWORD /d 1 /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\SmartScreen"" /v ConfigureAppInstallControl /t REG_SZ /d Anywhere /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg delete ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Associations"" /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg delete ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\Attachments"" /f"), null),
+                ("Removing uneffective registry values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows Defender\Signature Updates"" /f"), null),
+            
+                // enable "smart screen for microsoft store apps"
+                (@"Enabling ""SmartScreen for Microsoft Store apps""", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\AppHost"" /v EnableWebContentEvaluation /t REG_DWORD /d 1 /f"), null),
+                
+                // enable "cloud-delivered protection"
+                (@"Enabling ""Cloud-delivered protection""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Spynet"" /v SpyNetReporting /t REG_DWORD /d 2 /f"), null),
+                
+                // enable "automatic sample submission"
+                (@"Enabling ""Automatic sample submission""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Spynet"" /v SubmitSamplesConsent /t REG_DWORD /d 1 /f"), null),
+                
+                // enable "check apps and files"
+                (@"Enabling ""Check apps and files""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer"" /v SmartScreenEnabled /t REG_SZ /d Warn /f"), null),
+                
+                // enable "smart screen for microsoft edge"
+                (@"Enabling ""SmartScreen for Microsoft Edge""", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Edge\SmartScreenEnabled"" /ve /t REG_DWORD /d 1 /f"), null),
+                
+                // enable "phishing protection"
+                (@"Enabling ""Phishing protection""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\WTDS\Components"" /v ServiceEnabled /f"), null),
+                
+                // remove "configure windows defender smartscreen" policy
+                (@"Removing ""Configure Windows Defender SmartScreen"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\System"" /f"), null),
+                
+                // remove "configure windows defender smartscreen" policy
+                (@"Removing ""Configure Windows Defender SmartScreen"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg delete ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\System"" /v EnableSmartScreen /f"), null),
+                
+                // remove "configure windows defender smartscreen" policy
+                (@"Removing ""Configure Windows Defender SmartScreen"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\MicrosoftEdge\PhishingFilter"" /v EnabledV9 /t REG_DWORD /d 0 /f"), null),
+            
+                // enable microcode updates
+                ("Enabling microcode updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c ren C:\Windows\System32\mcupdate_GenuineIntel.dlll mcupdate_GenuineIntel.dll"), null),
+                ("Enabling microcode updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c ren C:\Windows\System32\mcupdate_AuthenticAMD.dlll mcupdate_AuthenticAMD.dll"), null),
+
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
