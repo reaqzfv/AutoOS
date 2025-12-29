@@ -185,6 +185,9 @@ namespace AutoOS.Views.Settings
                 ("Enabling microcode updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c ren C:\Windows\System32\mcupdate_GenuineIntel.dlll mcupdate_GenuineIntel.dll"), null),
                 ("Enabling microcode updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c ren C:\Windows\System32\mcupdate_AuthenticAMD.dlll mcupdate_AuthenticAMD.dll"), null),
 
+                // disable large mtu
+                ("Disabling large MTU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ipv4 set gl loopbacklargemtu=disable"), null),
+                ("Disabling large MTU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"netsh int ipv6 set gl loopbacklargemtu=disable"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
