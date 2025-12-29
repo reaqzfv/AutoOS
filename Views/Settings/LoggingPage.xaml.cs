@@ -172,7 +172,7 @@ public sealed partial class LoggingPage : Page
                 HorizontalAlignment = HorizontalAlignment.Right
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
         }
         else
         {

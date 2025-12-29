@@ -63,7 +63,7 @@ public static partial class GamesStage
             ("Disabling EasyAntiCheat startup entry", async () => await ProcessActions.Sleep(1000), () => Fortnite == true),
         
             // disable fullscreen optimizations for fortnite
-            ("Disabling fullscreen optimizations for Fortnite", async () => await ProcessActions.RunNsudo("CurrentUser", $@"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"" /v ""{fortnitePath}\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe"" /t REG_SZ /d ""~ DISABLEDXMAXIMIZEDWINDOWEDMODE HIGHDPIAWARE"" /f"), () => Fortnite == true),
+            ("Disabling fullscreen optimizations for Fortnite", async () => await ProcessActions.RunNsudo("CurrentUser", $@"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers"" /v ""{fortnitePath}\FortniteGame\Binaries\Win64\FortniteClient-Win64-Shipping.exe"" /t REG_SZ /d ""~ DISABLEDXMAXIMIZEDWINDOWEDMODE"" /f"), () => Fortnite == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

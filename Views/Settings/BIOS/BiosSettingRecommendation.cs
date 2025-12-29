@@ -34,6 +34,7 @@ public static class BiosSettingRecommendationsList
 
     public static readonly List<BiosSettingRecommendation> Rules =
     [
+        // INTEL
         new BiosSettingRecommendation { SetupQuestion = "3DMark01 Enhancement", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "A.I. XMP Booster 0", Type = "Option", RecommendedOption = "Disabled" },
         new BiosSettingRecommendation { SetupQuestion = "ACPI D3Cold Support", Type = "Option", RecommendedOption = "Disabled" },

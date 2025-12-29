@@ -64,7 +64,7 @@ public sealed partial class ServicesPage : Page
                     HorizontalAlignment = HorizontalAlignment.Right
                 }
             };
-            ((Button)infoBar.ActionButton).Click += (s, args) => Process.Start("shutdown", "/r /f /t 0");
+            ((Button)infoBar.ActionButton).Click += (s, args) => Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -143,7 +143,7 @@ public sealed partial class ServicesPage : Page
                 HorizontalAlignment = HorizontalAlignment.Right
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
         }
         else
         {
@@ -274,7 +274,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -421,7 +421,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -563,7 +563,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -705,7 +705,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -857,7 +857,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -997,7 +997,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }
@@ -1157,7 +1157,7 @@ public sealed partial class ServicesPage : Page
                 }
             };
             ((Button)infoBar.ActionButton).Click += (s, args) =>
-            Process.Start("shutdown", "/r /f /t 0");
+            Process.Start(new ProcessStartInfo("shutdown", "/r /f /t 0") { CreateNoWindow = true });
 
             ServiceInfo.Children.Add(infoBar);
         }

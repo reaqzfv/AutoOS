@@ -16,7 +16,7 @@ namespace AutoOS.Views.Installer
         {
             InitializeComponent();
             #if !DEBUG
-            this.Loaded += HomeLandingPage_Loaded;
+                Loaded += HomeLandingPage_Loaded;
             #endif
         }
 
