@@ -206,7 +206,7 @@ dotnet nuget add source https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_pack
 
 If the debugger is not attaching to the process you sadly are required to set EnableLua to 0. This has been a problem for 5 years and Microsoft hasn't provided a fix:
 ```bat
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 1 /f
+reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA /t REG_DWORD /d 0 /f
 ```
 
 ## 🙏 Credits
