@@ -102,6 +102,7 @@ public static class PreparingStage
     public static bool? Steam;
     public static bool? SteamGames;
     public static bool? RiotClient;
+    public static bool? EA;
 
     public static int? PCores;
 
@@ -220,6 +221,7 @@ public static class PreparingStage
             EpicGames = (localSettings.Values["Launchers"]?.ToString().Contains("Epic Games") ?? false);
             Steam = (localSettings.Values["Launchers"]?.ToString().Contains("Steam") ?? false);
             RiotClient = (localSettings.Values["Launchers"]?.ToString().Contains("Riot Client") ?? false);
+            EA = (localSettings.Values["Launchers"]?.ToString().Contains("EA") ?? false);
 
             var cpuSetsInfo = CpuDetectionService.GetCpuSets();
             var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);
