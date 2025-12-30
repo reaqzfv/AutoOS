@@ -46,6 +46,7 @@ public static class ApplicationStage
         bool? Steam = PreparingStage.Steam;
         bool? SteamGames = PreparingStage.SteamGames;
         bool? RiotClient = PreparingStage.RiotClient;
+        bool? EA = PreparingStage.EA;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -514,7 +515,20 @@ public static class ApplicationStage
             ("Please log in to your Riot account", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Riot Games\Riot Client\RiotClientServices.exe", WindowStyle = ProcessWindowStyle.Maximized }); while (Process.GetProcessesByName("RiotClientCrashHandler").Length == 0 || Process.GetProcessesByName("Riot Client").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("Riot Client").Length > 0) await Task.Delay(500); }), () => RiotClient == true),
 
             // disable riot client startup entries
-            ("Disabling Riot Client startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""RiotClient"" /t REG_BINARY /d ""01"" /f"), () => RiotClient == true)
+            ("Disabling Riot Client startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""RiotClient"" /t REG_BINARY /d ""01"" /f"), () => RiotClient == true),
+
+            // download ea
+            ("Downloading EA", async () => await ProcessActions.RunDownload("https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe", Path.GetTempPath(), "EAappInstaller.exe"), () => EA == true),
+
+            // install ea
+            ("Installing EA", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\EAappInstaller.exe"" /s"), () => EA == true),
+
+            // log in to ea
+            ("Please log in to your EA account", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files\Electronic Arts\EA Desktop\EA Desktop\EADesktop.exe", WindowStyle = ProcessWindowStyle.Maximized }); while (Process.GetProcessesByName("EADesktop").Length > 0) await Task.Delay(500); }), () => EA == true),
+
+            // remove ea desktop shortcut
+            ("Removing EA desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\EA.lnk"""), () => EA == true),
+
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
