@@ -51,6 +51,7 @@ public static class ApplicationStage
         bool? BattleNet = PreparingStage.BattleNet;
         bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
         bool? RockstarGamesLauncher = PreparingStage.RockstarGamesLauncher;
+        bool? FiveM = PreparingStage.FiveM;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -685,6 +686,23 @@ public static class ApplicationStage
 
             // log in to rockstar games launcher
             ("Please log in to your Rockstar Games Launcher account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("Launcher").Length == 1) await Task.Delay(500); }), () => RockstarGamesLauncher == true),
+        
+            // download fivem
+            ("Downloading FiveM", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/tn48g2m1qisdsir80ixu8/FiveM.zip?rlkey=c54qzh36fr3p8yb09q4zlt0gi&st=ca6wjcgx&dl=0", Path.GetTempPath(), "FiveM.zip"), () => FiveM == true),
+
+            // install fivem
+            ("Installing FiveM", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "FiveM.zip"), Path.Combine(Path.GetTempPath(), "FiveM")), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\FiveM"" ""%LOCALAPPDATA%\FiveM"""), null),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayName /t REG_SZ /d ""FiveM"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayIcon /t REG_SZ /d ""C:\Users\user\AppData\Local\FiveM\FiveM.exe,0"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v HelpLink /t REG_SZ /d ""https://cfx.re/"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v InstallLocation /t REG_SZ /d ""C:\Users\user\AppData\Local\FiveM"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v Publisher /t REG_SZ /d ""Cfx.re"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v UninstallString /t REG_SZ /d ""\""C:\Users\user\AppData\Local\FiveM\FiveM.exe\"" -uninstall app"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v URLInfoAbout /t REG_SZ /d ""https://cfx.re/"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v NoModify /t REG_DWORD /d 1 /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v NoRepair /t REG_DWORD /d 1 /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunPowerShell(@"$s=New-Object -ComObject WScript.Shell; $p=[System.IO.Path]::Combine($env:APPDATA,'Microsoft\Windows\Start Menu\Programs'); $sc1=$s.CreateShortcut([System.IO.Path]::Combine($p,'FiveM.lnk')); $sc1.TargetPath=[System.IO.Path]::Combine($env:LOCALAPPDATA,'FiveM\FiveM.exe'); $sc1.Description='FiveM is a modification framework based on the Cfx.re platform'; $sc1.Save(); $sc2=$s.CreateShortcut([System.IO.Path]::Combine($p,'FiveM - Cfx.re Development Kit (FxDK).lnk')); $sc2.TargetPath=[System.IO.Path]::Combine($env:LOCALAPPDATA,'FiveM\FiveM - Cfx.re Development Kit (FxDK).lnk'); $sc2.Save()"), () => FiveM == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
