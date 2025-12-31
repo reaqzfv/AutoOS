@@ -49,6 +49,7 @@ public static class ApplicationStage
         bool? EA = PreparingStage.EA;
         bool? UbisoftConnect = PreparingStage.UbisoftConnect;
         bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
+        bool? BattleNet = PreparingStage.BattleNet;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -561,6 +562,22 @@ public static class ApplicationStage
 
             // remove minecraft launcher desktop shortcut
             ("Removing Minecraft Launcher desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Minecraft Launcher.lnk"""), () => MinecraftLauncher == true),
+
+            // download battle.net
+            ("Downloading Battle.Net", async () => await ProcessActions.RunDownload("https://downloader.battle.net//download/getInstallerForGame?os=win&gameProgram=BATTLENET_APP&version=Live", Path.GetTempPath(), "Battle.net-Setup.exe"), () => BattleNet == true),
+
+            // install battle.net
+            ("Installing Battle.Net", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(Path.GetTempPath(), "Battle.net-Setup.exe"), Arguments = @"--lang=enUS --installpath=""C:\Program Files (x86)\Battle.net""" })!.WaitForExit()), () => BattleNet == true),
+
+            // log in to battle.net
+            ("Please log in to your Battle.Net account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("Battle.net").Length >= 1) await Task.Delay(500); }), () => BattleNet == true),
+
+            // disable battle.net startup entries
+            ("Disabling Battle.Net startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\battlenet_helpersvc"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop battlenet_helpersvc"), () => BattleNet == true),
+            ("Disabling Battle.Net startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Battle.Net"" /t REG_BINARY /d ""01"" /f"), () => BattleNet == true),
+
+            // remove battle.net desktop shortcut
+            ("Removing Battle.Net desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Battle.net.lnk"""), () => BattleNet == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
