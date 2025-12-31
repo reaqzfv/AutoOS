@@ -47,6 +47,7 @@ public static class ApplicationStage
         bool? SteamGames = PreparingStage.SteamGames;
         bool? RiotClient = PreparingStage.RiotClient;
         bool? EA = PreparingStage.EA;
+        bool? UbisoftConnect = PreparingStage.UbisoftConnect;
         bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
 
         InstallPage.Status.Text = "Configuring Applications...";
@@ -503,7 +504,7 @@ public static class ApplicationStage
             ("Removing Steam desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Steam.lnk"""), () => Steam == true),
 
             // disable steam startup entries
-            ("Disabling Steam startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Steam Client Service"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop Steam Client Service"), () => Steam == true),
+            ("Disabling Steam startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\Steam Client Service"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop ""Steam Client Service"""), () => Steam == true),
             ("Disabling Steam startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""Steam"" /t REG_BINARY /d ""01"" /f"), () => Steam == true),
 
             // download riot client
@@ -530,6 +531,22 @@ public static class ApplicationStage
             // remove ea desktop shortcut
             ("Removing EA desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\EA.lnk"""), () => EA == true),
 
+            // download ubisoft connect
+            ("Downloading Ubisoft Connect", async () => await ProcessActions.RunDownload("https://static3.cdn.ubi.com/orbit/launcher_installer/UbisoftConnectInstaller.exe", Path.GetTempPath(), "UbisoftConnectInstaller.exe"), () => UbisoftConnect == true),
+
+            // install ubisoft connect
+            ("Installing Ubisoft Connect", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\UbisoftConnectInstaller.exe"" /S"), () => UbisoftConnect == true),
+
+            // log in to ubisoft connect
+            ("Please log in to your Ubisoft Connect account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files (x86)\Ubisoft\Ubisoft Game Launcher\upc.exe") }) !.WaitForExitAsync()), () => UbisoftConnect == true),
+
+            // remove ubisoft connect desktop shortcut 
+            ("Removing Ubisoft Connect desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%HOMEPATH%\Desktop\Ubisoft Connect.lnk"""), () => UbisoftConnect == true),
+
+            // disable ubisoft connect startup entries
+            ("Disabling Ubisoft Connect startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /change /tn ""\Ubisoft\Ubisoft Connect Background Update"" /disable"), () => UbisoftConnect == true),
+            ("Disabling Ubisoft Connect startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\UpcElevationService"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop UpcElevationService"), () => UbisoftConnect == true),
+ 
             // download minecraft launcher
             ("Downloading Minecraft Launcher", async () => await ProcessActions.RunDownload("https://launcher.mojang.com/download/MinecraftInstaller.msi", Path.GetTempPath(), "MinecraftInstaller.msi"), () => MinecraftLauncher == true),
 
