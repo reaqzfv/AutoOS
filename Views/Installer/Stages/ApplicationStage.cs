@@ -47,6 +47,7 @@ public static class ApplicationStage
         bool? SteamGames = PreparingStage.SteamGames;
         bool? RiotClient = PreparingStage.RiotClient;
         bool? EA = PreparingStage.EA;
+        bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -529,6 +530,20 @@ public static class ApplicationStage
             // remove ea desktop shortcut
             ("Removing EA desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\EA.lnk"""), () => EA == true),
 
+            // download minecraft launcher
+            ("Downloading Minecraft Launcher", async () => await ProcessActions.RunDownload("https://launcher.mojang.com/download/MinecraftInstaller.msi", Path.GetTempPath(), "MinecraftInstaller.msi"), () => MinecraftLauncher == true),
+
+            // install minecraft launcher
+            ("Installing Minecraft Launcher", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\MinecraftInstaller.msi"" /qn"), () => MinecraftLauncher == true),
+
+            // update minecraft launcher
+            ("Updating Minecraft Launcher", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe" }); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(100); }), () => MinecraftLauncher == true),
+
+            // log in to minecraft launcher
+            ("Please log in to your Minecraft Launcher account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("MinecraftLauncher").Length > 1) await Task.Delay(500); }), () => MinecraftLauncher == true),
+
+            // remove minecraft launcher desktop shortcut
+            ("Removing Minecraft Launcher desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Minecraft Launcher.lnk"""), () => MinecraftLauncher == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
