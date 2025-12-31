@@ -70,7 +70,8 @@ public sealed partial class ApplicationsPage : Page
             new() { Text = "Riot Client", ImageSource = "ms-appx:///Assets/Fluent/RiotClient.png" },
             new() { Text = "EA", ImageSource = "ms-appx:///Assets/Fluent/EA.png" },
             new() { Text = "Ubisoft Connect", ImageSource = "ms-appx:///Assets/Fluent/UbisoftConnect.png" },
-            new() { Text = "Minecraft Launcher", ImageSource = "ms-appx:///Assets/Fluent/MinecraftLauncher.png" }
+            new() { Text = "Minecraft Launcher", ImageSource = "ms-appx:///Assets/Fluent/MinecraftLauncher.png" },
+            new() { Text = "Rockstar Games Launcher", ImageSource = "ms-appx:///Assets/Fluent/RockstarGamesLauncher.png" }
         };
     }
 

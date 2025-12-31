@@ -105,6 +105,7 @@ public static class PreparingStage
     public static bool? EA;
     public static bool? UbisoftConnect;
     public static bool? MinecraftLauncher;
+    public static bool? RockstarGamesLauncher;
 
     public static int? PCores;
 
@@ -226,6 +227,7 @@ public static class PreparingStage
             EA = (localSettings.Values["Launchers"]?.ToString().Contains("EA") ?? false);
             UbisoftConnect = (localSettings.Values["Launchers"]?.ToString().Contains("Ubisoft Connect") ?? false);
             MinecraftLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Minecraft Launcher") ?? false);
+            RockstarGamesLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Rockstar Games Launcher") ?? false);
 
             var cpuSetsInfo = CpuDetectionService.GetCpuSets();
             var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);
