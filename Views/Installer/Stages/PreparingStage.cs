@@ -108,6 +108,7 @@ public static class PreparingStage
     public static bool? MinecraftLauncher;
     public static bool? RockstarGamesLauncher;
     public static bool? FiveM;
+    public static bool? FACEIT;
 
     public static int? PCores;
 
@@ -232,6 +233,7 @@ public static class PreparingStage
             MinecraftLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Minecraft Launcher") ?? false);
             RockstarGamesLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Rockstar Games Launcher") ?? false);
             FiveM = (localSettings.Values["Launchers"]?.ToString().Contains("FiveM") ?? false);
+            FACEIT = (localSettings.Values["Launchers"]?.ToString().Contains("FACEIT") ?? false);
 
             var cpuSetsInfo = CpuDetectionService.GetCpuSets();
             var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);

@@ -73,7 +73,8 @@ public sealed partial class ApplicationsPage : Page
             new() { Text = "Battle.Net", ImageSource = "ms-appx:///Assets/Fluent/BattleNet.png" },
             new() { Text = "Minecraft Launcher", ImageSource = "ms-appx:///Assets/Fluent/MinecraftLauncher.png" },
             new() { Text = "Rockstar Games Launcher", ImageSource = "ms-appx:///Assets/Fluent/RockstarGamesLauncher.png" },
-            new() { Text = "FiveM", ImageSource = "ms-appx:///Assets/Fluent/FiveM.jpg" }
+            new() { Text = "FiveM", ImageSource = "ms-appx:///Assets/Fluent/FiveM.jpg" },
+            new() { Text = "FACEIT", ImageSource = "ms-appx:///Assets/Fluent/FACEIT.png" }
         };
     }
 

@@ -33,7 +33,7 @@
                                   SelectionMode="Multiple">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="80"
+                                    <Grid Height="85"
                                           Margin="24">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
@@ -72,7 +72,7 @@
                                   SelectionMode="Multiple">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="80"
+                                    <Grid Height="85"
                                           Margin="24">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
@@ -111,7 +111,7 @@
                                   SelectionMode="Multiple">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="80"
+                                    <Grid Height="85"
                                           Margin="24">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
@@ -150,7 +150,7 @@
                                   SelectionMode="Multiple">
                             <GridView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="80"
+                                    <Grid Height="85"
                                           Margin="24">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="*" />
