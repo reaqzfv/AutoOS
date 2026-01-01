@@ -19,7 +19,7 @@ namespace AutoOS.Helpers
 
         public const string EpicGamesInstalledGamesPath = @"C:\ProgramData\Epic\UnrealEngineLauncher\LauncherInstalled.dat";
 
-        public const string EpicGamesMainfestDir = @"C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests";
+        public const string EpicGamesManifestDir = @"C:\ProgramData\Epic\EpicGamesLauncher\Data\Manifests";
 
         private static readonly HttpClient httpClient = new();
         private static readonly HttpClient loginClient = new();
@@ -408,7 +408,7 @@ namespace AutoOS.Helpers
 
         public static async Task LoadGames()
         {
-            if (File.Exists(EpicGamesPath) && Directory.Exists(EpicGamesMainfestDir))
+            if (File.Exists(EpicGamesPath) && Directory.Exists(EpicGamesManifestDir))
             {
                 // remove previous games
                 foreach (var item in GamesPage.Instance.Games.Items.OfType<Views.Settings.Games.HeaderCarouselItem>().Where(item => item.Launcher == "Epic Games").ToList())
@@ -477,7 +477,7 @@ namespace AutoOS.Helpers
                 };
 
                 // for each manifest
-                await Parallel.ForEachAsync(Directory.GetFiles(EpicGamesMainfestDir, "*.item", SearchOption.TopDirectoryOnly), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 }, async (file, _) =>
+                await Parallel.ForEachAsync(Directory.GetFiles(EpicGamesManifestDir, "*.item", SearchOption.TopDirectoryOnly), new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 2 }, async (file, _) =>
                 {
                     try
                     {
