@@ -213,13 +213,13 @@ public static class GraphicsStage
             ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdfendrmgr"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdfendrmgr"""), () => AMD_RX5000_RX9000 == true),
             ("Disabling unnecessary services", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\amdlog"" /v Start /t REG_DWORD /d 4 /f & sc stop ""amdlog"""), () => AMD_RX5000_RX9000 == true),
 
-            // disable the nvidia tray icon
-            ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\NvTray"" /v StartOnLogin /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
-            ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""HideXGpuTrayIcon"" /t REG_DWORD /d 1 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
-            ("Disabling the NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v ""ShowTrayIcon"" /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            // disable nvidia tray icon
+            ("Disabling NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\NvTray"" /v StartOnLogin /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            ("Disabling NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""HideXGpuTrayIcon"" /t REG_DWORD /d 1 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            ("Disabling NVIDIA tray icon", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v ""ShowTrayIcon"" /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
 
-            // disable the dlss indicator
-            ("Disabling the DLSS Indicator", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\NGXCore"" /v ""ShowDlssIndicator"" /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            // disable dlss indicator
+            ("Disabling DLSS Indicator", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\NGXCore"" /v ""ShowDlssIndicator"" /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
 
             // disable automatic updates
             ("Disabling automatic updates", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\NVIDIA Corporation\Global\CoProcManager"" /v AutoDownload /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
@@ -239,11 +239,11 @@ public static class GraphicsStage
             ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogEventEntries /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
             ("Disabling logging", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\nvlddmkm\Parameters"" /v LogErrorEntries /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
 
-            // use the advanced 3d image settings
-            ("Using the advanced 3D image settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation\Global\NVTweak"" /v ""Gestalt"" /t REG_DWORD /d 515 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            // use advanced 3d image settings
+            ("Using advanced 3D image settings", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\NVIDIA Corporation\Global\NVTweak"" /v ""Gestalt"" /t REG_DWORD /d 515 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
 
-            // import the optimized nvidia profile
-            ("Importing the optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
+            // import optimized nvidia profile
+            ("Importing optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),
 
             // configure physx to use gpu
             ("Configuring PhysX to use GPU", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\nvlddmkm\Global\NVTweak"" /v ""NvCplPhysxAuto"" /t REG_DWORD /d 0 /f"), () => NVIDIA_GTX16_RTX50 == true  || NVIDIA_GTX900_GTX10 == true),

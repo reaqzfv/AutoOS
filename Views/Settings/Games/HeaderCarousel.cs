@@ -1714,25 +1714,63 @@ public partial class HeaderCarousel : ItemsControl
 
     private void RestartProcesses_Click(object sender, RoutedEventArgs e)
     {
-        // start audioendpoint builder
-        using var audioService = new ServiceController("AudioEndpointBuilder");
-        if (audioService.Status == ServiceControllerStatus.Stopped)
+        // restart services
+        var serviceNames = new[]
         {
-            audioService.Start();
-        }
+            "AudioEndpointBuilder",
+            "AppXSvc",
+            "Appinfo",
+            "CaptureService",
+            "cbdhsvc",
+            "ClipSvc",
+            "CryptSvc",
+            "DevicesFlowUserSvc",
+            "DeviceAssociationService",
+            "Dhcp",
+            "DispBrokerDesktopSvc",
+            //"Dnscache",
+            "DoSvc",
+            "gpsvc",
+            "InstallService",
+            "KeyIso",
+            "LicenseManager",
+            "lfsvc",
+            "msiserver",
+            "Netman",
+            "NetSetupSvc",
+            "netprofm",
+            "NgcCtnrSvc",
+            "NgcSvc",
+            "nsi",
+            "ProfSvc",
+            "StateRepository",
+            //"TextInputManagementService",
+            "TrustedInstaller",
+            "UdkUserSvc",
+            "UserManager",
+            "WFDSConMgrSvc",
+            "Windhawk",
+            "WinHttpAutoProxySvc",
+            "Winmgmt",
+            "Wcmsvc"
+        };
 
-        //// launch ctfmon
-        //Process.Start("ctfmon.exe");
+        foreach (var serviceName in serviceNames)
+        {
+            try
+            {
+                using var sc = new ServiceController(serviceName);
+                if (sc.Status == ServiceControllerStatus.Stopped)
+                {
+                    sc.Start();
+                    sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(10));
+                }
+            }
+            catch { }
+        }
 
         // launch explorer
         Process.Start("explorer.exe");
-
-        // start windhawk service
-        using var windhawkService = new ServiceController("Windhawk");
-        if (windhawkService.Status == ServiceControllerStatus.Stopped)
-        {
-            windhawkService.Start();
-        }
     }
 
     private DispatcherTimer gameWatcherTimer;

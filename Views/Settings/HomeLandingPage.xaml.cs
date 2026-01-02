@@ -9,6 +9,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Windows.Storage;
+using System.Diagnostics;
 
 namespace AutoOS.Views.Settings
 {
@@ -84,7 +85,24 @@ namespace AutoOS.Views.Settings
                 localSettings.Values["Version"] = currentVersion;
                 #if !DEBUG
                     await LogDiscordUser();
-                #endif
+                    StatusText.Text = "Restarting in 3...";
+                    await Task.Delay(1000);
+                    StatusText.Text = "Restarting in 2...";
+                    await Task.Delay(1000);
+                    StatusText.Text = "Restarting in 1...";
+                    await Task.Delay(1000);
+                    StatusText.Text = "Restarting...";
+                    await Task.Delay(750);
+
+                    ProcessStartInfo processStartInfo = new()
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/c shutdown /r /t 0",
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                    };
+                    Process.Start(processStartInfo);
+            #endif
             }
         }
 
@@ -114,8 +132,24 @@ namespace AutoOS.Views.Settings
             _ = updater.ShowAsync();
 
             string previousTitle = string.Empty;
-            bool Discord = Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Discord"));
+            bool NVIDIA = false;
 
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController"))
+            {
+                foreach (var obj in searcher.Get())
+                {
+                    string name = obj["Name"]?.ToString();
+                    string version = obj["DriverVersion"]?.ToString();
+
+                    if (name != null)
+                    {
+                        if (name.Contains("NVIDIA", StringComparison.OrdinalIgnoreCase))
+                        {
+                            NVIDIA = true;
+                        }
+                    }
+                }
+            }
             var actions = new List<(string Title, Func<Task> Action, Func<bool> Condition)>
             {
                 // set "inclusion list for moderate risk file types"" policy to ".bat;.cmd;.vbs;.ps1;.reg;.js;.exe;.msi;"
@@ -124,6 +158,9 @@ namespace AutoOS.Views.Settings
                 // reset hosts file
                 ("Resetting hosts file", async () => await Task.Run(() => File.Copy(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Scripts", "hosts"), @"C:\Windows\System32\drivers\etc\hosts", true)), null),
                 ("Resetting hosts file", async () => await ProcessActions.RunNsudo("CurrentUser", @"ipconfig /flushdns"), null),
+
+                // import optimized nvidia profile
+                ("Importing optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"),  () => NVIDIA == true),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -159,7 +196,7 @@ namespace AutoOS.Views.Settings
                     }
 
                     ProgressBar.Value += incrementPerTitle;
-                    await Task.Delay(150);
+                    await Task.Delay(500);
                     currentGroup.Clear();
                 }
 
@@ -185,7 +222,7 @@ namespace AutoOS.Views.Settings
                 ProgressBar.Value += incrementPerTitle;
             }
 
-            updater.IsPrimaryButtonEnabled = true;
+            //updater.IsPrimaryButtonEnabled = true;
         }
 
         public async Task RunDownload(string url, string path, string file = null)
