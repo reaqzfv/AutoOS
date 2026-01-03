@@ -32,6 +32,13 @@ public static class ApplicationStage
         bool? Outlook = PreparingStage.Outlook;
         bool? OneDrive = PreparingStage.OneDrive;
 
+        bool? VisualStudio = PreparingStage.VisualStudio;
+        bool? VisualStudioCode = PreparingStage.VisualStudioCode;
+        bool? Git = PreparingStage.Git;
+        bool? Python = PreparingStage.Python;
+        bool? Nodejs = PreparingStage.Nodejs;
+        bool? Trello = PreparingStage.Trello;
+
         bool? AppleMusic = PreparingStage.AppleMusic;
         bool? Tidal = PreparingStage.Tidal;
         bool? Qobuz = PreparingStage.Qobuz;
@@ -62,6 +69,7 @@ public static class ApplicationStage
         string icloudVersion = "";
         string bitwardenVersion = "";
         string onePasswordVersion = "";
+        string trelloVersion = "";
         string dolbyAccessVersion = "";
         string appleMusicVersion = "";
         string tidalVersion = "";
@@ -278,6 +286,59 @@ public static class ApplicationStage
 
             // disable office telemetry
             ("Disabling Office telemetry", async () => await ProcessActions.RunPowerShellScript("disableofficetelemetry.ps1", ""), () => Word == true || Excel == true || PowerPoint == true || OneNote == true || Teams == true || Outlook == true || OneDrive == true),
+
+            // download visual studio
+            ("Downloading Visual Studio", async () => await ProcessActions.RunDownload("https://aka.ms/vs/stable/vs_community.exe", Path.GetTempPath(), "vs_Community.exe"), () => VisualStudio == true),
+
+            // install visual studio
+            ("Installing Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\vs_Community.exe"" --add Microsoft.VisualStudio.Workload.CoreEditor --includeRecommended --quiet --wait"), () => VisualStudio ==  true),
+
+            // download mica visual studio
+            ("Downloading Visual Studio", async () => await ProcessActions.RunDownload("https://github.com/Tech5G5G/Mica-Visual-Studio/releases/latest/download/MicaVisualStudio.vsix", Path.GetTempPath(), "MicaVisualStudio.vsix"), () => VisualStudio == true),
+
+            // install mica visual studio
+            ("Installing Mica Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin ""%TEMP%\MicaVisualStudio.vsix"""), () => VisualStudio ==  true),
+
+            // download xaml styler
+            ("Downloading XAML Styler", async () => await ProcessActions.RunDownload("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/TeamXavalon/vsextensions/XAMLStyler2022/3.2501.8/vspackage", Path.GetTempPath(), "XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
+
+            // install xaml styler
+            ("Installing XAML Styler", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin ""%TEMP%\XamlStyler.Extension.Windows.VS2022.vsix"""), () => VisualStudio ==  true),
+
+            // download visual studio code
+            ("Downloading Visual Studio Code", async () => await ProcessActions.RunDownload("https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user", Path.GetTempPath(), "VSCodeUserSetup-x64.exe"), () => VisualStudioCode == true),
+
+            // install visual studio code
+            ("Installing Visual Studio Code", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\VSCodeUserSetup-x64.exe"" /VERYSILENT /NORESTART /MERGETASKS=!runcode"), () => VisualStudioCode ==  true),
+            
+            // download git
+            ("Downloading Git", async () => await ProcessActions.RunDownload("https://github.com/git-for-windows/git/releases/download/v2.52.0.windows.1/Git-2.52.0-64-bit.exe", Path.GetTempPath(), "Git64-bit.exe"), () => Git == true),
+
+            // install git
+            ("Installing Git", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\Git64-bit.exe"" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART"), () => Git ==  true),
+
+            // download pyton
+            ("Downloading Pyton", async () => await ProcessActions.RunDownload("https://www.python.org/ftp/python/3.14.2/python-3.14.2-amd64.exe", Path.GetTempPath(), "python-3.14.2-amd64.exe"), () => Python == true),
+
+            // install python
+            ("Installing Python", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\python-3.14.2-amd64.exe"" /quiet InstallAllUsers=1 PrependPath=1"), () => Python == true),
+           
+            // download nodejs
+            ("Downloading Node.js", async () => await ProcessActions.RunDownload("https://nodejs.org/dist/v24.12.0/node-v24.12.0-x64.msi", Path.GetTempPath(), "node-v24.12.0-x64.msi"), () => Nodejs == true),
+
+            // install nodejs
+            ("Installing Node.js", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\node-v24.12.0-x64.msi"" /qn"), () => Nodejs ==  true),
+
+            // download trello
+            ("Downloading Trello", async () => await ProcessActions.RunMicrosoftStoreDownload("45273LiamForsyth.PawsforTrello", "ccb2a6eb-4608-4202-a709-929b87799a92", "appx", 1, false), () => Trello == true),
+
+            // install trello
+            ("Installing Trello", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\45273LiamForsyth.PawsforTrello (Package)\"" | Select-Object -First 1).FullName"), () => Trello == true),
+            ("Installing Trello", async () => trelloVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"45273LiamForsyth.PawsforTrello\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => Trello == true),
+
+            // log in to trello
+            ("Please log in to your Trello account", async () => await ProcessActions.Sleep(1000), () => Trello == true),
+            ("Please log in to your Trello account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\u45273LiamForsyth.PawsforTrello_" + trelloVersion + "_x64__7pb5ddty8z1pa\app", "Trello.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Trello == true),
 
             // download dolby access
             ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess", "61e179bf-d7a6-4201-aa9b-88cf1bcbc472", "msixbundle", 1, false), () => AppleMusic == true),
