@@ -55,8 +55,11 @@ public static class ApplicationStage
         bool? RiotClient = PreparingStage.RiotClient;
         bool? EA = PreparingStage.EA;
         bool? UbisoftConnect = PreparingStage.UbisoftConnect;
-        bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
         bool? BattleNet = PreparingStage.BattleNet;
+        bool? MinecraftLauncher = PreparingStage.MinecraftLauncher;
+        bool? RockstarGamesLauncher = PreparingStage.RockstarGamesLauncher;
+        bool? FiveM = PreparingStage.FiveM;
+        bool? FACEIT = PreparingStage.FACEIT;
 
         InstallPage.Status.Text = "Configuring Applications...";
 
@@ -75,6 +78,7 @@ public static class ApplicationStage
         string spotifyVersion = "";
         string discordVersion = "";
         string whatsAppVersion = "";
+        string rockstarGamesLauncherVersion = "";
 
         string scheduleMode = ScheduleMode switch
         {
@@ -578,8 +582,8 @@ public static class ApplicationStage
             // log in to riot client
             ("Please log in to your Riot account", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Riot Games\Riot Client\RiotClientServices.exe", WindowStyle = ProcessWindowStyle.Maximized }); while (Process.GetProcessesByName("RiotClientCrashHandler").Length == 0 || Process.GetProcessesByName("Riot Client").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("Riot Client").Length > 0) await Task.Delay(500); }), () => RiotClient == true),
 
-            // disable riot client startup entries
-            ("Disabling Riot Client startup entries", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""RiotClient"" /t REG_BINARY /d ""01"" /f"), () => RiotClient == true),
+            // disable riot client startup entry
+            ("Disabling Riot Client startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""RiotClient"" /t REG_BINARY /d ""01"" /f"), () => RiotClient == true),
 
             // download ea
             ("Downloading EA", async () => await ProcessActions.RunDownload("https://origin-a.akamaihd.net/EA-Desktop-Client-Download/installer-releases/EAappInstaller.exe", Path.GetTempPath(), "EAappInstaller.exe"), () => EA == true),
@@ -608,21 +612,6 @@ public static class ApplicationStage
             // disable ubisoft connect startup entries
             ("Disabling Ubisoft Connect startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"schtasks /change /tn ""\Ubisoft\Ubisoft Connect Background Update"" /disable"), () => UbisoftConnect == true),
             ("Disabling Ubisoft Connect startup entries", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"cmd /c reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\UpcElevationService"" /v ""Start"" /t REG_DWORD /d 4 /f & sc stop UpcElevationService"), () => UbisoftConnect == true),
- 
-            // download minecraft launcher
-            ("Downloading Minecraft Launcher", async () => await ProcessActions.RunDownload("https://launcher.mojang.com/download/MinecraftInstaller.msi", Path.GetTempPath(), "MinecraftInstaller.msi"), () => MinecraftLauncher == true),
-
-            // install minecraft launcher
-            ("Installing Minecraft Launcher", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\MinecraftInstaller.msi"" /qn"), () => MinecraftLauncher == true),
-
-            // update minecraft launcher
-            ("Updating Minecraft Launcher", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe" }); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(100); }), () => MinecraftLauncher == true),
-
-            // log in to minecraft launcher
-            ("Please log in to your Minecraft Launcher account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("MinecraftLauncher").Length > 1) await Task.Delay(500); }), () => MinecraftLauncher == true),
-
-            // remove minecraft launcher desktop shortcut
-            ("Removing Minecraft Launcher desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Minecraft Launcher.lnk"""), () => MinecraftLauncher == true),
 
             // download battle.net
             ("Downloading Battle.Net", async () => await ProcessActions.RunDownload("https://downloader.battle.net//download/getInstallerForGame?os=win&gameProgram=BATTLENET_APP&version=Live", Path.GetTempPath(), "Battle.net-Setup.exe"), () => BattleNet == true),
@@ -639,6 +628,158 @@ public static class ApplicationStage
 
             // remove battle.net desktop shortcut
             ("Removing Battle.Net desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Battle.net.lnk"""), () => BattleNet == true),
+
+            // download minecraft launcher
+            ("Downloading Minecraft Launcher", async () => await ProcessActions.RunDownload("https://launcher.mojang.com/download/MinecraftInstaller.msi", Path.GetTempPath(), "MinecraftInstaller.msi"), () => MinecraftLauncher == true),
+
+            // install minecraft launcher
+            ("Installing Minecraft Launcher", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\MinecraftInstaller.msi"" /qn"), () => MinecraftLauncher == true),
+
+            // update minecraft launcher
+            ("Updating Minecraft Launcher", async () => await Task.Run(async () => { Process.Start(new ProcessStartInfo { FileName = @"C:\Program Files (x86)\Minecraft Launcher\MinecraftLauncher.exe" }); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 0) await Task.Delay(500); while (Process.GetProcessesByName("MinecraftLauncher").Length == 1) await Task.Delay(100); }), () => MinecraftLauncher == true),
+
+            // log in to minecraft launcher
+            ("Please log in to your Minecraft Launcher account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("MinecraftLauncher").Length > 1) await Task.Delay(500); }), () => MinecraftLauncher == true),
+
+            // remove minecraft launcher desktop shortcut
+            ("Removing Minecraft Launcher desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""C:\Users\Public\Desktop\Minecraft Launcher.lnk"""), () => MinecraftLauncher == true),
+
+            // download rockstar games launcher
+            ("Downloading Rockstar Games Launcher", async () => await ProcessActions.RunDownload("https://gamedownloads.rockstargames.com/public/installer/Rockstar-Games-Launcher.exe", Path.GetTempPath(), "Rockstar-Games-Launcher.exe"), () => RockstarGamesLauncher == true),
+            
+            // extract rockstar games launcher
+            ("Extracting Rockstar Games Launcher", async () => rockstarGamesLauncherVersion = await Task.Run(() => FileVersionInfo.GetVersionInfo(Environment.ExpandEnvironmentVariables(@"%TEMP%\Rockstar-Games-Launcher.exe")).ProductVersion), () => RockstarGamesLauncher == true),
+            ("Extracting Rockstar Games Launcher", async () => await Process.Start(new ProcessStartInfo { FileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Applications", "7-Zip", "7z.exe"), Arguments = @$"x ""{Path.Combine(Path.GetTempPath(), "Rockstar-Games-Launcher.exe")}"" -t# -aoa -bd -bb1 -o""{Path.Combine(Path.GetTempPath(), "Rockstar-Games-Launcher")}"" -y", CreateNoWindow = true })!.WaitForExitAsync(), () => RockstarGamesLauncher == true),
+            ("Extracting Rockstar Games Launcher", async () => await Task.Run(() => { Directory.CreateDirectory(@"C:\Program Files\Rockstar Games\Launcher"); Directory.CreateDirectory(@"C:\Program Files\Rockstar Games\Launcher\Redistributables\VCRed"); Directory.CreateDirectory(@"C:\Program Files\Rockstar Games\Launcher\ThirdParty\Steam"); Directory.CreateDirectory(@"C:\Program Files\Rockstar Games\Launcher\ThirdParty\Epic"); }), () => RockstarGamesLauncher == true),
+
+            // install rockstar games launcher
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\2.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-console-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\3.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-datetime-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\4.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-debug-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\5.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-errorhandling-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\6.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-file-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\7.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-file-l1-2-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\8.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-file-l2-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\9.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-handle-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\10.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-heap-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\11.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-interlocked-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\12.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-libraryloader-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\13.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-localization-l1-2-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\14.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-memory-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\15.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-namedpipe-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\16.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-processenvironment-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\17.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-processthreads-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\18.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-processthreads-l1-1-1.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\19.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-profile-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\20.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-rtlsupport-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\21.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-string-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\22.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-synch-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\23.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-synch-l1-2-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\24.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-sysinfo-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\25.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-timezone-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\26.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-core-util-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\27.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-conio-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\28.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-convert-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\29.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-environment-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\30.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-filesystem-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\31.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-heap-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\32.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-locale-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\33.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-math-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\34.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-multibyte-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\35.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-private-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\36.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-process-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\37.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-runtime-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\38.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-stdio-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\39.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-string-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\40.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-time-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\41.apisetstub"), @"C:\Program Files\Rockstar Games\Launcher\api-ms-win-crt-utility-l1-1-0.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\42.Launcher.exe"), @"C:\Program Files\Rockstar Games\Launcher\Launcher.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\43"), @"C:\Program Files\Rockstar Games\Launcher\Launcher.rpf", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\44.LauncherPatcher.exe"), @"C:\Program Files\Rockstar Games\Launcher\LauncherPatcher.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\45.dll"), @"C:\Program Files\Rockstar Games\Launcher\libovr.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\46.zip"), @"C:\Program Files\Rockstar Games\Launcher\offline.pak", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\48.RockstarService.exe"), @"C:\Program Files\Rockstar Games\Launcher\RockstarService.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\49.RockstarSteamHelper.exe"), @"C:\Program Files\Rockstar Games\Launcher\RockstarSteamHelper.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\50.ucrtbase.dll"), @"C:\Program Files\Rockstar Games\Launcher\ucrtbase.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\51.Rockstar-Games-Launcher.exe"), @"C:\Program Files\Rockstar Games\Launcher\uninstall.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\52.exe"), @"C:\Program Files\Rockstar Games\Launcher\Redistributables\VCRed\vc_redist.x64.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\53.exe"), @"C:\Program Files\Rockstar Games\Launcher\Redistributables\VCRed\vc_redist.x86.exe", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\54.steam_api.dll"), @"C:\Program Files\Rockstar Games\Launcher\ThirdParty\Steam\steam_api64.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\55.EOSSDK-Win64-Shipping.dll"), @"C:\Program Files\Rockstar Games\Launcher\ThirdParty\Epic\EOSSDK-Win64-Shipping.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\56.EOSSDK-Win64-Shipping.dll"), @"C:\Program Files\Rockstar Games\Launcher\ThirdParty\Epic\EOSSDK-Win64-Shipping-1.14.2.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await Task.Run(() => File.Copy(Path.Combine(Path.GetTempPath(), @"Rockstar-Games-Launcher\57.XboxHelper.dll"), @"C:\Program Files\Rockstar Games\Launcher\RockstarXboxHelper.dll", true)), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v DisplayName /t REG_SZ /d ""Rockstar Games Launcher"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v Comments /t REG_SZ /d ""Rockstar Games Launcher"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v UninstallString /t REG_SZ /d ""\""C:\Program Files\Rockstar Games\Launcher\uninstall.exe\"""" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v QuietUninstallString /t REG_SZ /d ""\""C:\Program Files\Rockstar Games\Launcher\uninstall.exe\"" /S"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v InstallLocation /t REG_SZ /d ""\""C:\Program Files\Rockstar Games\Launcher\"""" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v DisplayIcon /t REG_SZ /d ""C:\Program Files\Rockstar Games\Launcher\Launcher.exe, 0"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v Publisher /t REG_SZ /d ""Rockstar Games"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v HelpLink /t REG_SZ /d ""https://www.rockstargames.com/support"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v Readme /t REG_SZ /d ""https://www.rockstargames.com/support"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v URLUpdateInfo /t REG_SZ /d ""https://www.rockstargames.com"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v URLInfoAbout /t REG_SZ /d ""https://www.rockstargames.com/support"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v DisplayVersion /t REG_SZ /d ""{rockstarGamesLauncherVersion}"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v NoModify /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v NoRepair /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Rockstar Games Launcher"" /v EstimatedSize /t REG_DWORD /d 0x927c0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v Version /t REG_SZ /d ""{rockstarGamesLauncherVersion}"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v InstallFolder /t REG_SZ /d ""C:\Program Files\Rockstar Games\Launcher"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v Language /t REG_SZ /d ""en-US"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v Shortcut /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v Silent /t REG_DWORD /d 0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher"" /v RGL /t REG_DWORD /d 2552918 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v AUTO /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v BOOT /t REG_DWORD /d 0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v DEFDIR /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v DPI /t REG_DWORD /d 100 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", $@"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v INSTVER /t REG_SZ /d ""{rockstarGamesLauncherVersion}"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v LANG /t REG_SZ /d ""en-US"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v REDIST /t REG_DWORD /d 0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v SHRT /t REG_DWORD /d 1 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v SIL /t REG_DWORD /d 0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v UPVER /t REG_DWORD /d 0 /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v PARPRO /t REG_SZ /d ""C:\Windows\explorer.exe"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Rockstar Games\Launcher\Add"" /v INSTPATH /t REG_SZ /d ""C:\Program Files\Rockstar Games\Launcher"" /f"), () => RockstarGamesLauncher == true),
+            ("Installing Rockstar Games Launcher", async () => await ProcessActions.RunPowerShell(@"$Shell = New-Object -ComObject WScript.Shell; New-Item -Path ([System.IO.Path]::Combine($env:APPDATA, 'Microsoft\Windows\Start Menu\Programs\Rockstar Games')) -ItemType Directory -Force | Out-Null; $Shortcut = $Shell.CreateShortcut([System.IO.Path]::Combine($env:APPDATA, 'Microsoft\Windows\Start Menu\Programs\Rockstar Games\Rockstar Games Launcher.lnk')); $Shortcut.TargetPath = 'C:\Program Files\Rockstar Games\Launcher\LauncherPatcher.exe'; $Shortcut.Save()"), () => RockstarGamesLauncher == true),
+
+            // update rock star games launcher
+            ("Updating Rockstar Games Launcher", async () => await Task.Run(async () => { await Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\Rockstar Games\Launcher\LauncherPatcher.exe") })!.WaitForExitAsync(); while (Process.GetProcessesByName("dxdiag").Length > 1) await Task.Delay(500); while (Process.GetProcessesByName("SocialClubHelper").Length == 0) await Task.Delay(500); }), () => RockstarGamesLauncher == true),
+
+            // log in to rockstar games launcher
+            ("Please log in to your Rockstar Games Launcher account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("Launcher").Length == 1) await Task.Delay(500); }), () => RockstarGamesLauncher == true),
+        
+            // download fivem
+            ("Downloading FiveM", async () => await ProcessActions.RunDownload("https://www.dl.dropboxusercontent.com/scl/fi/tn48g2m1qisdsir80ixu8/FiveM.zip?rlkey=c54qzh36fr3p8yb09q4zlt0gi&st=ca6wjcgx&dl=0", Path.GetTempPath(), "FiveM.zip"), () => FiveM == true),
+
+            // install fivem
+            ("Installing FiveM", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "FiveM.zip"), Path.Combine(Path.GetTempPath(), "FiveM")), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\FiveM"" ""%LOCALAPPDATA%\FiveM"""), null),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayName /t REG_SZ /d ""FiveM"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayIcon /t REG_SZ /d ""C:\Users\user\AppData\Local\FiveM\FiveM.exe,0"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v HelpLink /t REG_SZ /d ""https://cfx.re/"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v InstallLocation /t REG_SZ /d ""C:\Users\user\AppData\Local\FiveM"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v Publisher /t REG_SZ /d ""Cfx.re"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v UninstallString /t REG_SZ /d ""\""C:\Users\user\AppData\Local\FiveM\FiveM.exe\"" -uninstall app"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v URLInfoAbout /t REG_SZ /d ""https://cfx.re/"" /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v NoModify /t REG_DWORD /d 1 /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v NoRepair /t REG_DWORD /d 1 /f"), () => FiveM == true),
+            ("Installing FiveM", async () => await ProcessActions.RunPowerShell(@"$s=New-Object -ComObject WScript.Shell; $p=[System.IO.Path]::Combine($env:APPDATA,'Microsoft\Windows\Start Menu\Programs'); $sc1=$s.CreateShortcut([System.IO.Path]::Combine($p,'FiveM.lnk')); $sc1.TargetPath=[System.IO.Path]::Combine($env:LOCALAPPDATA,'FiveM\FiveM.exe'); $sc1.Description='FiveM is a modification framework based on the Cfx.re platform'; $sc1.Save(); $sc2=$s.CreateShortcut([System.IO.Path]::Combine($p,'FiveM - Cfx.re Development Kit (FxDK).lnk')); $sc2.TargetPath=[System.IO.Path]::Combine($env:LOCALAPPDATA,'FiveM\FiveM - Cfx.re Development Kit (FxDK).lnk'); $sc2.Save()"), () => FiveM == true),
+        
+            // download faceit
+            ("Downloading FACEIT", async () => await ProcessActions.RunDownload("https://faceit-client.faceit-cdn.net/release/FACEIT-setup-latest.exe", Path.GetTempPath(), "FACEIT-setup-latest.exe"), () => FACEIT == true),
+
+            // install faceit
+            ("Installing FACEIT", async () => await ProcessActions.RunNsudo("CurrentUser", @"""%TEMP%\FACEIT-setup-latest.exe"" /S"), () => FACEIT == true),
+
+            // log in to faceit
+            ("Please log in to your FACEIT account", async () => await Task.Run(async () => { while (Process.GetProcessesByName("FACEIT").Length > 1) await Task.Delay(500); }), () => FACEIT == true),
+
+            // remove faceit desktop shortcut 
+            ("Removing FACEIT desktop shortcut", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c del /f /q ""%HOMEPATH%\Desktop\FACEIT.lnk"""), () => FACEIT == true),
+
+            // disable faceit startup entry
+            ("Disabling FACEIT startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run"" /v ""FACEIT"" /t REG_BINARY /d ""01"" /f"), () => FACEIT == true),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

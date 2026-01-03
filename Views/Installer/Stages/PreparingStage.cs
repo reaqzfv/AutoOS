@@ -111,8 +111,11 @@ public static class PreparingStage
     public static bool? RiotClient;
     public static bool? EA;
     public static bool? UbisoftConnect;
-    public static bool? MinecraftLauncher;
     public static bool? BattleNet;
+    public static bool? MinecraftLauncher;
+    public static bool? RockstarGamesLauncher;
+    public static bool? FiveM;
+    public static bool? FACEIT;
 
     public static int? PCores;
 
@@ -240,8 +243,11 @@ public static class PreparingStage
             RiotClient = (localSettings.Values["Launchers"]?.ToString().Contains("Riot Client") ?? false);
             EA = (localSettings.Values["Launchers"]?.ToString().Contains("EA") ?? false);
             UbisoftConnect = (localSettings.Values["Launchers"]?.ToString().Contains("Ubisoft Connect") ?? false);
-            MinecraftLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Minecraft Launcher") ?? false);
             BattleNet = (localSettings.Values["Launchers"]?.ToString().Contains("Battle.Net") ?? false);
+            MinecraftLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Minecraft Launcher") ?? false);
+            RockstarGamesLauncher = (localSettings.Values["Launchers"]?.ToString().Contains("Rockstar Games Launcher") ?? false);
+            FiveM = (localSettings.Values["Launchers"]?.ToString().Contains("FiveM") ?? false);
+            FACEIT = (localSettings.Values["Launchers"]?.ToString().Contains("FACEIT") ?? false);
 
             var cpuSetsInfo = CpuDetectionService.GetCpuSets();
             var (pCores, eCores) = CpuDetectionService.GroupCpuSetsByEfficiencyClass(cpuSetsInfo);

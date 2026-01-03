@@ -814,6 +814,9 @@ public static class ProcessActions
             .OrderByDescending(f => f.LastWriteTime)
             .ToList();
 
+        if (foundFiles.Count == 0)
+            return;
+
         FileInfo newestFile = foundFiles.First();
 
         var jsonContent = await File.ReadAllTextAsync(newestFile.FullName);
@@ -824,21 +827,25 @@ public static class ProcessActions
         var jsonObject = JsonNode.Parse(jsonContent);
 
         // return if install list is empty
-        if (foundFiles.Count == 0 || jsonObject?["InstallationList"] is not JsonArray installationList || installationList.Count == 0)
-        {
+        if (jsonObject?["InstallationList"] is not JsonArray installationList || installationList.Count == 0)
             return;
-        }
 
-        Directory.CreateDirectory(Path.GetDirectoryName(EpicGamesHelper.EpicGamesInstalledGamesPath));
+        Directory.CreateDirectory(Path.GetDirectoryName(EpicGamesHelper.EpicGamesInstalledGamesPath)!);
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
 
         // set new game paths
         foreach (var game in installationList)
         {
             if (game is JsonObject gameObj && gameObj.ContainsKey("InstallLocation"))
             {
-                string originalPath = gameObj["InstallLocation"].ToString();
+                string originalPath = gameObj["InstallLocation"]!.ToString();
                 string originalDrive = Path.GetPathRoot(originalPath) ?? "";
-                string relativePath = originalPath.Substring(originalDrive.Length);
+                string relativePath = originalPath[originalDrive.Length..];
 
                 foreach (var drive in DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Fixed && d.Name != @"C:\"))
                 {
@@ -852,105 +859,55 @@ public static class ProcessActions
             }
         }
 
-        await File.WriteAllTextAsync(EpicGamesHelper.EpicGamesInstalledGamesPath, jsonObject.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        await File.WriteAllTextAsync(EpicGamesHelper.EpicGamesInstalledGamesPath, jsonObject.ToJsonString(jsonOptions));
 
         // copy over the manifest folder
         string sourceManifestsFolder = Path.Combine(Path.GetPathRoot(newestFile.FullName)!, "ProgramData", "Epic", "EpicGamesLauncher", "Data", "Manifests");
 
-        if (Directory.Exists(sourceManifestsFolder))
-        {
-            Directory.CreateDirectory(EpicGamesHelper.EpicGamesMainfestDir);
-
-            foreach (var directory in Directory.GetDirectories(sourceManifestsFolder, "*", SearchOption.AllDirectories))
-            {
-                string subDirPath = directory.Replace(sourceManifestsFolder, EpicGamesHelper.EpicGamesMainfestDir);
-                Directory.CreateDirectory(subDirPath);
-            }
-
-            foreach (var file in Directory.GetFiles(sourceManifestsFolder, "*.*", SearchOption.AllDirectories))
-            {
-                string destFilePath = file.Replace(sourceManifestsFolder, EpicGamesHelper.EpicGamesMainfestDir);
-                File.Copy(file, destFilePath, true);
-            }
-
-            // set new game paths
-            foreach (var file in Directory.GetFiles(EpicGamesHelper.EpicGamesMainfestDir, "*.item", SearchOption.AllDirectories))
-            {
-                string fileName = Path.GetFileName(file);
-                string destFilePath = file;
-
-                var itemJson = JsonNode.Parse(await File.ReadAllTextAsync(destFilePath));
-
-                if (itemJson is JsonObject itemObj)
-                {
-                    if (itemObj.ContainsKey("InstallLocation"))
-                    {
-                        string originalInstallLocation = itemObj["InstallLocation"].ToString();
-                        string originalDrive = Path.GetPathRoot(originalInstallLocation) ?? "";
-                        string relativePath = originalInstallLocation.Substring(originalDrive.Length);
-
-                        foreach (var drive in DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Fixed && d.Name != @"C:\"))
-                        {
-                            string testPath = Path.Combine(drive.Name, relativePath);
-                            if (Directory.Exists(testPath))
-                            {
-                                string newDrive = Path.GetPathRoot(testPath);
-
-                                itemObj["InstallLocation"] = newDrive + relativePath;
-                                itemObj["ManifestLocation"] = itemObj["ManifestLocation"].ToString().Replace(originalDrive, newDrive);
-                                itemObj["StagingLocation"] = itemObj["StagingLocation"].ToString().Replace(originalDrive, newDrive);
-
-                                break;
-                            }
-                        }
-                    }
-
-                    await File.WriteAllTextAsync(destFilePath, itemObj.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-                }
-            }
-
-            // launch epic games to get new token
-            await Task.Run(() => Process.Start(new ProcessStartInfo(EpicGamesHelper.EpicGamesPath) { WindowStyle = ProcessWindowStyle.Hidden }));
-
-            // wait for token to get used
-            while (true)
-            {
-                await Task.Delay(100);
-
-                if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-                {
-                    await UpdateInvalidEpicGamesToken();
-                    return;
-                }
-
-                if (EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).TokenUseCount == 1)
-                    break;
-            }
-
-            // wait for new token
-            while (true)
-            {
-                await Task.Delay(100);
-
-                if (!EpicGamesHelper.ValidateData(EpicGamesHelper.ActiveEpicGamesAccountPath))
-                {
-                    await UpdateInvalidEpicGamesToken();
-                    return;
-                }
-
-                if (EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).TokenUseCount == 0)
-                    break;
-            }
-
-            // close epic games launcher
-            EpicGamesHelper.CloseEpicGames();
-
-            // update the backed up config
-            File.Copy(EpicGamesHelper.ActiveEpicGamesAccountPath, Path.Combine(EpicGamesHelper.EpicGamesAccountDir, EpicGamesHelper.GetAccountData(EpicGamesHelper.ActiveEpicGamesAccountPath).AccountId, "GameUserSettings.ini"), true);
-        }
-        else
-        {
+        if (!Directory.Exists(sourceManifestsFolder))
             return;
+
+        Directory.CreateDirectory(EpicGamesHelper.EpicGamesManifestDir);
+
+        foreach (var directory in Directory.GetDirectories(sourceManifestsFolder, "*", SearchOption.AllDirectories))
+        {
+            string subDirPath = directory.Replace(sourceManifestsFolder, EpicGamesHelper.EpicGamesManifestDir);
+            Directory.CreateDirectory(subDirPath);
+        }
+
+        foreach (var file in Directory.GetFiles(sourceManifestsFolder, "*.*", SearchOption.AllDirectories))
+        {
+            string destFilePath = file.Replace(sourceManifestsFolder, EpicGamesHelper.EpicGamesManifestDir);
+            File.Copy(file, destFilePath, true);
+        }
+
+        // set new game paths
+        foreach (var file in Directory.GetFiles(EpicGamesHelper.EpicGamesManifestDir, "*.item", SearchOption.AllDirectories))
+        {
+            var itemJson = JsonNode.Parse(await File.ReadAllTextAsync(file));
+
+            if (itemJson is JsonObject itemObj && itemObj.ContainsKey("InstallLocation"))
+            {
+                string originalInstallLocation = itemObj["InstallLocation"]!.ToString();
+                string originalDrive = Path.GetPathRoot(originalInstallLocation) ?? "";
+                string relativePath = originalInstallLocation.Substring(originalDrive.Length);
+
+                foreach (var drive in DriveInfo.GetDrives().Where(d => d.DriveType == DriveType.Fixed && d.Name != @"C:\"))
+                {
+                    string testPath = Path.Combine(drive.Name, relativePath);
+                    if (Directory.Exists(testPath))
+                    {
+                        string newDrive = Path.GetPathRoot(testPath)!;
+
+                        itemObj["InstallLocation"] = newDrive + relativePath;
+                        itemObj["ManifestLocation"] = itemObj["ManifestLocation"]!.ToString().Replace(originalDrive, newDrive);
+                        itemObj["StagingLocation"] = itemObj["StagingLocation"]!.ToString().Replace(originalDrive, newDrive);
+
+                        break;
+                    }
+                }
+                await File.WriteAllTextAsync(file,itemObj.ToJsonString(jsonOptions));
+            }
         }
     }
 
