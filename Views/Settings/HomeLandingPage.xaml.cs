@@ -161,6 +161,9 @@ namespace AutoOS.Views.Settings
 
                 // import optimized nvidia profile
                 ("Importing optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"),  () => NVIDIA == true),
+
+                // disable audio idle states
+                ("Disabling audio idle states", async () => await ProcessActions.RunPowerShellScript("audioidlestates.ps1", ""), null)
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

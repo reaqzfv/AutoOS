@@ -53,6 +53,7 @@ Extract all `.zip` files (for `.exe` files, there may be an extract option in th
 **Step 6:** Paste this into the PowerShell window to download and run the deployment script.
 
 ```ps1
+$PSDefaultParameterValues['Invoke-WebRequest:UseBasicParsing'] = $true
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force 
 irm https://raw.githubusercontent.com/tinodin/AutoOS/master/deploy.ps1 | iex
 ```
