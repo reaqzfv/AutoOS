@@ -86,6 +86,13 @@ public static class PreparingStage
     public static bool? Teams;
     public static bool? Outlook;
     public static bool? OneDrive;
+
+    public static bool? VisualStudio;
+    public static bool? VisualStudioCode;
+    public static bool? Git;
+    public static bool? Python;
+    public static bool? Nodejs;
+    public static bool? Trello;
     
     public static bool? AppleMusic;
     public static bool? Tidal;
@@ -210,6 +217,13 @@ public static class PreparingStage
             Teams = (localSettings.Values["Office"]?.ToString().Contains("Teams") ?? false);
             Outlook = (localSettings.Values["Office"]?.ToString().Contains("Outlook") ?? false);
             OneDrive = (localSettings.Values["Office"]?.ToString().Contains("OneDrive") ?? false);
+
+            VisualStudio = (localSettings.Values["Development"]?.ToString().Contains("Visual Studio") ?? false);
+            VisualStudioCode = (localSettings.Values["Development"]?.ToString().Contains("Visual Studio Code") ?? false);
+            Git = (localSettings.Values["Development"]?.ToString().Contains("Git") ?? false);
+            Python = (localSettings.Values["Development"]?.ToString().Contains("Python") ?? false);
+            Nodejs = (localSettings.Values["Development"]?.ToString().Contains("Node.js") ?? false);
+            Trello = (localSettings.Values["Development"]?.ToString().Contains("Trello") ?? false);
 
             AppleMusic = (localSettings.Values["Music"]?.ToString().Contains("Apple Music") ?? false);
             Tidal = (localSettings.Values["Music"]?.ToString().Contains("TIDAL") ?? false);
