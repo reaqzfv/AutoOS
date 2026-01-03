@@ -132,6 +132,7 @@ namespace AutoOS.Views.Settings
             _ = updater.ShowAsync();
 
             string previousTitle = string.Empty;
+            bool servicesState = (int)(Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\Beep")?.GetValue("Start", 0) ?? 0) == 1;
             bool NVIDIA = false;
 
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController"))
@@ -163,7 +164,30 @@ namespace AutoOS.Views.Settings
                 ("Importing optimized NVIDIA profile", async () => await ProcessActions.ImportProfile("BaseProfile.nip"),  () => NVIDIA == true),
 
                 // disable audio idle states
-                ("Disabling audio idle states", async () => await ProcessActions.RunPowerShellScript("audioidlestates.ps1", ""), null)
+                ("Disabling audio idle states", async () => await ProcessActions.RunPowerShellScript("audioidlestates.ps1", ""), null),
+
+                // disable "archive apps"
+                (@"Disabling ""Archive apps""", async () => await ProcessActions.RunPowerShell(@"New-Item -Path ""HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\InstallService\Stubification\$([System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)"" -Force | Out-Null; New-ItemProperty -Path ""HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\InstallService\Stubification\$([System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)"" -Name EnableAppOffloading -PropertyType DWord -Value 0 -Force"), null),
+
+                // enable "gameinputsvc"
+                (@"Enabling ""GameInputSvc""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\GameInputSvc"" /v ""Start"" /t REG_DWORD /d 3"), () => servicesState == true),
+
+                // disable settings sync
+                (@"Enabling ""Do not sync Apps"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableAppSyncSettingSync /t REG_DWORD /d 2 /f"), null),
+                (@"Enabling ""Do not sync Apps"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableAppSyncSettingSyncUserOverride /t REG_DWORD /d 1 /f"), null),
+                (@"Enabling ""Do not sync accessibility settings"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableAccessibilitySettingSync /t REG_DWORD /d 2 /f"), null),
+                (@"Enabling ""Do not sync accessibility settings"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableAccessibilitySettingSyncUserOverride /t REG_DWORD /d 1 /f"), null),
+                (@"Enabling ""Do not sync language preferences settings"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableLanguageSettingSync /t REG_DWORD /d 2 /f"), null),
+                (@"Enabling ""Do not sync language preferences settings"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableLanguageSettingSyncUserOverride /t REG_DWORD /d 1 /f"), null),
+
+                // remove bcdedit values
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue debug"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue isolatedcontext"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue bootems"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue disableelamdrivers"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue tpmbootentropy"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue vsmlaunchtype"), null),
+                ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue vm"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();

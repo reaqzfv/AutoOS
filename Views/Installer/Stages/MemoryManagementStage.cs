@@ -23,7 +23,7 @@ public static class MemoryManagementStage
             ("Disabling application launch prefetching", async () => await ProcessActions.RunPowerShell(@"Disable-MMAgent -ApplicationLaunchPrefetching"), () => SSD == true),
 
             // disable application pre launch
-            ("Disabling application pre launch", async () => await ProcessActions.RunPowerShell(@"Disable-MMAgent -ApplicationPreLaunch"), null),
+            ("Disabling application pre launch", async () => await ProcessActions.RunPowerShell(@"Disable-MMAgent -ApplicationPreLaunch"), () => SSD == true),
 
             // disable memory compression
             ("Disabling memory compression", async () => await ProcessActions.RunPowerShell(@"Disable-MMAgent -MemoryCompression"), null),
