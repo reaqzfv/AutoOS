@@ -163,7 +163,7 @@ If you want to delete your old Windows partition and merge the unallocated space
 </tr>
 <tr>
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/BIOS%20Settings.gif"/></td>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/BIOS%20Settings.pif"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/BIOS%20Settings.gif"/></td>
 </tr>
 <tr>
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Disk%20Cleanup.png"/></td>
