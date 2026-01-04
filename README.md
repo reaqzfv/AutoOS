@@ -81,8 +81,8 @@ If you want to delete your old Windows partition and merge the unallocated space
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Dark%29/Home.png"/></td>
 </tr>
 <tr>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Light%29/Personalization.png"/></td>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Dark%29/Personalization.png"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Light%29/Personalization.gif"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Dark%29/Personalization.gif"/></td>
 </tr>
 <tr>
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Installer%20%28Light%29/Browser.png"/></td>
@@ -138,8 +138,8 @@ If you want to delete your old Windows partition and merge the unallocated space
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Graphics%20Card.png"/></td>
 </tr>
 <tr>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Per-CPU%20Scheduling.png"/></td>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Per-CPU%20Scheduling.png"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Per-CPU%20Scheduling.gif"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Per-CPU%20Scheduling.gif"/></td>
 </tr>
 <tr>
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Bluetooth%20&%20Devices.png"/></td>
@@ -178,8 +178,8 @@ If you want to delete your old Windows partition and merge the unallocated space
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Windows%20Update.png"/></td>
 </tr>
 <tr>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Games.png"/></td>
-  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Games.png"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Games.gif"/></td>
+  <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Dark%29/Games.gif"/></td>
 </tr>
 <tr>
   <td><img src="https://raw.githubusercontent.com/tinodin/AutoOS-Resources/main/AutoOS%20Settings%20%28Light%29/Settings.png"/></td>
