@@ -27,7 +27,7 @@ public static class GraphicsStage
         bool? MSI = PreparingStage.MSI;
         bool? CRU = PreparingStage.CRU;
 
-        InstallPage.Status.Text = "Configuring Graphics Card...";
+        InstallPage.Status.Text = "Configuring Graphics Cards...";
 
         string previousTitle = string.Empty;
         int stagePercentage = 5;

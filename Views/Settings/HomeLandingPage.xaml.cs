@@ -170,7 +170,7 @@ namespace AutoOS.Views.Settings
                 (@"Disabling ""Archive apps""", async () => await ProcessActions.RunPowerShell(@"New-Item -Path ""HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\InstallService\Stubification\$([System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)"" -Force | Out-Null; New-ItemProperty -Path ""HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\InstallService\Stubification\$([System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value)"" -Name EnableAppOffloading -PropertyType DWord -Value 0 -Force"), null),
 
                 // enable "gameinputsvc"
-                (@"Enabling ""GameInputSvc""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\GameInputSvc"" /v ""Start"" /t REG_DWORD /d 3"), () => servicesState == true),
+                (@"Enabling ""GameInputSvc""", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Services\GameInputSvc"" /v ""Start"" /t REG_DWORD /d 3 /f"), () => servicesState == true),
 
                 // disable settings sync
                 (@"Enabling ""Do not sync Apps"" policy", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\SettingSync"" /v DisableAppSyncSettingSync /t REG_DWORD /d 2 /f"), null),
@@ -188,6 +188,9 @@ namespace AutoOS.Views.Settings
                 ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue tpmbootentropy"), null),
                 ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue vsmlaunchtype"), null),
                 ("Removing bcdedit values", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"bcdedit /deletevalue vm"), null),
+
+                // disable thread dpcs
+                ("Disabling Thread DPCs", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\kernel"" /v ThreadDpcEnable /t REG_DWORD /f /d 0"), null),
             };
 
             var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
@@ -223,7 +226,7 @@ namespace AutoOS.Views.Settings
                     }
 
                     ProgressBar.Value += incrementPerTitle;
-                    await Task.Delay(500);
+                    await Task.Delay(250);
                     currentGroup.Clear();
                 }
 

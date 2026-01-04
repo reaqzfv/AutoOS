@@ -10,7 +10,7 @@ public static class AppxStage
     public static async Task Run()
     {
         WindowHandle = WindowNative.GetWindowHandle(App.MainWindow);
-        InstallPage.Status.Text = "Configuring Appx Packages...";
+        InstallPage.Status.Text = "Configuring AppX Packages...";
 
         string previousTitle = string.Empty;
         int stagePercentage = 10;

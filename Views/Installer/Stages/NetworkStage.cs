@@ -15,7 +15,7 @@ public static class NetworkStage
         bool? Wifi = PreparingStage.Wifi;
         bool? TxIntDelay = PreparingStage.TxIntDelay;
 
-        InstallPage.Status.Text = "Configuring the Network Adapters...";
+        InstallPage.Status.Text = "Configuring Network Adapters...";
 
         string previousTitle = string.Empty;
         int stagePercentage = 5;

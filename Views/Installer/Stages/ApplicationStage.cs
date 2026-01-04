@@ -291,19 +291,25 @@ public static class ApplicationStage
             ("Downloading Visual Studio", async () => await ProcessActions.RunDownload("https://aka.ms/vs/stable/vs_community.exe", Path.GetTempPath(), "vs_Community.exe"), () => VisualStudio == true),
 
             // install visual studio
-            ("Installing Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\vs_Community.exe"" --add Microsoft.VisualStudio.Workload.CoreEditor --includeRecommended --quiet --wait"), () => VisualStudio ==  true),
+            ("Installing Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""%TEMP%\vs_Community.exe"" --quiet --wait"), () => VisualStudio == true),
+
+            // optimize visual studio
+            ("Optimizing Visual Studio", async () => await Task.Run(async () => { while (Process.GetProcessesByName("VSNgenRunner").Length == 1) await Task.Delay(500); }), () => VisualStudio == true),
+
+            // pin visual studio to the taskbar
+            ("Pinning Visual Studio to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type Link -Path ""C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual Studio.lnk"""), () => VisualStudio == true),
 
             // download mica visual studio
-            ("Downloading Visual Studio", async () => await ProcessActions.RunDownload("https://github.com/Tech5G5G/Mica-Visual-Studio/releases/latest/download/MicaVisualStudio.vsix", Path.GetTempPath(), "MicaVisualStudio.vsix"), () => VisualStudio == true),
+            ("Downloading Mica Visual Studio", async () => await ProcessActions.RunDownload("https://github.com/Tech5G5G/Mica-Visual-Studio/releases/latest/download/MicaVisualStudio.vsix", Path.GetTempPath(), "MicaVisualStudio.vsix"), () => VisualStudio == true),
 
             // install mica visual studio
-            ("Installing Mica Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin ""%TEMP%\MicaVisualStudio.vsix"""), () => VisualStudio ==  true),
+            ("Installing Mica Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin %TEMP%\MicaVisualStudio.vsix"), () => VisualStudio == true),
 
             // download xaml styler
-            ("Downloading XAML Styler", async () => await ProcessActions.RunDownload("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/TeamXavalon/vsextensions/XAMLStyler2022/3.2501.8/vspackage", Path.GetTempPath(), "XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
+            ("Downloading XAML Styler", async () => await ProcessActions.RunDownload("https://marketplace.visualstudio.com/apis/public/gallery/publishers/TeamXavalon/vsextensions/XAMLStyler2022/3.2501.8/vspackage", Path.GetTempPath(), "XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
 
             // install xaml styler
-            ("Installing XAML Styler", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin ""%TEMP%\XamlStyler.Extension.Windows.VS2022.vsix"""), () => VisualStudio ==  true),
+            ("Installing XAML Styler", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin %TEMP%\XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
 
             // download visual studio code
             ("Downloading Visual Studio Code", async () => await ProcessActions.RunDownload("https://code.visualstudio.com/sha/download?build=stable&os=win32-x64-user", Path.GetTempPath(), "VSCodeUserSetup-x64.exe"), () => VisualStudioCode == true),
@@ -336,9 +342,12 @@ public static class ApplicationStage
             ("Installing Trello", async () => await ProcessActions.RunPowerShell(@"Add-AppxPackage -Path (Get-ChildItem -Path \""$env:TEMP\45273LiamForsyth.PawsforTrello (Package)\"" | Select-Object -First 1).FullName"), () => Trello == true),
             ("Installing Trello", async () => trelloVersion = await Task.Run(() => { var process = new Process { StartInfo = new ProcessStartInfo("powershell.exe", "Get-AppxPackage -Name \"45273LiamForsyth.PawsforTrello\" | Select-Object -ExpandProperty Version") { RedirectStandardOutput = true, CreateNoWindow = true } }; process.Start(); return process.StandardOutput.ReadToEnd().Trim(); }), () => Trello == true),
 
+            // pin trello to the taskbar
+            ("Pinning Trello to the taskbar", async () => await ProcessActions.RunPowerShellScript("taskbarpin.ps1", @"-Type UWA -Path 45273LiamForsyth.PawsforTrello_7pb5ddty8z1pa!trello"), () => Trello == true),
+
             // log in to trello
             ("Please log in to your Trello account", async () => await ProcessActions.Sleep(1000), () => Trello == true),
-            ("Please log in to your Trello account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\u45273LiamForsyth.PawsforTrello_" + trelloVersion + "_x64__7pb5ddty8z1pa\app", "Trello.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Trello == true),
+            ("Please log in to your Trello account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\45273LiamForsyth.PawsforTrello_" + trelloVersion + @"_x64__7pb5ddty8z1pa\app", "Trello.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Trello == true),
 
             // download dolby access
             ("Downloading Dolby Access", async () => await ProcessActions.RunMicrosoftStoreDownload("DolbyLaboratories.DolbyAccess", "61e179bf-d7a6-4201-aa9b-88cf1bcbc472", "msixbundle", 1, false), () => AppleMusic == true),
@@ -392,7 +401,7 @@ public static class ApplicationStage
 
             // log in to qobuz
             ("Please log in to your Qobuz account", async () => await ProcessActions.Sleep(1000), () => Qobuz == true),
-            ("Please log in to your Qobuz account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Qobuz", "Qobuz.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => Qobuz == true),
+            ("Please log in to your Qobuz account", async () => { await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Qobuz", "Qobuz.exe"), WindowStyle = ProcessWindowStyle.Maximized })!.WaitForExitAsync()); while (Process.GetProcessesByName("Qobuz").Length > 2) await Task.Delay(500); }, () => Qobuz == true),
 
             // download amazon music
             ("Downloading Amazon Music", async () => await ProcessActions.RunMicrosoftStoreDownload("AmazonMobileLLC.AmazonMusic", "7fb9f901-50c2-4974-a65c-01b4cd17ca77", "appx", 0, false), () => AmazonMusic == true),
@@ -520,7 +529,10 @@ public static class ApplicationStage
 
             // log in to whatsapp
             ("Please log in to your WhatsApp account", async () => await ProcessActions.Sleep(1000), () => WhatsApp == true),
-            ("Please log in to your WhatsApp account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\5319275A.WhatsAppDesktop_" + whatsAppVersion + "_x64__cv1g1gvanyjgm", "WhatsApp.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => WhatsApp == true),
+            ("Please log in to your WhatsApp account", async () => await Task.Run(() => Process.Start(new ProcessStartInfo { FileName = Path.Combine(@"C:\Program Files\WindowsApps\5319275A.WhatsAppDesktop_" + whatsAppVersion + "_x64__cv1g1gvanyjgm", "WhatsApp.Root.exe"), WindowStyle = ProcessWindowStyle.Maximized }) !.WaitForExitAsync()), () => WhatsApp == true),
+
+            // disable whatsapp startup entry
+            ("Disabling WhatsApp startup entry", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\5319275A.WhatsAppDesktop_cv1g1gvanyjgm\2defd21c-0b9e-4e4e-873a-2a68c47d7da5"" /v State /t REG_DWORD /d 1 /f"), () => WhatsApp == true),
 
             // download epic games launcher
             ("Downloading Epic Games Launcher", async () => await ProcessActions.RunDownload("https://launcher-public-service-prod06.ol.epicgames.com/launcher/api/installer/download/EpicGamesLauncherInstaller.msi", Path.GetTempPath(), "EpicGamesLauncherInstaller.msi"), () => EpicGames == true),
@@ -754,7 +766,7 @@ public static class ApplicationStage
 
             // install fivem
             ("Installing FiveM", async () => await ProcessActions.RunExtract(Path.Combine(Path.GetTempPath(), "FiveM.zip"), Path.Combine(Path.GetTempPath(), "FiveM")), () => FiveM == true),
-            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\FiveM"" ""%LOCALAPPDATA%\FiveM"""), null),
+            ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c move ""%TEMP%\FiveM"" ""%LOCALAPPDATA%\FiveM"""), () => FiveM == true),
             ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayName /t REG_SZ /d ""FiveM"" /f"), () => FiveM == true),
             ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v DisplayIcon /t REG_SZ /d ""C:\Users\user\AppData\Local\FiveM\FiveM.exe,0"" /f"), () => FiveM == true),
             ("Installing FiveM", async () => await ProcessActions.RunNsudo("CurrentUser", @"reg add ""HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall\CitizenFX_FiveM"" /v HelpLink /t REG_SZ /d ""https://cfx.re/"" /f"), () => FiveM == true),

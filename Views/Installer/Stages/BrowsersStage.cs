@@ -32,7 +32,7 @@ public static class BrowsersStage
         bool? Bitwarden = PreparingStage.Bitwarden;
         bool? OnePassword = PreparingStage.OnePassword;
 
-        InstallPage.Status.Text = "Configuring Browser...";
+        InstallPage.Status.Text = "Configuring Browsers...";
 
         string previousTitle = string.Empty;
         int stagePercentage = 5;

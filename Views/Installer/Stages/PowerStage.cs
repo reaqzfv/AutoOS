@@ -13,7 +13,7 @@ public static class PowerStage
         bool? Desktop = PreparingStage.Desktop;
         bool? IdleStates = PreparingStage.IdleStates;
 
-        InstallPage.Status.Text = "Configuring Power Options...";
+        InstallPage.Status.Text = "Configuring Powerplans...";
 
         string previousTitle = string.Empty;
         int stagePercentage = 5;

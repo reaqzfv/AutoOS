@@ -27,6 +27,9 @@ public static class SchedulingStage
 
             // disable interrupt steering
             ("Disabling interrupt steering", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel"" /v InterruptSteeringFlags /t REG_DWORD /d 1 /f"), () => PCores >= 4),
+        
+            // disable thread dpcs
+            ("Disabling Thread DPCs", async () => await ProcessActions.RunNsudo("TrustedInstaller", @"reg add ""HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\kernel"" /v ThreadDpcEnable /t REG_DWORD /f /d 0"), null),
         };
 
         var filteredActions = actions.Where(a => a.Condition == null || a.Condition.Invoke()).ToList();
