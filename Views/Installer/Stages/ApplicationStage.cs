@@ -306,7 +306,7 @@ public static class ApplicationStage
             ("Installing Mica Visual Studio", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin %TEMP%\MicaVisualStudio.vsix"), () => VisualStudio == true),
 
             // download xaml styler
-            ("Downloading XAML Styler", async () => await ProcessActions.RunDownload("https://marketplace.visualstudio.com/apis/public/gallery/publishers/TeamXavalon/vsextensions/XAMLStyler2022/3.2501.8/vspackage", Path.GetTempPath(), "XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
+            ("Downloading XAML Styler", async () => await ProcessActions.RunDownload("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/TeamXavalon/vsextensions/XAMLStyler2022/3.2501.8/vspackage", Path.GetTempPath(), "XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
 
             // install xaml styler
             ("Installing XAML Styler", async () => await ProcessActions.RunNsudo("CurrentUser", @"cmd /c ""C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\VSIXInstaller.exe"" /quiet /admin %TEMP%\XamlStyler.Extension.Windows.VS2022.vsix"), () => VisualStudio == true),
